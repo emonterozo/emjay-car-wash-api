@@ -6,6 +6,7 @@ import helmet from 'helmet';
 
 // application routes
 import homeRouter from '@routes/home';
+import userRouter from '@routes/users';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/home', homeRouter);
+app.use('/user', userRouter);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

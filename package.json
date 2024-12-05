@@ -1,15 +1,17 @@
 {
-  "name": "express-template",
+  "type": "module",
+  "name": "emjay-car-wash-api",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
     "build": "rimraf dist && npx tsc",
-    "prestart": "yarn run build",
+    "prestart": "npm run build",
     "start": "node dist/server.js",
-    "preserve": "yarn run build",
+    "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\"  \"nodemon dist/server.js\"",
     "lint": "eslint .",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "prepare": "husky"
   },
   "license": "MIT",
   "lint-staged": {
@@ -27,7 +29,8 @@
     ]
   },
   "_moduleAliases": {
-    "@routes": "dist/src/routes"
+    "@routes": "dist/src/routes",
+    "src": "dist/src"
   },
   "dependencies": {
     "@types/express": "^5.0.0",

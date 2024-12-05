@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUserController } from "../../src/infrastructure/api/users/index";
+import { createUserController } from "src/infrastructure/api/users/index";
 const router = express.Router();
 
 router.get('/create', async (req, res) => {

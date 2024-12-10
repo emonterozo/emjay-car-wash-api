@@ -1,9 +1,10 @@
 export type UserId = string;
 
+export type UserType = 'ADMIN' | 'SUPERVISOR';
+
 export interface UserDetails {
-    name: string;
-    email: string;
-    lastname: string;
+    type: UserType;
+    username: string;
 }
 
 export interface UserObject extends UserDetails {

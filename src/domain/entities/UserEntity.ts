@@ -1,8 +1,7 @@
-interface UserEntityParams { 
-    id?: string, 
-    name: string, 
-    lastname: string, 
-    email: string, 
+
+interface UserEntityParams {
+    id?: string,
+    type: string,
     username: string;
     password: string;
 }
@@ -10,32 +9,21 @@ interface UserEntityParams {
 export class UserEntity {
     private constructor(
         private id: string,
-        private name: string,
-        private lastname: string,
-        private email: string,
+        private type: string,
         private username: string,
         private password: string
-    ) {}
+    ) { }
 
-    public static create({ id = '', name = '', email = '', lastname = '', username = '', password = '' }: UserEntityParams) {
-        return new UserEntity(id, name, lastname, email, username, password);
-    }
-    
-
-    public getName(): string {
-        return this.name;
+    public static create({ id = '', type = '', username = '', password = '' }: UserEntityParams) {
+        return new UserEntity(id, type, username, password);
     }
 
-    public getEmail(): string {
-        return this.email;
+    public getUserType(): string {
+        return this.type;
     }
 
     public getPassword(): string {
         return this.password;
-    }
-
-    public getLastName(): string {
-        return this.lastname;
     }
 
     public getUsername(): string {
@@ -44,7 +32,7 @@ export class UserEntity {
 
     public validateEmail() {
         // Validation about email here.
-        
+
 
         return true;
     }

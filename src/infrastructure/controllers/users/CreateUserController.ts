@@ -1,3 +1,4 @@
+import { UserType } from "src/application/use-cases/users/interfaces.ts/common";
 import { ICreateUserUseCase } from "src/application/use-cases/users/interfaces.ts/ICreateUserUseCase";
 import { ControllerResponse } from "src/interfaces/controllers/common";
 import { CreateUserControllerInput, CreateUserControllerOutput, ICreateUserController } from "src/interfaces/controllers/ICreateUserController";
@@ -9,12 +10,15 @@ export class CreateUserController implements ICreateUserController {
     async handle(input: CreateUserControllerInput): Promise<ControllerResponse<CreateUserControllerOutput | null>> {
         
         // Some validations here...
+        if (input.Type !== "ADMIN" && input.Type !== "SUPERVISOR") return {
+            data: null,
+            errors: [{ message: "Invalid type", field: "type" }]
+        }
 
         const { errors, result } = await this.usecase.execute({
-            name: input.FirstName,
-            lastname: input.LastName,
-            email: input.Email,
-            password: input.Password
+            type: input.Type as UserType,
+            password: input.Password,
+            username: input.Username
         });
 
         if (!result) return {
@@ -26,9 +30,8 @@ export class CreateUserController implements ICreateUserController {
             errors: [],
             data: {
                 Id: result.id,
-                Email: result.email,
-                FirstName: result.name,
-                LastName: result.lastname
+                Type: result.type,
+                Username: result.username
             },
         }
     }

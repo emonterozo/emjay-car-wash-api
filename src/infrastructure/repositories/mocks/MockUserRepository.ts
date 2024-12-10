@@ -30,7 +30,7 @@ export class MockUserRepository implements IUserRepository {
         const inserted_id = this.current_id.toString();
         this.users.set(inserted_id, {
             id: inserted_id,
-            type: 'admin',
+            type: 'SUPERVISOR',
             password:'MOCK_USER',
             username:'MOCK_USER'
         });

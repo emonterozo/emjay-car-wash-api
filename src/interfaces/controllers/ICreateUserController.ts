@@ -1,18 +1,17 @@
+import { UserType } from "src/application/use-cases/users/interfaces.ts/common";
 import { ControllerResponse } from "./common";
 
 // CreateUserController inputs maps the input from the request
 export interface CreateUserControllerInput {
-    FirstName: string;
-    LastName: string;
-    Email: string;
+    Type: UserType;
     Password: string;
+    Username: string;
 }
 
 export interface CreateUserControllerOutput {
     Id: string;
-    FirstName: string;
-    LastName: string;
-    Email: string;
+    Type: UserType;
+    Username: string;
 }
 
 export interface ICreateUserController {

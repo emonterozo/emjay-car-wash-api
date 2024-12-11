@@ -12,7 +12,7 @@ export class CreateUserController implements ICreateUserController {
         // Some validations here...
         if (input.Type !== "ADMIN" && input.Type !== "SUPERVISOR") return {
             data: null,
-            errors: [{ message: "Invalid type", field: "type" }]
+            errors: [{ message: "Invalid type. Should be ADMIN or SUPERVISOR", field: "type" }]
         }
 
         const { errors, result } = await this.usecase.execute({

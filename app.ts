@@ -7,6 +7,7 @@ import helmet from 'helmet';
 // application routes
 import homeRouter from '@routes/home';
 import userRouter from '@routes/users';
+import AdminRouter from '@routes/admin';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use('/home', homeRouter);
 app.use('/user', userRouter);
+app.use('/admin', AdminRouter)
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

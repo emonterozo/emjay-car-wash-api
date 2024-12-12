@@ -1,5 +1,5 @@
 import { AdminLoginUseCase } from "src/application/use-cases/auth/AdminLoginUseCase";
-import { MockPasswordHasher } from "src/infrastructure/services/PasswordHasher";
+import { BCryptPasswordHasher } from "src/infrastructure/services/BcryptPasswordHasher";
 import { AdminLoginController } from "./AdminLoginController";
 import { MockUserRepository } from "src/infrastructure/repositories/mocks/MockUserRepository";
 import { MongoUserRepository } from "src/infrastructure/repositories/mongodb/MongoUserRepository";
@@ -10,7 +10,7 @@ const user_repository = new MockUserRepository();
 const mongo_user_repository = new MongoUserRepository();
 
 // Services
-const password_service = new MockPasswordHasher();
+const password_service = new BCryptPasswordHasher();
 const token_service = new TokenService();
 
 // Use Cases

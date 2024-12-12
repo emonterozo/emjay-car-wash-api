@@ -1,5 +1,5 @@
 import { IUserRepository } from "src/application/ports/repositories/IUserRepository";
-import { CreateUserInput, UserObject } from "./interfaces.ts/common";
+import { CreateUserInput, UserObject, UserType } from "./interfaces.ts/common";
 import { ICreateUserUseCase, ICreateUseUseCaseResult } from "./interfaces.ts/ICreateUserUseCase";
 import { UserEntity } from "../../../domain/entities/UserEntity";
 import { IPasswordHasher } from "src/application/ports/services/IPasswordHasher";
@@ -21,10 +21,9 @@ export class CreateUserUseCase implements ICreateUserUseCase {
 
         const hashed_password = await this.password_service.hash(userEntity.getPassword());
         const inserted_id = await this.repository.create({
-            email: userEntity.getEmail(),
-            name: userEntity.getName(),
-            lastname: userEntity.getLastName(),
-            password: hashed_password
+            type: userEntity.getUserType() as UserType,
+            password: hashed_password,
+            username: userEntity.getUsername()
         });
 
         const inserted_user = await this.repository.retrieve(inserted_id);

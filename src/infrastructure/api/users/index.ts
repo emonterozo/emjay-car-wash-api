@@ -1,19 +1,20 @@
 import { CreateUserUseCase } from "src/application/use-cases/users/CreateUserUseCase";
 import { CreateUserController } from "src/infrastructure/controllers/users/CreateUserController";
 import { MockUserRepository } from "src/infrastructure/repositories/mocks/MockUserRepository";
-import { UserRepository } from "src/infrastructure/repositories/UserRepository";
-import { MockPasswordHasher } from "src/infrastructure/services/PasswordHasher";
+import { MongoUserRepository } from "src/infrastructure/repositories/mongodb/MongoUserRepository";
+import { BCryptPasswordHasher } from "src/infrastructure/services/BcryptPasswordHasher";
 
 // Repositories
-const user_repository = process.env.IS_PRODUCTION 
-    ? new UserRepository()
+const mongo_user_repository = new MongoUserRepository()
+const user_repository = process.env.IS_PRODUCTION === 'YES'
+    ? new MongoUserRepository()
     : new MockUserRepository();
 
 // Services
-const mock_password_service = new MockPasswordHasher();
+const password_service = new BCryptPasswordHasher();
 
 // Use Cases
-const createUserUseCase = new CreateUserUseCase(user_repository, mock_password_service);
+const createUserUseCase = new CreateUserUseCase(mongo_user_repository, password_service);
 
 // Controllers
 export const createUserController = new CreateUserController(createUserUseCase);

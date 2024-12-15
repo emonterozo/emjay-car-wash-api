@@ -17,3 +17,21 @@ export interface CustomerObject extends CustomerDetails {
     id: CustomerId;
     date: string;
 }
+
+export interface CustomerServicesObject extends CustomerDetails {
+    id: CustomerId;
+    car_services_count: CarServiceCount;
+    motor_services_count: MotorServiceCount;
+}
+
+export interface CarServiceCount {
+    sm: number;
+    md: number;
+    lg: number;
+}
+
+export interface MotorServiceCount {
+    sm: number;
+    md: number;
+    lg: number;
+}

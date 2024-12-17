@@ -18,7 +18,7 @@ export interface CustomerObject extends CustomerDetails {
     date: string;
 }
 
-export interface CustomerServicesObject extends CustomerDetails {
+export interface CustomerServicesObject extends Omit<CustomerDetails, 'password'> {
     id: CustomerId;
     car_services_count: CarServiceCount;
     motor_services_count: MotorServiceCount;

@@ -7,6 +7,10 @@ export interface CustomerDetails {
     password: string;
 }
 
+export interface CustomerFilterInput extends Partial<Omit<CustomerDetails, 'password'>> {
+    id?: CustomerId;
+}
+
 export interface CreateCustomerInput extends CustomerDetails {}
 
 export interface UpdateCustomerInput extends CustomerDetails {

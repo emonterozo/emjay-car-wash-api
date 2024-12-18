@@ -1,15 +1,10 @@
 import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import { ICustomerServicesRepository } from "src/application/ports/repositories/ICustomerServiceRepository";
 import { CustomerId, CustomerServicesObject } from "src/application/use-cases/customers/interfaces/common";
+import { MongoDB } from "./MongoDB";
 
 export class CustomerServicesRepository implements ICustomerServicesRepository {
-    private readonly client = new MongoClient(process.env.MONGO_CONNECTION_STRING!, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
+    private readonly client = MongoDB.instance();
 
     public async getCustomerServicesById(id: CustomerId): Promise<CustomerServicesObject | null> {
 

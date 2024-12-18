@@ -1,17 +1,11 @@
 import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import { ICustomerRepository } from "src/application/ports/repositories/ICustomerRepository";
 import { CustomerFilterInput, CustomerObject } from "src/application/use-cases/customers/interfaces/common";
+import { MongoDB } from "./MongoDB";
 
 export class MongoCustomerRepository implements ICustomerRepository {
 
-    private readonly client = new MongoClient(process.env.MONGO_CONNECTION_STRING!, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-
+    private readonly client = MongoDB.instance()
 
     public async retrieveAll(): Promise<CustomerObject[]> {
         await this.client.connect();

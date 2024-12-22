@@ -36,4 +36,21 @@ export class UserEntity {
 
         return true;
     }
+
+    public validateUsername() {
+
+        if (this.username.length > 20)
+            return "Maximum 20 characters.";
+
+        return ''
+
+    }
+
+    public validatePassword() {
+
+        if (this.password.length > 64)
+            return "Maximum 64 characters.";
+
+        return ''
+    }
 }

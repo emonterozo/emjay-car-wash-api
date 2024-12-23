@@ -6,8 +6,10 @@ export interface ServiceDetails {
     title: string;
     description: string;
     type: VechicleType;
-    price_list: Pricing[]
-    rating: Rating
+    price_list: Pricing[];
+    reviews: number;
+    rating: Rating;
+    image_url: string;
 }
 
 
@@ -20,7 +22,7 @@ export interface Rating {
 }
 
 export interface Pricing {
-    category: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+    size: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
     price: number;
 }
 

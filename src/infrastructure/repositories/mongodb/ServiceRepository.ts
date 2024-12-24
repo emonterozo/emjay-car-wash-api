@@ -18,6 +18,15 @@ interface IServiceCollection {
     rating: number;
     reviews_count: number;
     last_review: string;
+    ratings: number;
+}
+
+function parseField(key: keyof ServiceObject): keyof IServiceCollection | keyof ServiceObject {
+    if (key === 'reviews') return 'reviews_count';
+    if (key === 'image_url') return 'image';
+    if (key === 'rating') return 'ratings';
+
+    return key;
 }
 
 export class ServiceRepository implements IServiceRepsository {

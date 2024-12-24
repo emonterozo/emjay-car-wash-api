@@ -1,3 +1,4 @@
+import { GetAllServicesUseCaseInput } from "src/application/use-cases/services/interfaces/IGetAllServicesUseCase";
 import { ControllerResponse } from "../common";
 
 export interface Service {
@@ -16,5 +17,5 @@ export interface Service {
 export type GetAllServicesControllerReponse = ControllerResponse<{ services: Service[] }>
 
 export interface IGetAllServicesController {
-    handle(): Promise<GetAllServicesControllerReponse>;
+    handle(input?: GetAllServicesUseCaseInput): Promise<GetAllServicesControllerReponse>;
 }

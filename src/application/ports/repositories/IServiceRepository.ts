@@ -1,5 +1,12 @@
 import { ServiceObject } from "src/application/use-cases/services/interfaces/common";
+import { Limit, Offset, OrderBy } from "./common";
+
+export interface ServiceRepositoryParams {
+    offset: Offset;
+    order_by: OrderBy<keyof ServiceObject>;
+    limit: Limit;
+}
 
 export interface IServiceRepsository {
-    findAll(): Promise<ServiceObject[]>;
+    findAll(params: ServiceRepositoryParams): Promise<ServiceObject[]>;
 }

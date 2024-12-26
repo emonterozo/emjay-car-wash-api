@@ -1,4 +1,4 @@
-import { IServiceRepsository } from "src/application/ports/repositories/IServiceRepository";
+import { IServiceRepsository, ServiceRepositoryParams } from "src/application/ports/repositories/IServiceRepository";
 import { ServiceObject } from "src/application/use-cases/services/interfaces/common";
 import { MongoDB } from "./MongoDB";
 import { Collection, ObjectId } from "mongodb";
@@ -18,17 +18,32 @@ interface IServiceCollection {
     rating: number;
     reviews_count: number;
     last_review: string;
+    ratings: number;
+}
+
+function parseField(key: keyof ServiceObject): keyof IServiceCollection | keyof ServiceObject {
+    if (key === 'reviews') return 'reviews_count';
+    if (key === 'image_url') return 'image';
+    if (key === 'rating') return 'ratings';
+
+    return key;
 }
 
 export class ServiceRepository implements IServiceRepsository {
 
     private readonly mongo_client = MongoDB.instance();
 
-    public async findAll(): Promise<ServiceObject[]> {
+    public async findAll(params: ServiceRepositoryParams): Promise<ServiceObject[]> {
+
         await this.mongo_client.connect();
         const db = this.mongo_client.db(process.env.MONGO_DATASOURCE);
         const collection: Collection<IServiceCollection> = db.collection(process.env.MONGO_SERVICES_COLLECTION!);
-        const entries = await collection.find({}).toArray();
+        const entries = await collection
+        .find({})
+        .sort({ [parseField(params.order_by.field)]: params.order_by.direction === 'desc' ? -1 : 1 })
+        .limit(params.limit)
+        .skip(params.offset)
+        .toArray();
 
         await this.mongo_client.close();
 

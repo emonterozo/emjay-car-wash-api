@@ -1,12 +1,12 @@
-import { IGetAllServicesUseCase } from "src/application/use-cases/services/interfaces/IGetAllServicesUseCase";
+import { GetAllServicesUseCaseInput, IGetAllServicesUseCase } from "src/application/use-cases/services/interfaces/IGetAllServicesUseCase";
 import { GetAllServicesControllerReponse, IGetAllServicesController, Service } from "src/interfaces/controllers/services/IGetAllServicesController";
 
 export class GetAllServicesController implements IGetAllServicesController {
 
     constructor(private readonly getAllServicesUseCase: IGetAllServicesUseCase) { }
 
-    public async handle(): Promise<GetAllServicesControllerReponse> {
-        const { errors, result: { services } } = await this.getAllServicesUseCase.execute();
+    public async handle(input?: GetAllServicesUseCaseInput): Promise<GetAllServicesControllerReponse> {
+        const { errors, result: { services } } = await this.getAllServicesUseCase.execute(input);
 
         const polished_data = services.map<Service>(({ rating, ...service }) => {
             const overall_reviews = Object.entries(rating)

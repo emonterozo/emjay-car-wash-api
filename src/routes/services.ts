@@ -4,7 +4,9 @@ import { get_all_services_controller } from 'src/infrastructure/controllers/serv
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const response = await get_all_services_controller.handle();
+
+    const { limit, order_by, offset } = req.body;
+    const response = await get_all_services_controller.handle({ limit, order_by, offset });
 
     if (response.errors.length > 0)
         res.status(400)

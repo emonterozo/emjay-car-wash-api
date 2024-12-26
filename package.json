@@ -1,13 +1,13 @@
 {
   "name": "emjay-car-wash-api",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "server.ts",
   "scripts": {
     "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
-    "start": "node dist/api/index.js",
+    "start": "node dist/server.js",
     "preserve": "npm run build",
-    "serve": "concurrently \"npx tsc -w\"  \"nodemon dist/api/index.js\"",
+    "serve": "concurrently \"npx tsc -w\"  \"nodemon dist/server.js\"",
     "lint": "eslint .",
     "test": "jest --coverage",
     "prepare": "husky"

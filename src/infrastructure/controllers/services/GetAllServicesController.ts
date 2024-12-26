@@ -19,8 +19,13 @@ export class GetAllServicesController implements IGetAllServicesController {
             const computed_ratings = overall_reviews / total_ratings;
 
             return {
-                ...service,
-                rating: +computed_ratings.toFixed(1)
+                id: service.id,
+                description: service.description,
+                price_list: service.price_list,
+                title: service.title,
+                type: service.type,
+                image: service.image_url,
+                ratings: +computed_ratings.toFixed(1)
             }
         });
 

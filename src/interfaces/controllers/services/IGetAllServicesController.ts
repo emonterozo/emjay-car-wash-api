@@ -2,12 +2,13 @@ import { ControllerResponse } from "../common";
 
 export interface Service {
     id: string;
+    image: string;
     title: string;
     description: string;
+    ratings: number;
     type: string;
-    rating: number;
     price_list: Array<{
-        category: string;
+        size: string;
         price: number;
     }>;
 }

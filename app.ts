@@ -19,10 +19,10 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/home', homeRouter);
-app.use('/users', userRouter);
-app.use('/admin', AdminRouter);
-app.use('/customers', CustomersRouter);
-app.use('/services', ServicesRouter);
+// app.use('/users', userRouter);
+// app.use('/admin', AdminRouter);
+// app.use('/customers', CustomersRouter);
+// app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

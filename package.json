@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
-    "start": "node -r tsconfig-paths/register dist/api/index.js",
+    "start": "node dist/api/index.js",
     "preserve": "npm run build",
     "serve": "concurrently \"npx tsc -w\"  \"nodemon dist/api/index.js\"",
     "lint": "eslint .",
@@ -45,7 +45,6 @@
     "module-alias": "^2.2.3",
     "mongodb": "^6.11.0",
     "rimraf": "^6.0.1",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2"
   },
   "devDependencies": {

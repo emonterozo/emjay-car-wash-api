@@ -5,11 +5,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 // application routes
-import homeRouter from '@routes/home';
-import userRouter from '@routes/users';
-import AdminRouter from '@routes/admin';
-import CustomersRouter from "@routes/customers";
-import ServicesRouter from "@routes/services";
+import homeRouter from './src/routes/home';
+import userRouter from './src/routes/users';
+import AdminRouter from './src/routes/admin';
+import CustomersRouter from './src/routes/customers';
+import ServicesRouter from './src/routes/services';
 
 const app = express();
 
@@ -27,6 +27,5 @@ app.use('/services', ServicesRouter);
 app.get('/', (req, res) => {
   res.sendStatus(200);
 });
-
 
 export default app;

@@ -40,7 +40,7 @@ export class ServiceRepository implements IServiceRepsository {
         const collection: Collection<IServiceCollection> = db.collection(process.env.MONGO_SERVICES_COLLECTION!);
         const entries = await collection
         .find({})
-        .sort({ [parseField(params.order_by.field)]: params.order_by.direction === 'asc' ? 1 : -1 })
+        .sort({ [parseField(params.order_by.field)]: params.order_by.direction === 'desc' ? -1 : 1 })
         .limit(params.limit)
         .skip(params.offset)
         .toArray();

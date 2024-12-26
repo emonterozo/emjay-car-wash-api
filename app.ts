@@ -19,7 +19,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/home', homeRouter);
-// app.use('/users', userRouter);
+app.use('/users', userRouter);
 // app.use('/admin', AdminRouter);
 // app.use('/customers', CustomersRouter);
 // app.use('/services', ServicesRouter);

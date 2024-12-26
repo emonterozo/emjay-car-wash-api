@@ -3,26 +3,26 @@ import { createUserController } from "src/infrastructure/api/users/index";
 import { CreateUserControllerInput } from 'src/interfaces/controllers/ICreateUserController';
 const router = express.Router();
 
-router.post('/create', async (req, res) => {
+router.post('/', async (req, res) => {
     if (!req.body.username) {
-        res.send({ 
-            data: null, 
+        res.send({
+            data: null,
             errors: [{ message: "username is required", field: "username" }]
         });
         return;
     }
 
     if (!req.body.password) {
-        res.send({ 
-            data: null, 
+        res.send({
+            data: null,
             errors: [{ message: "password is required", field: "password" }]
         });
         return;
     }
 
     if (!req.body.type) {
-        res.send({ 
-            data: null, 
+        res.send({
+            data: null,
             errors: [{ message: "type is required", field: "type" }]
         });
         return;
@@ -35,7 +35,11 @@ router.post('/create', async (req, res) => {
         Username: username
     }
     const response = await createUserController.handle(user_input_sample)
-    res.send(response);
+
+    if (response.errors.length > 0)
+        res.status(400).send(response);
+    else
+        res.status(200).send(response);
 });
 
 export default router;

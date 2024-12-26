@@ -16,14 +16,14 @@ export class GetAllServicesUseCase implements IGetAllServicesUseCase {
 
         try {
             const {
-                // default '5'
-                limit = 5,
+                // default '0' (don't limit)
+                limit = 0,
 
                 // default 0
                 offset = 0,
 
                 // default to order by rating asc
-                order_by = { direction: 'desc', field: 'rating' }
+                order_by = { direction: 'asc', field: 'rating' }
                 
             } = input ?? {};
 

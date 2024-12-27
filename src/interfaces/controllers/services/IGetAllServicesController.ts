@@ -6,7 +6,8 @@ export interface Service {
   image: string;
   title: string;
   description: string;
-  ratings: number;
+  review: number;
+  reviews_count: number;
   type: string;
   price_list: Array<{
     size: string;

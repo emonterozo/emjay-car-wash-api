@@ -1,25 +1,38 @@
-import { Collection, MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import { Collection, MongoClient, ObjectId, ServerApiVersion, Sort } from 'mongodb';
 import { ICustomerRepository } from '../../../application/ports/repositories/ICustomerRepository';
 import {
   CustomerFilterInput,
   CustomerObject,
 } from '../../../application/use-cases/customers/interfaces/common';
 import { MongoDB } from './MongoDB';
+import { IGetAllCustomerParams } from 'src/application/use-cases/customers/interfaces/IGetAllCustomers';
 
 export class MongoCustomerRepository implements ICustomerRepository {
   private readonly client = MongoDB.instance();
 
-  public async retrieveAll(): Promise<CustomerObject[]> {
+  public async retrieveAll(params?: IGetAllCustomerParams): Promise<CustomerObject[]> {
     await this.client.connect();
     const db = this.client.db(process.env.MONGO_DATASOURCE);
     const collection: Collection<Omit<CustomerObject, 'id'> & { _id: ObjectId }> = db.collection(
       process.env.MONGO_CUSTOMERS_COLLECTION!,
     );
-    const result = (await collection.find({}).toArray()).map(({ _id, ...customer }) => ({
+    
+    const sorting: Sort = params?.order_by ? { [params?.order_by?.field]: params?.order_by?.direction === 'asc' ? 1 : -1 } : {};
+    const limit = params?.limit ?? 0;
+    const skip = params?.offset ?? 0;
+    
+    const entries = await collection.find({})
+      .sort(sorting)
+      .limit(limit)
+      .skip(skip)
+      .toArray();
+
+    const customers_arr = entries.map(({ _id, ...customer }) => ({
       id: _id.toString(),
       ...customer,
-    }));
-    return result;
+    }))
+
+    return customers_arr;
   }
 
   public async findOneBy(conditions: CustomerFilterInput): Promise<CustomerObject | null> {

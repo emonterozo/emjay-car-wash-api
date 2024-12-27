@@ -1,6 +1,6 @@
-import { GetAllServicesUseCase } from "src/application/use-cases/services/GetAllServicesUseCase";
-import { ServiceRepository } from "src/infrastructure/repositories/mongodb/ServiceRepository";
-import { GetAllServicesController } from "./GetAllServicesController";
+import { GetAllServicesUseCase } from '../../../application/use-cases/services/GetAllServicesUseCase';
+import { ServiceRepository } from '../../../infrastructure/repositories/mongodb/ServiceRepository';
+import { GetAllServicesController } from './GetAllServicesController';
 
 // Repositories
 const service_repository = new ServiceRepository();

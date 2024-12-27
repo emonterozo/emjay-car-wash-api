@@ -1,3 +1,4 @@
+import { IGetAllCustomerParams } from "src/application/use-cases/customers/interfaces/IGetAllCustomers";
 import { ControllerResponse } from "../common";
 
 export interface Customer {
@@ -10,5 +11,5 @@ export interface Customer {
 export type GetAllCustomersControllerOutput = ControllerResponse<{ customers: Customer[] }>;
 
 export interface IGetAllCustomersController {
-    handle(): Promise<GetAllCustomersControllerOutput>
+    handle(params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput>
 }

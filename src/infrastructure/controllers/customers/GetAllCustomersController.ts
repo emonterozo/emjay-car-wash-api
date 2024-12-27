@@ -1,4 +1,4 @@
-import { IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
+import { IGetAllCustomerParams, IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import {
   GetAllCustomersControllerOutput,
   IGetAllCustomersController,
@@ -7,8 +7,8 @@ import {
 export class GetAllCustomersController implements IGetAllCustomersController {
   constructor(private readonly usecase: IGetAllCustomersUseCase) {}
 
-  public async handle(): Promise<GetAllCustomersControllerOutput> {
-    const customers = await this.usecase.execute();
+  public async handle(params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput> {
+    const customers = await this.usecase.execute(params);
 
     return {
       data: {

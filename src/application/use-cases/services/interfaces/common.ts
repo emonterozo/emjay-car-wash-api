@@ -7,19 +7,12 @@ export interface ServiceDetails {
     description: string;
     type: VechicleType;
     price_list: Pricing[];
-    reviews: number;
-    rating: Rating;
     image_url: string;
+    review: number;
+    reviews_count: number;
+    last_review: string;
 }
 
-
-export interface Rating {
-    5: number;
-    4: number;
-    3: number;
-    2: number;
-    1: number;
-}
 
 export interface Pricing {
     size: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';

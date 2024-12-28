@@ -25,7 +25,7 @@ export class GetAllServicesUseCase implements IGetAllServicesUseCase {
         offset = 0,
 
         // default to order by rating asc
-        order_by = { direction: 'asc', field: 'rating' },
+        order_by = { direction: 'asc', field: 'review' },
       } = input ?? {};
 
       const services = await this.service_repository.findAll({

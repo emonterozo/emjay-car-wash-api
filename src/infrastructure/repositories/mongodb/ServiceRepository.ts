@@ -17,16 +17,14 @@ interface IServiceCollection {
   type: 'car' | 'motorcycle';
   price_list: IServicePricing[];
   image: string;
-  rating: number;
   reviews_count: number;
   last_review: string;
   ratings: number;
 }
 
 function parseField(key: keyof ServiceObject): keyof IServiceCollection | keyof ServiceObject {
-  if (key === 'reviews') return 'reviews_count';
   if (key === 'image_url') return 'image';
-  if (key === 'rating') return 'ratings';
+  if (key === 'review') return 'ratings';
 
   return key;
 }
@@ -53,17 +51,12 @@ export class ServiceRepository implements IServiceRepsository {
       id: entry._id.toString(),
       description: entry.description,
       price_list: entry.price_list,
-      reviews: entry.reviews_count,
+      review: entry.ratings,
       title: entry.title,
       type: entry.type,
       image_url: entry.image,
-      rating: {
-        '1': 5,
-        '2': 10,
-        '3': 30,
-        '4': 80,
-        '5': 220,
-      },
+      last_review: entry.last_review,
+      reviews_count: entry.reviews_count
     }));
   }
 }

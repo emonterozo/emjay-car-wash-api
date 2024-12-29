@@ -19,7 +19,7 @@ export interface UpdateCustomerInput extends CustomerDetails {
 
 export interface CustomerObject extends CustomerDetails {
     id: CustomerId;
-    date: string;
+    registered_on: string;
 }
 
 export interface CustomerServicesObject extends Omit<CustomerDetails, 'password'> {

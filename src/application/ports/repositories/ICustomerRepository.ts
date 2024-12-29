@@ -7,4 +7,5 @@ import {
 export interface ICustomerRepository {
   retrieveAll(params?: IGetAllCustomerParams): Promise<CustomerObject[]>;
   findOneBy(conditions: CustomerFilterInput): Promise<CustomerObject | null>;
+  count(): Promise<number>;
 }

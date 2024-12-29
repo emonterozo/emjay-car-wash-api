@@ -7,7 +7,8 @@ const router = express.Router();
 
 // Get All entries route
 router.get('/', async (req, res) => {
-  const customer_reponse = await getAllCustomersController.handle();
+  const { limit, offset, order_by } = req.body;
+  const customer_reponse = await getAllCustomersController.handle({ limit, offset, order_by });
 
   res.send(customer_reponse);
 });

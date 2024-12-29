@@ -1,5 +1,12 @@
-import { CustomerObject } from "./common";
+import { Limit, Offset, OrderBy } from "src/application/ports/repositories/common";
+import { CustomerDetails, CustomerObject } from "./common";
+
+export interface IGetAllCustomerParams {
+    order_by?: OrderBy<keyof Omit<CustomerDetails, 'password'>>;
+    limit?: Limit;
+    offset?: Offset;
+}
 
 export interface IGetAllCustomersUseCase {
-    execute(): Promise<Omit<CustomerObject, 'password'>[]>;
+    execute(params?: IGetAllCustomerParams): Promise<Omit<CustomerObject, 'password'>[]>;
 }

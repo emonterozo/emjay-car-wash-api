@@ -58,4 +58,16 @@ export class MongoCustomerRepository implements ICustomerRepository {
       ...customer,
     };
   }
+
+  public async count(): Promise<number> {
+    await this.client.connect();
+    const db = this.client.db(process.env.MONGO_DATASOURCE);
+    const collection: Collection<Omit<CustomerObject, 'id'> & { _id: ObjectId }> = db.collection(
+      process.env.MONGO_CUSTOMERS_COLLECTION!,
+    );
+
+    const customers_count = await collection.countDocuments();
+
+    return customers_count;
+  }
 }

@@ -8,7 +8,7 @@ export interface Customer {
     contact_number: string;
 }
 
-export type GetAllCustomersControllerOutput = ControllerResponse<{ customers: Customer[] }>;
+export type GetAllCustomersControllerOutput = ControllerResponse<{ customers: Customer[], total: number }>;
 
 export interface IGetAllCustomersController {
     handle(params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput>

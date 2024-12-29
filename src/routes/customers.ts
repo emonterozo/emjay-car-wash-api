@@ -8,7 +8,8 @@ const router = express.Router();
 // Get All entries route
 router.get('/', async (req, res) => {
   const { limit, offset, order_by } = req.body;
-  const customer_reponse = await getAllCustomersController.handle({ limit, offset, order_by });
+  const token = req.headers.authorization?.split(' ')[1] ?? ''
+  const customer_reponse = await getAllCustomersController.handle(token, { limit, offset, order_by });
 
   res.send(customer_reponse);
 });
@@ -16,7 +17,8 @@ router.get('/', async (req, res) => {
 // Get customer services by id
 router.get('/:customer_id/services', async (req, res) => {
   const { customer_id } = req.params;
-  const customer_reponse = await getCustomerServicesController.handle(customer_id);
+  const token = req.headers.authorization?.split(' ')[1] ?? ''
+  const customer_reponse = await getCustomerServicesController.handle(token, customer_id);
 
   res.send(customer_reponse);
 });

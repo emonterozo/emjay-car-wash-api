@@ -6,6 +6,10 @@ import { GetCustomerServicesUseCase } from '../../../application/use-cases/custo
 import { CustomerServicesController } from './CustomerServicesController';
 import { GetOneCustomerUseCase } from '../../../application/use-cases/customers/GetOneCustomerUseCase';
 import { GetCustomersCountUseCase } from 'src/application/use-cases/customers/GetCustomersCountUseCase';
+import { TokenService } from 'src/infrastructure/services/TokenService';
+
+// Services
+const token_service = new TokenService();
 
 // Repositories
 const customer_repository = new MongoCustomerRepository();
@@ -18,8 +22,9 @@ const getCustomerServicesUseCase = new GetCustomerServicesUseCase(customer_servi
 const getCustomersCountUseCase = new GetCustomersCountUseCase(customer_repository)
 
 // Controllers
-export const getAllCustomersController = new GetAllCustomersController(getAllCustomersUseCase, getCustomersCountUseCase);
+export const getAllCustomersController = new GetAllCustomersController(getAllCustomersUseCase, getCustomersCountUseCase, token_service);
 export const getCustomerServicesController = new CustomerServicesController(
   getCustomerServicesUseCase,
   getOneCustomerUseCase,
+  token_service
 );

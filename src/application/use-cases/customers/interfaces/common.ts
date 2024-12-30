@@ -4,6 +4,10 @@ export interface CustomerDetails {
     first_name: string;
     last_name: string;
     contact_number: string;
+    province: string;
+    city: string;
+    barangay: string;
+    address: string;
     password: string;
 }
 
@@ -11,7 +15,7 @@ export interface CustomerFilterInput extends Partial<Omit<CustomerDetails, 'pass
     id?: CustomerId;
 }
 
-export interface CreateCustomerInput extends CustomerDetails {}
+export interface CreateCustomerInput extends CustomerDetails { }
 
 export interface UpdateCustomerInput extends CustomerDetails {
     id: string;
@@ -19,6 +23,9 @@ export interface UpdateCustomerInput extends CustomerDetails {
 
 export interface CustomerObject extends CustomerDetails {
     id: CustomerId;
+    car_services_count: CarServiceCount[];
+    motor_services_count: MotorServiceCount[];
+    recent_transactions: CustomerRecentTransaction[];
     registered_on: string;
 }
 
@@ -29,13 +36,27 @@ export interface CustomerServicesObject extends Omit<CustomerDetails, 'password'
 }
 
 export interface CarServiceCount {
-    sm: number;
-    md: number;
-    lg: number;
+    size:   "sm" |
+            "md" |
+            "lg" |
+            "xl" |
+            "xxl";
+    count: number
 }
 
 export interface MotorServiceCount {
-    sm: number;
-    md: number;
-    lg: number;
+    size:   "sm" |
+            "md" |
+            "lg" |
+            "xl" |
+            "xxl";
+    count: number
+}
+
+export interface CustomerRecentTransaction {
+    id: string;
+    service_id: string;
+    service_name: string;
+    price: number;
+    date: string;
 }

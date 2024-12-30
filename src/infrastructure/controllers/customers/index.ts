@@ -24,7 +24,7 @@ const getCustomersCountUseCase = new GetCustomersCountUseCase(customer_repositor
 // Controllers
 export const getAllCustomersController = new GetAllCustomersController(getAllCustomersUseCase, getCustomersCountUseCase, token_service);
 export const getCustomerServicesController = new CustomerServicesController(
-  getCustomerServicesUseCase,
+  // getCustomerServicesUseCase,
   getOneCustomerUseCase,
   token_service
 );

@@ -1,4 +1,4 @@
-import { TokenService } from 'src/infrastructure/services/TokenService';
+import { TokenService } from '../../../infrastructure/services/TokenService';
 import { GetAllServicesUseCase } from '../../../application/use-cases/services/GetAllServicesUseCase';
 import { ServiceRepository } from '../../../infrastructure/repositories/mongodb/ServiceRepository';
 import { GetAllServicesController } from './GetAllServicesController';

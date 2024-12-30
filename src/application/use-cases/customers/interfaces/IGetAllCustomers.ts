@@ -1,4 +1,4 @@
-import { Limit, Offset, OrderBy } from "src/application/ports/repositories/common";
+import { Limit, Offset, OrderBy } from "../../../../application/ports/repositories/common";
 import { CustomerDetails, CustomerObject } from "./common";
 
 export interface IGetAllCustomerParams {

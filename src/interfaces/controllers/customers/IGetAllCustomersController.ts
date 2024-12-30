@@ -1,4 +1,4 @@
-import { IGetAllCustomerParams } from "src/application/use-cases/customers/interfaces/IGetAllCustomers";
+import { IGetAllCustomerParams } from "../../../application/use-cases/customers/interfaces/IGetAllCustomers";
 import { ControllerResponse } from "../common";
 
 export interface CustomerOutput {

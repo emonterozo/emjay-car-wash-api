@@ -27,10 +27,6 @@
       "eslint --fix"
     ]
   },
-  "_moduleAliases": {
-    "@routes": "dist/src/routes",
-    "src": "dist/src"
-  },
   "dependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.1",

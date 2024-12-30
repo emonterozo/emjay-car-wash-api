@@ -1,4 +1,4 @@
-import { ITokenService } from 'src/application/ports/services/ITokenService';
+import { ITokenService } from '../../../application/ports/services/ITokenService';
 import { IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import { IGetOneCustomerUseCase } from '../../../application/use-cases/customers/interfaces/IGetOneCustomerUseCase';
 import { IGetServicesCountUseCase } from '../../../application/use-cases/customers/interfaces/IGetServicesCountUseCase';

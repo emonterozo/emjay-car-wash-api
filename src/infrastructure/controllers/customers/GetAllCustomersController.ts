@@ -1,11 +1,11 @@
-import { IGetCustomersCountUseCase } from 'src/application/use-cases/customers/interfaces/IGetCustomersCountUseCase';
+import { IGetCustomersCountUseCase } from '../../../application/use-cases/customers/interfaces/IGetCustomersCountUseCase';
 import { IGetAllCustomerParams, IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import {
   CustomerOutput,
   GetAllCustomersControllerOutput,
   IGetAllCustomersController,
 } from '../../../interfaces/controllers/customers/IGetAllCustomersController';
-import { ITokenService } from 'src/application/ports/services/ITokenService';
+import { ITokenService } from '../../../application/ports/services/ITokenService';
 
 export class GetAllCustomersController implements IGetAllCustomersController {
   constructor(

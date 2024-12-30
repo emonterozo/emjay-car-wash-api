@@ -1,4 +1,4 @@
-import { ICustomerRepository } from "src/application/ports/repositories/ICustomerRepository";
+import { ICustomerRepository } from "../../../application/ports/repositories/ICustomerRepository";
 import { IGetCustomersCountResult, IGetCustomersCountUseCase } from "./interfaces/IGetCustomersCountUseCase";
 
 export class GetCustomersCountUseCase implements IGetCustomersCountUseCase {

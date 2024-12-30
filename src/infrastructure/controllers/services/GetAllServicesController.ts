@@ -1,3 +1,4 @@
+import { ITokenService } from 'src/application/ports/services/ITokenService';
 import {
   GetAllServicesUseCaseInput,
   IGetAllServicesUseCase,
@@ -9,11 +10,24 @@ import {
 } from '../../../interfaces/controllers/services/IGetAllServicesController';
 
 export class GetAllServicesController implements IGetAllServicesController {
-  constructor(private readonly getAllServicesUseCase: IGetAllServicesUseCase) {}
+  constructor(
+    private readonly getAllServicesUseCase: IGetAllServicesUseCase,
+    private readonly _token_service: ITokenService
+  ) {}
 
   public async handle(
+    token: string,
     input?: GetAllServicesUseCaseInput,
   ): Promise<GetAllServicesControllerReponse> {
+
+    const is_valid_token = await this._token_service.verify(token);
+
+    if (!is_valid_token) return {
+      data: null,
+      errors: [{ field: 'unknown', message: 'UNAUTHENTICATED_REQUEST' }]
+    };
+
+
     const {
       errors,
       result: { services },

@@ -9,8 +9,8 @@ export interface CustomerOutput {
     registered_on: string;
 }
 
-export type GetAllCustomersControllerOutput = ControllerResponse<{ customers: CustomerOutput[], total: number }>;
+export type GetAllCustomersControllerOutput = ControllerResponse<{ customers: CustomerOutput[], total: number } | null>;
 
 export interface IGetAllCustomersController {
-    handle(params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput>
+    handle(token: string, params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput>
 }

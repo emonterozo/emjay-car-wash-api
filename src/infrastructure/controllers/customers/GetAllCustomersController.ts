@@ -5,14 +5,24 @@ import {
   GetAllCustomersControllerOutput,
   IGetAllCustomersController,
 } from '../../../interfaces/controllers/customers/IGetAllCustomersController';
+import { ITokenService } from 'src/application/ports/services/ITokenService';
 
 export class GetAllCustomersController implements IGetAllCustomersController {
   constructor(
     private readonly usecase: IGetAllCustomersUseCase,
-    private readonly get_customers_total: IGetCustomersCountUseCase
+    private readonly get_customers_total: IGetCustomersCountUseCase,
+    private readonly _token_service: ITokenService
   ) { }
 
-  public async handle(params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput> {
+  public async handle(token: string, params?: IGetAllCustomerParams): Promise<GetAllCustomersControllerOutput> {
+
+    const is_valid_token = await this._token_service.verify(token);
+
+    if (!is_valid_token) return {
+      data: null,
+      errors: [{ field: 'unknown', message: 'UNAUTHENTICATED_REQUEST' }]
+    };
+
     const customers_raw = await this.usecase.execute(params);
     const count_result = await this.get_customers_total.execute();
 

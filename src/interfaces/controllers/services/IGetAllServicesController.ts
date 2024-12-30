@@ -15,8 +15,8 @@ export interface Service {
   }>;
 }
 
-export type GetAllServicesControllerReponse = ControllerResponse<{ services: Service[] }>;
+export type GetAllServicesControllerReponse = ControllerResponse<{ services: Service[] } | null>;
 
 export interface IGetAllServicesController {
-  handle(input?: GetAllServicesUseCaseInput): Promise<GetAllServicesControllerReponse>;
+  handle(token: string, input?: GetAllServicesUseCaseInput): Promise<GetAllServicesControllerReponse>;
 }

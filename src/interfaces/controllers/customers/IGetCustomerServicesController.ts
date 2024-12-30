@@ -6,5 +6,5 @@ export type CustomerServCountResponse = ControllerResponse<{
 }>;
 
 export interface ICustomerServicesController {
-  handle(id: string): Promise<CustomerServCountResponse>;
+  handle(token: string, id: string): Promise<CustomerServCountResponse>;
 }

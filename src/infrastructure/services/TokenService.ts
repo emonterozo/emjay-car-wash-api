@@ -1,4 +1,4 @@
-import { ITokenService } from '../../application/ports/services/ITokenService';
+import { AuthToken, ITokenService } from '../../application/ports/services/ITokenService';
 import jwt from 'jsonwebtoken';
 
 export class TokenService implements ITokenService {
@@ -8,5 +8,15 @@ export class TokenService implements ITokenService {
     });
 
     return Promise.resolve(token);
+  }
+
+  public async verify(token: AuthToken): Promise<boolean> {
+    try {
+      jwt.verify(token, process.env.TOKEN_SECRET!);
+
+      return Promise.resolve(true);
+    } catch (error) {
+      return Promise.resolve(false);
+    }
   }
 }

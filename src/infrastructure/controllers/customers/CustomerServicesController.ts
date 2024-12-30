@@ -1,7 +1,5 @@
 import { ITokenService } from 'src/application/ports/services/ITokenService';
-import { IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import { IGetOneCustomerUseCase } from '../../../application/use-cases/customers/interfaces/IGetOneCustomerUseCase';
-import { IGetServicesCountUseCase } from '../../../application/use-cases/customers/interfaces/IGetServicesCountUseCase';
 import {
   CustomerServCountResponse,
   ICustomerServicesController,
@@ -9,7 +7,7 @@ import {
 
 export class CustomerServicesController implements ICustomerServicesController {
   constructor(
-    private readonly _get_customer_services: IGetServicesCountUseCase,
+    // private readonly _get_customer_services: IGetServicesCountUseCase,
     private readonly _get_customer: IGetOneCustomerUseCase,
     private readonly _token_service: ITokenService
   ) { }
@@ -32,22 +30,35 @@ export class CustomerServicesController implements ICustomerServicesController {
 
     // Validates if customer exists
     const { errors: is_exist_err, result: is_exist_res } = await this._get_customer.execute({ id });
-    const { customer } = is_exist_res;
-    if (!customer)
-      return {
-        data: { customer_services: null },
-        errors: is_exist_err,
-      };
 
-    // Get customer services
-    const { result, errors } = await this._get_customer_services.execute(id);
-    const { customer_services } = result;
+    const { customer } = is_exist_res;
+
+    // If customer not exist return immediately
+    if (!customer) return {
+      data: {
+        customer_services: null
+      },
+      errors: is_exist_err,
+    };
 
     return {
-      errors: errors,
       data: {
-        customer_services,
+        customer_services: {
+          id: customer.id,
+          first_name: customer.first_name,
+          last_name: customer.last_name,
+          contact_number: customer.contact_number,
+          address: customer.address,
+          barangay: customer.barangay,
+          city: customer.city,
+          province: customer.province,
+          registered_on: customer.registered_on,
+          recent_transactions: customer.recent_transactions,
+          car_services_count: customer.car_services_count,
+          moto_services_count: customer.motor_services_count
+        },
       },
+      errors: is_exist_err,
     };
   }
 }

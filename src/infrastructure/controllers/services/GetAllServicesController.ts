@@ -53,8 +53,9 @@ export class GetAllServicesController implements IGetAllServicesController {
         title: service.title,
         type: service.type,
         image: service.image_url,
-        review: service.review,
-        reviews_count: service.reviews_count
+        reviews_count: service.reviews_count,
+        last_review: service.last_review,
+        ratings: service.review
       };
     });
 

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get customer services by id
-router.get('/:customer_id/services', async (req, res) => {
+router.get('/:customer_id', async (req, res) => {
   const { customer_id } = req.params;
   const token = req.headers.authorization?.split(' ')[1] ?? ''
   const customer_reponse = await getCustomerServicesController.handle(token, customer_id);

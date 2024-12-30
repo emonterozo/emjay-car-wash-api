@@ -6,7 +6,7 @@ import {
   CustomerRecentTransaction,
 } from '../../../application/use-cases/customers/interfaces/common';
 import { MongoDB } from './MongoDB';
-import { IGetAllCustomerParams } from 'src/application/use-cases/customers/interfaces/IGetAllCustomers';
+import { IGetAllCustomerParams } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 
 interface IServiceTransaction {
   _id: ObjectId;

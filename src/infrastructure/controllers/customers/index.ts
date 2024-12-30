@@ -5,8 +5,8 @@ import { CustomerServicesRepository } from '../../../infrastructure/repositories
 import { GetCustomerServicesUseCase } from '../../../application/use-cases/customers/GetServicesCountUseCase';
 import { CustomerServicesController } from './CustomerServicesController';
 import { GetOneCustomerUseCase } from '../../../application/use-cases/customers/GetOneCustomerUseCase';
-import { GetCustomersCountUseCase } from 'src/application/use-cases/customers/GetCustomersCountUseCase';
-import { TokenService } from 'src/infrastructure/services/TokenService';
+import { GetCustomersCountUseCase } from '../../../application/use-cases/customers/GetCustomersCountUseCase';
+import { TokenService } from '../../../infrastructure/services/TokenService';
 
 // Services
 const token_service = new TokenService();

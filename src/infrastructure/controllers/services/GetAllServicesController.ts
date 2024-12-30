@@ -1,4 +1,4 @@
-import { ITokenService } from 'src/application/ports/services/ITokenService';
+import { ITokenService } from '../../../application/ports/services/ITokenService';
 import {
   GetAllServicesUseCaseInput,
   IGetAllServicesUseCase,

@@ -6,13 +6,14 @@ export interface Service {
   image: string;
   title: string;
   description: string;
-  review: number;
+  ratings: number;
   reviews_count: number;
   type: string;
   price_list: Array<{
     size: string;
     price: number;
   }>;
+  last_review: string;
 }
 
 export type GetAllServicesControllerReponse = ControllerResponse<{ services: Service[] } | null>;

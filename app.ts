@@ -10,6 +10,7 @@ import userRouter from './src/routes/users';
 import AdminRouter from './src/routes/admin';
 import CustomersRouter from './src/routes/customers';
 import ServicesRouter from './src/routes/services';
+import TransactionsRouter from "./src/routes/transactions";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/users', userRouter);
 app.use('/admin', AdminRouter);
 app.use('/admin/customers', CustomersRouter);
 app.use('/services', ServicesRouter);
+app.use('/transactions', TransactionsRouter);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

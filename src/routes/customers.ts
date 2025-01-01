@@ -7,9 +7,14 @@ const router = express.Router();
 
 // Get All entries route
 router.get('/', async (req, res) => {
-  const { limit, offset, order_by } = req.body;
+  const limit = +(req.query.limit as string);
+  const offset = +(req.query.offset as string);
+  let query_order = JSON.parse((req.query?.order_by as string) ?? "{}");
+  if (!query_order?.field || !query_order?.direction)
+    query_order = undefined;
+
   const token = req.headers.authorization?.split(' ')[1] ?? ''
-  const customer_reponse = await getAllCustomersController.handle(token, { limit, offset, order_by });
+  const customer_reponse = await getAllCustomersController.handle(token, { limit, offset, order_by: query_order });
 
   res.send(customer_reponse);
 });

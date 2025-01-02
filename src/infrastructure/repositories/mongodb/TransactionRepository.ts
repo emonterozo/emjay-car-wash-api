@@ -14,7 +14,7 @@ interface ITransctionCollection {
   company_earnings: number;
   employee_share: number;
   check_ing: string;
-  completed_on: string;
+  completed_on: Date;
   is_free: boolean;
   claimed_by: string;
   service_id: ObjectId;
@@ -31,11 +31,13 @@ export class TransactionRepository implements ITransactionRepository {
     const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
     const collection: Collection<ITransctionCollection> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
 
+    console.log(params?.range)
+
     const transactions = await collection
       .find({
-        date: {
-          $gte: new Date("2024-12-24"), // params?.range?.start,
-          $lt: new Date("2024-12-24") // params?.range?.end,
+        [params?.range?.field ?? '']: {
+          $gte: params?.range?.start,
+          $lte: params?.range?.end
         }
       })
       .toArray();
@@ -45,7 +47,8 @@ export class TransactionRepository implements ITransactionRepository {
       id: transac._id.toString(),
       service_id: transac.service_id.toString(),
       customer_id: transac.customer_id.toString(),
-      assigned_employee_id: transac.assigned_employee_id.map(emp => emp.toString())
+      assigned_employee_id: transac.assigned_employee_id.map(emp => emp.toString()),
+      completed_on: transac.completed_on.toISOString()
     }))
   }
 }

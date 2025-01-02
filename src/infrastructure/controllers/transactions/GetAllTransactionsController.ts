@@ -1,13 +1,14 @@
+import { Range } from "src/application/ports/repositories/common";
 import { IGetAllTransactionsUseCase } from "src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
 import { IGetAllTransactionsController, IGetAllTransactionsControllerResult } from "src/interfaces/controllers/transactions/IGetAllTransactionsController";
 
 export class GetAllTransactionsController implements IGetAllTransactionsController {
 
-  public constructor(private readonly _get_all_transactions: IGetAllTransactionsUseCase) {}
+  public constructor(private readonly _get_all_transactions: IGetAllTransactionsUseCase) { }
 
-  public async handle(token: string): Promise<IGetAllTransactionsControllerResult> {
+  public async handle(token: string, params: { range: Range }): Promise<IGetAllTransactionsControllerResult> {
 
-    const response = await this._get_all_transactions.execute();
+    const response = await this._get_all_transactions.execute(params);
 
     return {
       data: {

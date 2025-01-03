@@ -3,6 +3,7 @@ export type CustomerId = string;
 export interface CustomerDetails {
     first_name: string;
     last_name: string;
+    birth_date: string;
     contact_number: string;
     province: string;
     city: string;

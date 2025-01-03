@@ -15,3 +15,9 @@ export interface OrderBy<T extends string = string> {
 export type Offset = number;
 
 export type Limit = number;
+
+export interface Range<T extends string = string> {
+    field: T;
+    start: any;
+    end: any;
+}

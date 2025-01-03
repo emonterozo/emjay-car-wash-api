@@ -5,7 +5,7 @@ import { CustomerObject } from './interfaces/common';
 export class GetAllCustomersUseCase implements IGetAllCustomersUseCase {
   constructor(private readonly customer_repository: ICustomerRepository) {}
 
-  async execute(params?: IGetAllCustomerParams): Promise<Omit<CustomerObject, 'password'>[]> {
+  async execute(params?: IGetAllCustomerParams): Promise<Omit<CustomerObject, 'password' | 'recent_transactions'>[]> {
     const customers = await this.customer_repository.retrieveAll({
       limit: params?.limit ?? 0,
       offset: params?.offset ?? 0,

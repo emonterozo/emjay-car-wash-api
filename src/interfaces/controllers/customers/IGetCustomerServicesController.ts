@@ -5,6 +5,7 @@ export interface CustomerControllerOutput {
   id: string;
   first_name: string;
   last_name: string;
+  birth_date: string;
   contact_number: string;
   province: string;
   city: string;

@@ -8,5 +8,5 @@ export interface IGetAllCustomerParams {
 }
 
 export interface IGetAllCustomersUseCase {
-    execute(params?: IGetAllCustomerParams): Promise<Omit<CustomerObject, 'password'>[]>;
+    execute(params?: IGetAllCustomerParams): Promise<Omit<CustomerObject, 'password' | 'recent_transactions'>[]>;
 }

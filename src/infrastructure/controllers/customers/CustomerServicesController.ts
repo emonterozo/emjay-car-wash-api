@@ -48,6 +48,7 @@ export class CustomerServicesController implements ICustomerServicesController {
           id: customer.id,
           first_name: customer.first_name,
           last_name: customer.last_name,
+          birth_date: customer.birth_date,
           contact_number: customer.contact_number,
           address: customer.address,
           barangay: customer.barangay,

@@ -1,6 +1,6 @@
 import { ITransactionRepository } from '../../../application/ports/repositories/ITransactionRepository';
 import { ICustomerRepository } from '../../../application/ports/repositories/ICustomerRepository';
-import { CustomerFilterInput } from './interfaces/common';
+import { CustomerFilterInput, CustomerRecentTransaction } from './interfaces/common';
 import {
   GetCustomerUseCaseResponse,
   IGetOneCustomerUseCase,
@@ -33,7 +33,7 @@ export class GetOneCustomerUseCase implements IGetOneCustomerUseCase {
     end.setHours(23, 59, 59, 59);
 
     // Gets recent transactions
-    const recent_transactions = await this._transaction_repository.findAll({
+    const transactions = await this._transaction_repository.findAll({
       and_conditions: [
         { field: 'customer_id', value: customer.id }
       ],
@@ -45,14 +45,14 @@ export class GetOneCustomerUseCase implements IGetOneCustomerUseCase {
     });
 
     // Initializes recent transactions
-    customer.recent_transactions = [];
+    const recent_transactions: CustomerRecentTransaction[] = [];
 
-    for (let transac of recent_transactions) {
+    for (let transac of transactions) {
       // Gets service details
       const service = await this._service_repository.findOne({ id: transac.service_id });
 
       // Adds entry to recent transactions array
-      customer.recent_transactions.push({
+      recent_transactions.push({
         date: transac.completed_on.toString(),
         id: transac.id,
         price: transac.price,
@@ -63,7 +63,12 @@ export class GetOneCustomerUseCase implements IGetOneCustomerUseCase {
 
     return {
       errors: [],
-      result: { customer },
+      result: {
+        customer: {
+          ...customer,
+          recent_transactions
+        }
+      },
     };
   }
 }

@@ -13,6 +13,9 @@ export interface ServiceDetails {
     last_review: string;
 }
 
+export interface ServiceFilterInput extends Partial<Omit<ServiceDetails, 'price_list'>> {
+    id?: ServiceId;
+}
 
 export interface Pricing {
     size: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';

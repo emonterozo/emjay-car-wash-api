@@ -31,26 +31,9 @@ export class TransactionRepository implements ITransactionRepository {
     const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
     const collection: Collection<ITransctionCollection> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
 
-    const and = params?.and_conditions?.map(condition => {
-      if (condition.field === 'id')
-        return { _id: new ObjectId(condition.value) };
-
-      if (condition.field === 'customer_id')
-        return { customer_id: new ObjectId(condition.value) };
-
-      return { [condition.field]: condition.value }
-    })
+    const and = params?.and_conditions?.map(condition => ({ [condition.field]: condition.value }))
+    const or = params?.or_conditions?.map(condition => ({ [condition.field]: condition.value }))
     
-    const or = params?.or_conditions?.map(condition => {
-      if (condition.field === 'id')
-        return { _id: new ObjectId(condition.value) };
-
-      if (condition.field === 'customer_id')
-        return { customer_id: new ObjectId(condition.value) };
-
-      return { [condition.field]: condition.value }
-    })
-
     const transactions = await collection
       .find({
         [params?.range?.field ?? '']: {

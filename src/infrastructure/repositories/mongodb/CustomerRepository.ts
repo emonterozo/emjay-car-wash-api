@@ -35,7 +35,7 @@ interface ICustomerCollection {
   registered_on: string;
   moto_wash_service_count: IServiceCount[];
   car_wash_service_count: IServiceCount[];
-  // recent_transactions: IServiceTransaction[];
+  recent_transactions: IServiceTransaction[];
 }
 
 export class MongoCustomerRepository implements ICustomerRepository {
@@ -59,14 +59,22 @@ export class MongoCustomerRepository implements ICustomerRepository {
       .toArray();
 
     const customers_arr = entries.map<CustomerObject>(({
-      _id, car_wash_service_count, moto_wash_service_count, ...customer
+      _id, car_wash_service_count, moto_wash_service_count, recent_transactions, ...customer
     }) => {
+
+      const transactions = recent_transactions.map<CustomerRecentTransaction>(transac => ({
+        date: transac.date,
+        id: transac._id.toString(),
+        price: transac.price,
+        service_id: transac.service_id.toString(),
+        service_name: transac.service
+      }))
 
       return {
         id: _id.toString(),
         car_services_count: car_wash_service_count,
         motor_services_count: moto_wash_service_count,
-        recent_transactions: [],
+        recent_transactions: transactions,
         ...customer
       }
     })
@@ -90,11 +98,19 @@ export class MongoCustomerRepository implements ICustomerRepository {
 
     if (!result) return null;
 
-    const { _id, car_wash_service_count, moto_wash_service_count, ...customer } = result;
+    const { _id, car_wash_service_count, moto_wash_service_count, recent_transactions, ...customer } = result;
+
+    const transactions = recent_transactions.map<CustomerRecentTransaction>(transac => ({
+      date: transac.date,
+      id: transac._id.toString(),
+      price: transac.price,
+      service_id: transac.service_id.toString(),
+      service_name: transac.service
+    }))
 
     return {
       id: _id.toString(),
-      recent_transactions: [],
+      recent_transactions: transactions,
       car_services_count: car_wash_service_count,
       motor_services_count: moto_wash_service_count,
       ...customer,

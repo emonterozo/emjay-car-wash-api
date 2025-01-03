@@ -2,7 +2,7 @@ import {
   IServiceRepsository,
   ServiceRepositoryParams,
 } from '../../../application/ports/repositories/IServiceRepository';
-import { ServiceFilterInput, ServiceObject } from '../../../application/use-cases/services/interfaces/common';
+import { ServiceObject } from '../../../application/use-cases/services/interfaces/common';
 import { MongoDB } from './MongoDB';
 import { Collection, ObjectId } from 'mongodb';
 
@@ -58,39 +58,5 @@ export class ServiceRepository implements IServiceRepsository {
       last_review: entry.last_review,
       reviews_count: entry.reviews_count
     }));
-  }
-
-  public async findOne(params: ServiceFilterInput): Promise<ServiceObject | null> {
-    await this.mongo_client.connect();
-    const db = this.mongo_client.db(process.env.MONGO_DATASOURCE);
-    const collection: Collection<IServiceCollection> = db.collection(
-      process.env.MONGO_SERVICES_COLLECTION!,
-    );
-
-    const filters = Object.entries(params)
-      .reduce<Record<string, any>>((accum, curr) => {
-        // @ts-ignore
-        const [key, value]: [keyof ServiceFilterInput, any] = curr;
-        if (key === 'id')
-          accum['_id'] = new ObjectId(value);
-
-        return accum
-      }, {})
-
-    const entry = await collection.findOne(filters);
-
-    if (!entry) return null;
-
-    return {
-      id: entry._id.toString(),
-      description: entry.description,
-      image_url: entry.image,
-      last_review: entry.last_review,
-      price_list: entry.price_list,
-      review: entry.ratings,
-      title: entry.title,
-      type: entry.type,
-      reviews_count: entry.reviews_count,
-    }
   }
 }

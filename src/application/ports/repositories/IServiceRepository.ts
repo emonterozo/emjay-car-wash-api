@@ -1,4 +1,4 @@
-import { ServiceFilterInput, ServiceObject } from '../../../application/use-cases/services/interfaces/common';
+import { ServiceObject } from '../../../application/use-cases/services/interfaces/common';
 import { Limit, Offset, OrderBy } from './common';
 
 export interface ServiceRepositoryParams {
@@ -9,5 +9,4 @@ export interface ServiceRepositoryParams {
 
 export interface IServiceRepsository {
   findAll(params: ServiceRepositoryParams): Promise<ServiceObject[]>;
-  findOne(params: ServiceFilterInput): Promise<ServiceObject | null>;
 }

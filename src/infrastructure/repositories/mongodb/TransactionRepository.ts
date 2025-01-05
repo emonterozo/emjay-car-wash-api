@@ -72,13 +72,47 @@ export class TransactionRepository implements ITransactionRepository {
       })
       .toArray();
 
-    return transactions.map(transac => ({
-      ...transac,
-      id: transac._id.toString(),
-      service_id: transac.service_id.toString(),
-      customer_id: transac.customer_id.toString(),
-      assigned_employee_id: transac.assigned_employee_id.map(emp => emp.toString()),
-      completed_on: transac.completed_on.toISOString()
-    }))
+    return []
+    // return transactions.map(transac => ({
+    //   ...transac,
+    //   id: transac._id.toString(),
+    //   service_id: transac.service_id.toString(),
+    //   customer_id: transac.customer_id.toString(),
+    //   assigned_employee_id: transac.assigned_employee_id.map(emp => emp.toString()),
+    //   completed_on: transac.completed_on.toISOString()
+    // }))
+  }
+
+  public async save(params: ITransactionInput): Promise<InsertedId> {
+    // console.log("adada");
+    await this._mongo_client.connect();
+    const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
+    const collection: Collection<PartialField<ITransactionCollection, '_id'>> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
+
+    // return "asdfadfa"
+
+    const response = await collection.insertOne({
+      check_in: params.check_in,
+      model: params.model,
+      plate_number: params.plate_number,
+      vehicle_size: params.vehicle_size,
+      vehicle_type: params.vehicle_type,
+      contact_number: params.contact_number,
+      customer_id: new ObjectId(params.customer_id),
+      services: params.services.map(service => ({
+        service_id: new ObjectId(service.id),
+        deduction: service.deduction,
+        company_earnings: service.company_earnings,
+        employee_share: service.employee_share,
+        assigned_employee_id: service.assigned_employee_id.map(emp => new ObjectId(emp)),
+        start_date: service.start_date,
+        end_date: service.end_date,
+        status: service.status,
+        is_free: service.is_free
+      }))
+
+    });
+
+    return response.insertedId.toString();
   }
 }

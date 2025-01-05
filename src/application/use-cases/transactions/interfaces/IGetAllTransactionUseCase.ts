@@ -10,6 +10,7 @@ export interface IGetAllTransactionsParams {
   order_by?: OrderBy<keyof Omit<TransactionObject, 'services'> | ConcatKeyWithString<TransactionService, 'services'>>;
   and_conditions?: Condition<keyof Omit<TransactionObject, 'services'> | ConcatKeyWithString<TransactionService, 'services'>>[];
   or_conditions?: Condition<keyof Omit<TransactionObject, 'services'> | ConcatKeyWithString<TransactionService, 'services'>>[];
+  not?: Condition<keyof Omit<TransactionObject, 'services'> | ConcatKeyWithString<TransactionService, 'services'>>[];
   range?: Range;
 }
 

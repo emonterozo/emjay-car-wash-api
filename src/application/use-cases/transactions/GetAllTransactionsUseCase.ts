@@ -38,11 +38,41 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
       return condition
     })
 
+    const not = params?.not?.map(condition => {
+      if (condition.field === 'check_in') {
+        return {
+          field: condition.field,
+          value: new Date(condition.value)
+        }
+      }
+
+      if (condition.field === 'services.end_date') {
+        if (condition.value) {
+          return {
+            field: condition.field,
+            value: new Date(condition.value)
+          }
+        }
+      }
+
+      if (condition.field === 'services.start_date') {
+        if (condition.value) {
+          return {
+            field: condition.field,
+            value: new Date(condition.value)
+          }
+        }
+      }
+
+      return condition
+    });
+
     const options: IGetAllTransactionsParams = {
       limit: params?.limit ?? 0,
       offset: params?.offset ?? 0,
       and_conditions: and,
       or_conditions: or,
+      not: not,
       order_by: params?.order_by ?? { field: 'check_in', direction: 'asc' },
       range: {
         field: params?.range?.field ?? 'check_in',

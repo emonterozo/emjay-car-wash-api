@@ -4,22 +4,32 @@ import { IGetAllTransactionsParams } from "src/application/use-cases/transaction
 import { MongoDB } from "./MongoDB";
 import { Collection, ObjectId } from "mongodb";
 
-interface ITransctionCollection {
+interface ITransactionCollection {
   _id: ObjectId;
+  customer_id?: ObjectId;
   vehicle_type: string;
   vehicle_size: string;
   model: string;
-  price: number;
-  deduction: number;
-  company_earnings: number;
-  employee_share: number;
+  plate_number: string;
+  contact_number?: string;
+  check_in: Date;
+  services: {
+    service_id: ObjectId;
+    deduction: number;
+    company_earnings: number;
+    employee_share: number;
   check_ing: string;
   completed_on: Date;
   is_free: boolean;
   claimed_by: string;
   service_id: ObjectId;
   customer_id: ObjectId;
-  assigned_employee_id: ObjectId[];
+    assigned_employee_id: ObjectId[];
+    start_date?: Date;
+    end_date?: Date;
+    status: string;
+    is_free: boolean;
+  }[]
 }
 
 export class TransactionRepository implements ITransactionRepository {

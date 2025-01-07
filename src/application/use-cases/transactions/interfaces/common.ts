@@ -1,3 +1,6 @@
+import { CustomerId } from "../../customers/interfaces/common";
+import { ServiceId } from "../../services/interfaces/common";
+
 export interface TransactionDetails {
   vehicle_type: string;
   vehicle_size: string;

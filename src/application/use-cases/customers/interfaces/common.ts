@@ -24,10 +24,15 @@ export interface UpdateCustomerInput extends CustomerDetails {
 
 export interface CustomerObject extends CustomerDetails {
     id: CustomerId;
+    registered_on: string;
+
+    /**
+     * TODO: Refactor car_services_count, motor_services_count and recent_transactions
+     * These shouldn't be on this interface. This interface is for customer info only.
+     */
     car_services_count: CarServiceCount[];
     motor_services_count: MotorServiceCount[];
-    recent_transactions: CustomerRecentTransaction[];
-    registered_on: string;
+    // recent_transactions: CustomerRecentTransaction[];
 }
 
 export interface CustomerServicesObject extends Omit<CustomerDetails, 'password'> {
@@ -37,20 +42,20 @@ export interface CustomerServicesObject extends Omit<CustomerDetails, 'password'
 }
 
 export interface CarServiceCount {
-    size:   "sm" |
-            "md" |
-            "lg" |
-            "xl" |
-            "xxl";
+    size: "sm" |
+    "md" |
+    "lg" |
+    "xl" |
+    "xxl";
     count: number
 }
 
 export interface MotorServiceCount {
-    size:   "sm" |
-            "md" |
-            "lg" |
-            "xl" |
-            "xxl";
+    size: "sm" |
+    "md" |
+    "lg" |
+    "xl" |
+    "xxl";
     count: number
 }
 

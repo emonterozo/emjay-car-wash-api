@@ -18,3 +18,16 @@ export interface TransactionDetails {
 export interface TransactionObject extends TransactionDetails {
   id: string;
 }
+
+export interface CreateTransactionInput {
+  customer_id?: CustomerId;
+  vehicle_type: string;
+  vehicle_size: string;
+  model: string;
+  plate_number: string;
+  contact_number?: string;
+  services: {
+    id: ServiceId;
+    is_free: boolean;
+  }[];
+}

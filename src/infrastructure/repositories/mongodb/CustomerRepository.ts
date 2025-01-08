@@ -94,7 +94,6 @@ export class MongoCustomerRepository implements ICustomerRepository {
 
     return {
       id: _id.toString(),
-      recent_transactions: [],
       car_services_count: car_wash_service_count,
       motor_services_count: moto_wash_service_count,
       ...customer,

@@ -15,5 +15,5 @@ export interface CreateTransactionControllerInput {
 }
 
 export interface ICreateTransactionController {
-    handle(params: CreateTransactionControllerInput): Promise<ControllerResponse<{ success: boolean }>>
+    handle(token: string, params: CreateTransactionControllerInput): Promise<ControllerResponse<{ success: boolean }>>
 }

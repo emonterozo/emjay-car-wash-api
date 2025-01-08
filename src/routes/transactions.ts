@@ -6,8 +6,8 @@ import type { Request } from "express";
 const router = express.Router();
 
 router.post('/', async (req: Request<unknown, unknown, CreateTransactionControllerInput, {}>, res) => {
-
-  const response = await createTransactionController.handle(req.body);
+  const token = req.headers.authorization?.split(' ')[1] ?? ''
+  const response = await createTransactionController.handle(token, req.body);
 
   if (response.errors.length > 0) res.status(400);
 

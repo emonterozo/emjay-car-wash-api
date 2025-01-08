@@ -1,8 +1,8 @@
-import { ErrorMessage } from "src/application/ports/common";
-import { ITokenService } from "src/application/ports/services/ITokenService";
-import { CreateTransactionUseCase } from "src/application/use-cases/transactions/CreateTransactionUseCase";
-import { ControllerResponse } from "src/interfaces/controllers/common";
-import { CreateTransactionControllerInput, ICreateTransactionController } from "src/interfaces/controllers/transactions/ICreateTransactionController";
+import { ErrorMessage } from "../../../application/ports/common";
+import { ITokenService } from "../../../application/ports/services/ITokenService";
+import { CreateTransactionUseCase } from "../../../application/use-cases/transactions/CreateTransactionUseCase";
+import { ControllerResponse } from "../../../interfaces/controllers/common";
+import { CreateTransactionControllerInput, ICreateTransactionController } from "../../../interfaces/controllers/transactions/ICreateTransactionController";
 
 export class CreateTransactionController implements ICreateTransactionController {
 

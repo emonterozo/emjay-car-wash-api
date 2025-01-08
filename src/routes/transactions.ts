@@ -1,6 +1,6 @@
 import express from 'express';
 import { createTransactionController, getAllTransactionsController } from '../infrastructure/controllers/transactions';
-import { CreateTransactionControllerInput } from 'src/interfaces/controllers/transactions/ICreateTransactionController';
+import { CreateTransactionControllerInput } from '../interfaces/controllers/transactions/ICreateTransactionController';
 import type { Request } from "express";
 
 const router = express.Router();

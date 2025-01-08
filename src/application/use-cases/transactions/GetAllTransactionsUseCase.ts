@@ -9,7 +9,7 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
     let range_start = params?.range?.start;
     let range_end = params?.range?.end;
 
-    if (!params?.range?.field || params?.range?.field === 'completed_on' || params?.range?.field === 'check_in') {
+    if (!params?.range?.field || params?.range?.field === 'check_in' /*|| params?.range?.field === 'check_in'*/) {
       range_start = new Date(params?.range?.start ?? "2024-01-01");
       range_end = new Date(params?.range?.end ?? Date.now());
       range_start.setHours(0, 0, 0, 0)
@@ -43,9 +43,9 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
       offset: params?.offset ?? 0,
       and_conditions: and,
       or_conditions: or,
-      order_by: params?.order_by ?? { field: 'completed_on', direction: 'desc' },
+      order_by: params?.order_by ?? { field: 'check_in', direction: 'asc' },
       range: {
-        field: params?.range?.field ?? 'completed_on',
+        field: params?.range?.field ?? 'check_in',
         start: range_start,
         end: range_end,
       }

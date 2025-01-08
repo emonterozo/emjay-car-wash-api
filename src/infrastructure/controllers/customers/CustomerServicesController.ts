@@ -1,3 +1,4 @@
+import { IGetAllTransactionsUseCase } from 'src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase';
 import { ITokenService } from '../../../application/ports/services/ITokenService';
 import { IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import { IGetOneCustomerUseCase } from '../../../application/use-cases/customers/interfaces/IGetOneCustomerUseCase';
@@ -5,11 +6,15 @@ import {
   CustomerServCountResponse,
   ICustomerServicesController,
 } from '../../../interfaces/controllers/customers/IGetCustomerServicesController';
+import { CustomerRecentTransaction } from 'src/application/use-cases/customers/interfaces/common';
+import { IGetOneServiceUseCase } from 'src/application/use-cases/services/interfaces/IGetOneServiceUseCase';
 
 export class CustomerServicesController implements ICustomerServicesController {
   constructor(
     // private readonly _get_customer_services: IGetServicesCountUseCase,
     private readonly _get_customer: IGetOneCustomerUseCase,
+    private readonly _get_all_transactions: IGetAllTransactionsUseCase,
+    private readonly _get_service: IGetOneServiceUseCase,
     private readonly _token_service: ITokenService
   ) { }
 
@@ -42,6 +47,48 @@ export class CustomerServicesController implements ICustomerServicesController {
       errors: is_exist_err,
     };
 
+    // Set range/limit for recent transactions
+    const start = new Date(Date.now());
+    start.setHours(0, 0, 0, 0);
+    start.setDate(start.getDate() - 7);
+    const end = new Date(Date.now());
+    end.setHours(23, 59, 59, 59);
+
+    // Gets recent transactions
+    const { result: { transactions } } = await this._get_all_transactions.execute({
+      and_conditions: [
+        { field: 'customer_id', value: customer.id }
+      ],
+      range: {
+        field: 'check_in',
+        start: start,
+        end: end
+      }
+    });
+
+    // Initializes recent transactions
+    const recent_transactions: CustomerRecentTransaction[] = [];
+
+    for (let transac of transactions) {
+      for (let service_entry of transac.services) {
+        // Gets service details
+        const { result: { service } } = await this._get_service.execute({ id: service_entry.id });
+
+        // Get price
+        // TODO: Price should be taken in services object under transactions
+        const price = service?.price_list.find(s => s.size === transac.vehicle_size);
+
+        // Adds entry to recent transactions array
+        recent_transactions.push({
+          date: transac.check_in.toString(),
+          id: transac.id,
+          price: price?.price ?? 0,
+          service_id: service?.id ?? '',
+          service_name: service?.title ?? ''
+        })
+      }
+    }
+
     return {
       data: {
         customer_services: {
@@ -55,7 +102,7 @@ export class CustomerServicesController implements ICustomerServicesController {
           city: customer.city,
           province: customer.province,
           registered_on: customer.registered_on,
-          recent_transactions: customer.recent_transactions,
+          recent_transactions: recent_transactions,
           car_services_count: customer.car_services_count,
           moto_services_count: customer.motor_services_count
         },

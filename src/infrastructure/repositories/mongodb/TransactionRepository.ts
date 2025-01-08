@@ -1,8 +1,10 @@
-import { ITransactionRepository } from "src/application/ports/repositories/ITransactionRepository";
+import { ITransactionInput, ITransactionRepository } from "src/application/ports/repositories/ITransactionRepository";
 import { TransactionObject } from "src/application/use-cases/transactions/interfaces/common";
 import { IGetAllTransactionsParams } from "src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
 import { MongoDB } from "./MongoDB";
 import { Collection, ObjectId } from "mongodb";
+import { InsertedId } from "src/application/ports/repositories/common";
+import { PartialField } from "src/application/utils/types";
 
 interface ITransactionCollection {
   _id: ObjectId;
@@ -18,12 +20,6 @@ interface ITransactionCollection {
     deduction: number;
     company_earnings: number;
     employee_share: number;
-  check_ing: string;
-  completed_on: Date;
-  is_free: boolean;
-  claimed_by: string;
-  service_id: ObjectId;
-  customer_id: ObjectId;
     assigned_employee_id: ObjectId[];
     start_date?: Date;
     end_date?: Date;
@@ -39,7 +35,7 @@ export class TransactionRepository implements ITransactionRepository {
   public async findAll(params?: IGetAllTransactionsParams): Promise<TransactionObject[]> {
     await this._mongo_client.connect();
     const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
-    const collection: Collection<ITransctionCollection> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
+    const collection: Collection<ITransactionCollection> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
 
     const and = params?.and_conditions?.map(condition => {
       if (condition.field === 'id')
@@ -50,7 +46,7 @@ export class TransactionRepository implements ITransactionRepository {
 
       return { [condition.field]: condition.value }
     })
-    
+
     const or = params?.or_conditions?.map(condition => {
       if (condition.field === 'id')
         return { _id: new ObjectId(condition.value) };
@@ -72,15 +68,27 @@ export class TransactionRepository implements ITransactionRepository {
       })
       .toArray();
 
-    return []
-    // return transactions.map(transac => ({
-    //   ...transac,
-    //   id: transac._id.toString(),
-    //   service_id: transac.service_id.toString(),
-    //   customer_id: transac.customer_id.toString(),
-    //   assigned_employee_id: transac.assigned_employee_id.map(emp => emp.toString()),
-    //   completed_on: transac.completed_on.toISOString()
-    // }))
+    return transactions.map<TransactionObject>(transac => ({
+      check_in: transac.check_in,
+      id: transac._id.toString(),
+      model: transac.model,
+      plate_number: transac.plate_number,
+      vehicle_size: transac.vehicle_size,
+      vehicle_type: transac.vehicle_type,
+      contact_number: transac.contact_number,
+      customer_id: transac.customer_id?.toString(),
+      services: transac.services.map(service => ({
+        assigned_employee_id: service.assigned_employee_id.map(employee_id => employee_id.toString()),
+        company_earnings: service.company_earnings,
+        deduction: service.deduction,
+        employee_share: service.employee_share,
+        id: service.service_id.toString(),
+        is_free: service.is_free,
+        status: service.status,
+        end_date: service.end_date,
+        start_date: service.start_date,
+      }))
+    }))
   }
 
   public async save(params: ITransactionInput): Promise<InsertedId> {

@@ -1,7 +1,18 @@
 import express from 'express';
-import { getAllTransactionsController } from '../infrastructure/controllers/transactions';
+import { createTransactionController, getAllTransactionsController } from '../infrastructure/controllers/transactions';
+import { CreateTransactionControllerInput } from '../interfaces/controllers/transactions/ICreateTransactionController';
+import type { Request } from "express";
 
 const router = express.Router();
+
+router.post('/', async (req: Request<unknown, unknown, CreateTransactionControllerInput, {}>, res) => {
+  const token = req.headers.authorization?.split(' ')[1] ?? ''
+  const response = await createTransactionController.handle(token, req.body);
+
+  if (response.errors.length > 0) res.status(400);
+
+  res.send(response);
+})
 
 router.get('/', async (req, res) => {
 

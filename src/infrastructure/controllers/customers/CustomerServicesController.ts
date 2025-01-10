@@ -59,11 +59,12 @@ export class CustomerServicesController implements ICustomerServicesController {
       result: { transactions },
     } = await this._get_all_transactions.execute({
       and_conditions: [{ field: 'customer_id', value: customer.id }],
-      range: {
-        field: 'check_in',
-        start: start,
-        end: end,
-      },
+      not: [{ field: 'services.end_date', value: null }],
+      // range: {
+      //   field: 'check_in',
+      //   start: start,
+      //   end: end,
+      // },
       order_by: {
         field: 'services.end_date',
         direction: 'desc'

@@ -57,16 +57,54 @@ export class TransactionRepository implements ITransactionRepository {
       return { [condition.field]: condition.value }
     })
 
+
+    const not = params?.not?.map(condition => {
+      if (condition.field === 'id')
+        return { _id: new ObjectId(condition.value) };
+
+      if (condition.field === 'customer_id')
+        return { customer_id: new ObjectId(condition.value) };
+
+      return { [condition.field]: condition.value }
+    });
+
     const transactions = await collection
-      .find({
-        [params?.range?.field ?? '']: {
-          $gte: params?.range?.start,
-          $lte: params?.range?.end
+      .aggregate([
+        {
+          $ne: {
+            "services.end_date": "apple"
+          }
         },
-        ...(and?.length ? { $and: and } : {}),
-        ...(or?.length ? { $or: or } : {}),
-      })
-      .toArray();
+        // {
+        //   $addFields: {
+        //     fruit: {
+        //       $filter: {
+        //         input: "$fruit",
+        //         cond: {
+        //           $eq: [
+        //             "$$this.foodName",
+        //             "apple"
+        //           ]
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
+      ])
+    // .find({
+    //   [params?.range?.field ?? '']: {
+    //     $gte: params?.range?.start,
+    //     $lte: params?.range?.end
+    //   },
+    //   ...(and?.length ? { $and: and } : {}),
+    //   ...(or?.length ? { $or: or } : {}),
+    //   'services.price': {
+    //     $ne: 500
+    //   }
+    // })
+    // .toArray();
+
+    console.log(transactions)
 
     return transactions.map<TransactionObject>(transac => ({
       check_in: transac.check_in,

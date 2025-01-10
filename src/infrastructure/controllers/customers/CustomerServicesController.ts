@@ -15,18 +15,17 @@ export class CustomerServicesController implements ICustomerServicesController {
     private readonly _get_customer: IGetOneCustomerUseCase,
     private readonly _get_all_transactions: IGetAllTransactionsUseCase,
     private readonly _get_service: IGetOneServiceUseCase,
-    private readonly _token_service: ITokenService
-  ) { }
+    private readonly _token_service: ITokenService,
+  ) {}
 
   public async handle(token: string, id: string): Promise<CustomerServCountResponse> {
-
     const is_valid_token = await this._token_service.verify(token);
 
-    if (!is_valid_token) return {
-      data: { customer_services: null },
-      errors: [{ field: 'unknown', message: 'UNAUTHENTICATED_REQUEST' }]
-    };
-
+    if (!is_valid_token)
+      return {
+        data: { customer_services: null },
+        errors: [{ field: 'unknown', message: 'UNAUTHENTICATED_REQUEST' }],
+      };
 
     if (typeof id !== 'string' || id.length === 0)
       return {
@@ -40,12 +39,13 @@ export class CustomerServicesController implements ICustomerServicesController {
     const { customer } = is_exist_res;
 
     // If customer not exist return immediately
-    if (!customer) return {
-      data: {
-        customer_services: null
-      },
-      errors: is_exist_err,
-    };
+    if (!customer)
+      return {
+        data: {
+          customer_services: null,
+        },
+        errors: is_exist_err,
+      };
 
     // Set range/limit for recent transactions
     const start = new Date(Date.now());
@@ -55,15 +55,15 @@ export class CustomerServicesController implements ICustomerServicesController {
     end.setHours(23, 59, 59, 59);
 
     // Gets recent transactions
-    const { result: { transactions } } = await this._get_all_transactions.execute({
-      and_conditions: [
-        { field: 'customer_id', value: customer.id }
-      ],
+    const {
+      result: { transactions },
+    } = await this._get_all_transactions.execute({
+      and_conditions: [{ field: 'customer_id', value: customer.id }],
       range: {
         field: 'check_in',
         start: start,
-        end: end
-      }
+        end: end,
+      },
     });
 
     // Initializes recent transactions
@@ -72,11 +72,13 @@ export class CustomerServicesController implements ICustomerServicesController {
     for (let transac of transactions) {
       for (let service_entry of transac.services) {
         // Gets service details
-        const { result: { service } } = await this._get_service.execute({ id: service_entry.id });
+        const {
+          result: { service },
+        } = await this._get_service.execute({ id: service_entry.id });
 
         // Get price
         // TODO: Price should be taken in services object under transactions
-        const price = service?.price_list.find(s => s.size === transac.vehicle_size);
+        const price = service?.price_list.find((s) => s.size === transac.vehicle_size);
 
         // Adds entry to recent transactions array
         recent_transactions.push({
@@ -84,8 +86,8 @@ export class CustomerServicesController implements ICustomerServicesController {
           id: transac.id,
           price: price?.price ?? 0,
           service_id: service?.id ?? '',
-          service_name: service?.title ?? ''
-        })
+          service_name: service?.title ?? '',
+        });
       }
     }
 
@@ -95,6 +97,7 @@ export class CustomerServicesController implements ICustomerServicesController {
           id: customer.id,
           first_name: customer.first_name,
           last_name: customer.last_name,
+          gender: customer.gender,
           birth_date: customer.birth_date,
           contact_number: customer.contact_number,
           address: customer.address,
@@ -104,7 +107,7 @@ export class CustomerServicesController implements ICustomerServicesController {
           registered_on: customer.registered_on,
           recent_transactions: recent_transactions,
           car_services_count: customer.car_services_count,
-          moto_services_count: customer.motor_services_count
+          moto_services_count: customer.motor_services_count,
         },
       },
       errors: is_exist_err,

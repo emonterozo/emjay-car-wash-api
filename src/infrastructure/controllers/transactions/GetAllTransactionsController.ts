@@ -1,6 +1,6 @@
 import { Condition, Range } from "../../../application/ports/repositories/common";
 import { ITokenService } from "../../../application/ports/services/ITokenService";
-import { IGetAllTransactionsUseCase } from "../../../application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
+import { IGetAllTransactionsParams, IGetAllTransactionsUseCase } from "../../../application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
 import { IGetAllTransactionsController, IGetAllTransactionsControllerResult } from "../../../interfaces/controllers/transactions/IGetAllTransactionsController";
 
 export class GetAllTransactionsController implements IGetAllTransactionsController {
@@ -10,7 +10,7 @@ export class GetAllTransactionsController implements IGetAllTransactionsControll
     private readonly _token_service: ITokenService
   ) { }
 
-  public async handle(token: string, params: { range: Range; and_conditions: Condition[]; or_conditions: Condition[] }): Promise<IGetAllTransactionsControllerResult> {
+  public async handle(token: string, params: IGetAllTransactionsParams): Promise<IGetAllTransactionsControllerResult> {
     const is_valid_token = await this._token_service.verify(token);
 
     if (!is_valid_token) return {

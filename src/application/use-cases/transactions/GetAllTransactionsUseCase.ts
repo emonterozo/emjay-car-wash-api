@@ -17,7 +17,7 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
     }
 
     const and = params?.and_conditions?.map(condition => {
-      if (condition.field === 'completed_on' || condition.field === 'check_in') {
+      if (condition.field === 'check_in') {
         return {
           field: condition.field,
           value: new Date(condition.value)
@@ -28,7 +28,7 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
     })
 
     const or = params?.or_conditions?.map(condition => {
-      if (condition.field === 'completed_on' || condition.field === 'check_in') {
+      if (condition.field === 'check_in') {
         return {
           field: condition.field,
           value: new Date(condition.value)

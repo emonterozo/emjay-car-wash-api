@@ -1,7 +1,7 @@
 import { CustomerId } from "../../customers/interfaces/common";
 import { ServiceId } from "../../services/interfaces/common";
 
-interface TransactionService {
+export interface TransactionService {
   id: ServiceId;
   deduction: number;
   company_earnings: number;
@@ -21,7 +21,7 @@ export interface TransactionDetails {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
-  // status: string; // TODO: This should be computed depending on the services status
+  status: string; // TODO: This should be computed depending on the services status
   services: TransactionService[]
 }
 

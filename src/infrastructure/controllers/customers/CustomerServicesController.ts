@@ -16,7 +16,7 @@ export class CustomerServicesController implements ICustomerServicesController {
     private readonly _get_all_transactions: IGetAllTransactionsUseCase,
     private readonly _get_service: IGetOneServiceUseCase,
     private readonly _token_service: ITokenService,
-  ) {}
+  ) { }
 
   public async handle(token: string, id: string): Promise<CustomerServCountResponse> {
     const is_valid_token = await this._token_service.verify(token);
@@ -64,6 +64,10 @@ export class CustomerServicesController implements ICustomerServicesController {
         start: start,
         end: end,
       },
+      order_by: {
+        field: 'services.end_date',
+        direction: 'desc'
+      }
     });
 
     // Initializes recent transactions

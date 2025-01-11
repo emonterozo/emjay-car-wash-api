@@ -7,6 +7,8 @@ import { GetCustomersCountUseCase } from '../../../application/use-cases/custome
 import { TokenService } from '../../../infrastructure/services/TokenService';
 import { TransactionRepository } from '../../../infrastructure/repositories/mongodb/TransactionRepository';
 import { ServiceRepository } from '../../../infrastructure/repositories/mongodb/ServiceRepository';
+import { GetOneServiceUseCase } from '../../..//application/use-cases/services/GetOneServiceUseCase';
+import { GetAllTransactionsUseCase } from '../../../application/use-cases/transactions/GetAllTransactionsUseCase';
 
 // Services
 const token_service = new TokenService();
@@ -17,13 +19,17 @@ const transaction_repository = new TransactionRepository();
 const service_repository = new ServiceRepository();
 
 // Use Cases
-const getOneCustomerUseCase = new GetOneCustomerUseCase(customer_repository, transaction_repository, service_repository);
+const getOneCustomerUseCase = new GetOneCustomerUseCase(customer_repository);
 const getAllCustomersUseCase = new GetAllCustomersUseCase(customer_repository);
-const getCustomersCountUseCase = new GetCustomersCountUseCase(customer_repository)
+const getCustomersCountUseCase = new GetCustomersCountUseCase(customer_repository);
+const getServiceUseCase = new GetOneServiceUseCase(service_repository);
+const getAllTransactionsUseCase = new GetAllTransactionsUseCase(transaction_repository);
 
 // Controllers
 export const getAllCustomersController = new GetAllCustomersController(getAllCustomersUseCase, getCustomersCountUseCase, token_service);
 export const getCustomerServicesController = new CustomerServicesController(
   getOneCustomerUseCase,
+  getAllTransactionsUseCase,
+  getServiceUseCase,
   token_service
 );

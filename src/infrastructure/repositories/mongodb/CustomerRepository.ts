@@ -17,7 +17,7 @@ interface IServiceTransaction {
 }
 
 interface IServiceCount {
-  size: "sm" | "md" | "lg" | "xl" | "xxl";
+  size: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   count: number;
 }
 
@@ -25,6 +25,7 @@ interface ICustomerCollection {
   _id: ObjectId;
   first_name: string;
   last_name: string;
+  gender: string;
   birth_date: string;
   contact_number: string;
   password: string;
@@ -48,28 +49,25 @@ export class MongoCustomerRepository implements ICustomerRepository {
       process.env.MONGO_CUSTOMERS_COLLECTION!,
     );
 
-    const sorting: Sort = params?.order_by ? { [params?.order_by?.field]: params?.order_by?.direction === 'asc' ? 1 : -1 } : {};
+    const sorting: Sort = params?.order_by
+      ? { [params?.order_by?.field]: params?.order_by?.direction === 'asc' ? 1 : -1 }
+      : {};
     const limit = params?.limit ?? 0;
     const skip = params?.offset ?? 0;
 
-    const entries = await collection.find({})
-      .sort(sorting)
-      .limit(limit)
-      .skip(skip)
-      .toArray();
+    const entries = await collection.find({}).sort(sorting).limit(limit).skip(skip).toArray();
 
-    const customers_arr = entries.map<CustomerObject>(({
-      _id, car_wash_service_count, moto_wash_service_count, ...customer
-    }) => {
-
-      return {
-        id: _id.toString(),
-        car_services_count: car_wash_service_count,
-        motor_services_count: moto_wash_service_count,
-        recent_transactions: [],
-        ...customer
-      }
-    })
+    const customers_arr = entries.map<CustomerObject>(
+      ({ _id, car_wash_service_count, moto_wash_service_count, ...customer }) => {
+        return {
+          id: _id.toString(),
+          car_services_count: car_wash_service_count,
+          motor_services_count: moto_wash_service_count,
+          recent_transactions: [],
+          ...customer,
+        };
+      },
+    );
 
     return customers_arr;
   }
@@ -94,7 +92,6 @@ export class MongoCustomerRepository implements ICustomerRepository {
 
     return {
       id: _id.toString(),
-      recent_transactions: [],
       car_services_count: car_wash_service_count,
       motor_services_count: moto_wash_service_count,
       ...customer,

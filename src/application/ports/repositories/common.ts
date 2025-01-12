@@ -4,7 +4,7 @@ export type AffectedEntries = number;
 
 export interface Condition<T extends string = string> {
     field: T;
-    value: any;
+    value: any; // typeof T[keyof T];
 }
 
 export interface OrderBy<T extends string = string> {

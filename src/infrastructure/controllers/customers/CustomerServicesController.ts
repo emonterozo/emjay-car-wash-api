@@ -58,7 +58,10 @@ export class CustomerServicesController implements ICustomerServicesController {
     const {
       result: { transactions },
     } = await this._get_all_transactions.execute({
-      and_conditions: [{ field: 'customer_id', value: customer.id }],
+      and_conditions: [
+        { field: 'customer_id', value: customer.id },
+        { field: 'status', value: 'COMPLETED' },
+      ],
       range: {
         field: 'check_out',
         start: start,

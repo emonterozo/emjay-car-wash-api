@@ -1,5 +1,5 @@
 import { CustomerId } from "../../customers/interfaces/common";
-import { ServiceId } from "../../services/interfaces/common";
+import { Pricing, ServiceId } from "../../services/interfaces/common";
 
 export interface TransactionService {
   id: ServiceId;
@@ -11,7 +11,10 @@ export interface TransactionService {
   end_date?: Date;
   status: string;
   is_free: boolean;
+  price: number;
 }
+
+export type TransactionStatus = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED'
 
 export interface TransactionDetails {
   customer_id?: string;
@@ -21,7 +24,8 @@ export interface TransactionDetails {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
-  // status: string; // TODO: This should be computed depending on the services status
+  check_out?: Date;
+  status: TransactionStatus; // TODO: This should be computed depending on the services status
   services: TransactionService[]
 }
 
@@ -39,5 +43,6 @@ export interface CreateTransactionInput {
   services: {
     id: ServiceId;
     is_free: boolean;
+    size: Pricing['size']
   }[];
 }

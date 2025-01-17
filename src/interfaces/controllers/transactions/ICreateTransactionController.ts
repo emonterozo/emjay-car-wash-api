@@ -11,6 +11,7 @@ export interface CreateTransactionControllerInput {
     services?: {
         id: string;
         is_free: boolean;
+        size: "sm" | "md" | "lg" | "xl" | "xxl";
     }[]
 }
 

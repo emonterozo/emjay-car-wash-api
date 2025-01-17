@@ -57,5 +57,5 @@ export interface CustomerRecentTransaction {
   service_id: string;
   service_name: string;
   price: number;
-  date: string;
+  date: Date;
 }

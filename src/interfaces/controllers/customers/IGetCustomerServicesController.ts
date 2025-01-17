@@ -23,8 +23,8 @@ export interface CustomerControllerOutput {
 }
 
 export type CustomerServCountResponse = ControllerResponse<{
-  customer_services: CustomerControllerOutput | null;
-}>;
+  customer: CustomerControllerOutput;
+} | null>;
 
 export interface ICustomerServicesController {
   handle(token: string, id: string): Promise<CustomerServCountResponse>;

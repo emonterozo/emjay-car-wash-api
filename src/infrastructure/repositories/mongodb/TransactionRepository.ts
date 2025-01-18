@@ -73,42 +73,15 @@ export class TransactionRepository implements ITransactionRepository {
     });
 
     const transactions = await collection
-      .aggregate([
-        {
-          $ne: {
-            "services.end_date": "apple"
-          }
+      .find({
+        [params?.range?.field ?? '']: {
+          $gte: params?.range?.start,
+          $lte: params?.range?.end
         },
-        // {
-        //   $addFields: {
-        //     fruit: {
-        //       $filter: {
-        //         input: "$fruit",
-        //         cond: {
-        //           $eq: [
-        //             "$$this.foodName",
-        //             "apple"
-        //           ]
-        //         }
-        //       }
-        //     }
-        //   }
-        // }
-      ])
-    // .find({
-    //   [params?.range?.field ?? '']: {
-    //     $gte: params?.range?.start,
-    //     $lte: params?.range?.end
-    //   },
-    //   ...(and?.length ? { $and: and } : {}),
-    //   ...(or?.length ? { $or: or } : {}),
-    //   'services.price': {
-    //     $ne: 500
-    //   }
-    // })
-    // .toArray();
-
-    console.log(transactions)
+        ...(and?.length ? { $and: and } : {}),
+        ...(or?.length ? { $or: or } : {})
+      })
+      .toArray();
 
     return transactions.map<TransactionObject>(transac => ({
       check_in: transac.check_in,

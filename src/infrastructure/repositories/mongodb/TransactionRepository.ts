@@ -1,5 +1,5 @@
 import { ITransactionInput, ITransactionRepository } from "src/application/ports/repositories/ITransactionRepository";
-import { TransactionObject } from "src/application/use-cases/transactions/interfaces/common";
+import { TransactionObject, TransactionStatus } from "src/application/use-cases/transactions/interfaces/common";
 import { IGetAllTransactionsParams } from "src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
 import { MongoDB } from "./MongoDB";
 import { Collection, ObjectId } from "mongodb";

@@ -15,7 +15,7 @@ export class GetOneCustomerUseCase implements IGetOneCustomerUseCase {
 
     if (!customer)
       return {
-        errors: [{ field: '', message: 'Cannot find user' }],
+        errors: [{ field: '', message: 'Customer does not exist' }],
         result: {
           customer: null,
         },

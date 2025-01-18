@@ -6,6 +6,19 @@ import { Collection, ObjectId } from "mongodb";
 import { InsertedId } from "src/application/ports/repositories/common";
 import { PartialField } from "src/application/utils/types";
 
+interface TransactionService {
+  service_id: ObjectId;
+  deduction: number;
+  company_earnings: number;
+  employee_share: number;
+  assigned_employee_id: ObjectId[];
+  start_date?: Date;
+  end_date?: Date;
+  status: string;
+  is_free: boolean;
+  price: number;
+}
+
 interface ITransactionCollection {
   _id: ObjectId;
   customer_id?: ObjectId;
@@ -15,17 +28,8 @@ interface ITransactionCollection {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
-  services: {
-    service_id: ObjectId;
-    deduction: number;
-    company_earnings: number;
-    employee_share: number;
-    assigned_employee_id: ObjectId[];
-    start_date?: Date;
-    end_date?: Date;
-    status: string;
-    is_free: boolean;
-  }[]
+  status: string;
+  services: TransactionService[]
 }
 
 export class TransactionRepository implements ITransactionRepository {

@@ -58,11 +58,18 @@ export class CustomerServicesController implements ICustomerServicesController {
     const {
       result: { transactions },
     } = await this._get_all_transactions.execute({
-      and_conditions: [{ field: 'customer_id', value: customer.id }],
+      and_conditions: [
+        { field: 'customer_id', value: customer.id },
+        { field: 'status', value: 'COMPLETED' },
+      ],
       range: {
-        field: 'check_in',
+        field: 'check_out',
         start: start,
         end: end,
+      },
+      order_by: {
+        field: 'check_out',
+        direction: 'desc',
       },
     });
 
@@ -76,18 +83,16 @@ export class CustomerServicesController implements ICustomerServicesController {
           result: { service },
         } = await this._get_service.execute({ id: service_entry.id });
 
-        // Get price
-        // TODO: Price should be taken in services object under transactions
-        const price = service?.price_list.find((s) => s.size === transac.vehicle_size);
-
         // Adds entry to recent transactions array
-        recent_transactions.push({
-          date: transac.check_in.toString(),
-          id: transac.id,
-          price: price?.price ?? 0,
-          service_id: service?.id ?? '',
-          service_name: service?.title ?? '',
-        });
+        if (service_entry.status === 'DONE') {
+          recent_transactions.push({
+            date: service_entry.end_date!,
+            id: transac.id,
+            price: service_entry.price,
+            service_id: service?.id ?? '',
+            service_name: service?.title ?? '',
+          });
+        }
       }
     }
 

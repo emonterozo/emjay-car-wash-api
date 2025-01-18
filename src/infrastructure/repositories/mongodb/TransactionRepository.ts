@@ -92,6 +92,7 @@ export class TransactionRepository implements ITransactionRepository {
       vehicle_type: transac.vehicle_type,
       contact_number: transac.contact_number,
       customer_id: transac.customer_id?.toString(),
+      status: transac.status as TransactionStatus,
       services: transac.services.map(service => ({
         assigned_employee_id: service.assigned_employee_id.map(employee_id => employee_id.toString()),
         company_earnings: service.company_earnings,
@@ -102,17 +103,15 @@ export class TransactionRepository implements ITransactionRepository {
         status: service.status,
         end_date: service.end_date,
         start_date: service.start_date,
+        price: service.price
       }))
     }))
   }
 
   public async save(params: ITransactionInput): Promise<InsertedId> {
-    // console.log("adada");
     await this._mongo_client.connect();
     const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
     const collection: Collection<PartialField<ITransactionCollection, '_id'>> = database.collection(process.env.MONGO_TRANSACTIONS_COLLECTION!);
-
-    // return "asdfadfa"
 
     const response = await collection.insertOne({
       check_in: params.check_in,
@@ -121,6 +120,7 @@ export class TransactionRepository implements ITransactionRepository {
       vehicle_size: params.vehicle_size,
       vehicle_type: params.vehicle_type,
       contact_number: params.contact_number,
+      status: "PENDING", // This should be on the business layer
       customer_id: new ObjectId(params.customer_id),
       services: params.services.map(service => ({
         service_id: new ObjectId(service.id),
@@ -131,7 +131,8 @@ export class TransactionRepository implements ITransactionRepository {
         start_date: service.start_date,
         end_date: service.end_date,
         status: service.status,
-        is_free: service.is_free
+        is_free: service.is_free,
+        price: service.price
       }))
 
     });

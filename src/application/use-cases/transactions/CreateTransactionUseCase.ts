@@ -70,7 +70,6 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
           end_date: undefined,
           status: 'PENDING',
           is_paid: false,
-          is_claimed: false,
         })),
       });
 

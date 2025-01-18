@@ -31,7 +31,6 @@ interface ITransactionCollection {
     status: string;
     is_free: boolean;
     is_paid: boolean;
-    is_claimed: boolean;
   }[];
 }
 
@@ -96,7 +95,6 @@ export class TransactionRepository implements ITransactionRepository {
         end_date: service.end_date,
         start_date: service.start_date,
         is_paid: service.is_paid,
-        is_claimed: service.is_claimed,
       })),
     }));
   }
@@ -131,7 +129,6 @@ export class TransactionRepository implements ITransactionRepository {
         status: service.status,
         is_free: service.is_free,
         is_paid: service.is_paid,
-        is_claimed: service.is_claimed,
       })),
     });
 

@@ -25,7 +25,6 @@ export interface ITransactionInput {
     end_date?: Date;
     status: string;
     is_paid: boolean;
-    is_claimed: boolean;
   }[];
 }
 

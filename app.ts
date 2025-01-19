@@ -4,27 +4,22 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 
+import connectDB from './src/config/db';
 // application routes
-import homeRouter from './src/routes/home';
-import userRouter from './src/routes/users';
-import AdminRouter from './src/routes/admin';
-import CustomersRouter from './src/routes/customers';
-import ServicesRouter from './src/routes/services';
-import TransactionsRouter from "./src/routes/transactions";
+import AdminRouter from './src/routes/adminRoutes';
 
 const app = express();
+
+connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cors());
 
-app.use('/home', homeRouter);
-app.use('/users', userRouter);
 app.use('/admin', AdminRouter);
-app.use('/admin/customers', CustomersRouter);
-app.use('/services', ServicesRouter);
-app.use('/transactions', TransactionsRouter);
+//app.use('/admin/customers', CustomersRouter);
+//app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

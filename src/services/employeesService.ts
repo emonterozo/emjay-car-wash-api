@@ -1,6 +1,8 @@
 import Employee from '../models/employeeModel';
 import { PaginationOption } from '../common/types';
 import { recentTransactionService } from './shared/recentTransactionService';
+import { validateEmployee } from './validations/employeeValidation';
+import { Employee as EmployeeInterface } from '../models/employee';
 
 export const getAllEmployees = async (option: PaginationOption) => {
   try {
@@ -83,6 +85,37 @@ export const getEmployeeById = async (employee_id: string) => {
         field: 'general',
         message: 'An unexpected error occurred',
       },
+    };
+  }
+};
+
+export const postEmployee = async (employee: EmployeeInterface) => {
+  const validationErrors = validateEmployee(employee);
+
+  if (validationErrors.length > 0) {
+    return {
+      success: false,
+      status: 400,
+      errors: validationErrors,
+    };
+  }
+
+  try {
+    const savedEmployee = await Employee.create({
+      ...employee,
+      birth_date: new Date(employee.birth_date),
+      date_started: new Date(employee.date_started),
+    });
+
+    return {
+      success: true,
+      employee: { id: savedEmployee._id.toString() },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: 500,
+      errors: [{ field: 'general', message: 'An unexpected error occurred' }],
     };
   }
 };

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
 import { parseOrderBy } from '../utils/parsedOrderBy';
 import * as employeesService from '../services/employeesService';
+import { Employee } from '../models/employee';
 
 export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
@@ -68,6 +69,24 @@ export const getEmployeeById = async (req: Request<{ employee_id: string }>, res
           message: 'Something went wrong, please try again later',
         },
       ],
+    });
+  }
+};
+
+export const postEmployee = async (req: Request<{}, {}, Employee>, res: Response) => {
+  const result = await employeesService.postEmployee(req.body);
+
+  if (result.success) {
+    return res.status(201).json({
+      data: {
+        employee: result.employee,
+      },
+      errors: [],
+    });
+  } else {
+    return res.status(result.status!).json({
+      data: null,
+      errors: result.errors,
     });
   }
 };

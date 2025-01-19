@@ -1,9 +1,10 @@
-import { ITransactionInput, ITransactionRepository } from "src/application/ports/repositories/ITransactionRepository";
+import { ITransactionRepository, TransactionServiceInput } from "src/application/ports/repositories/ITransactionRepository";
 import { UseCaseResult } from "../common";
 import { CreateTransactionInput } from "./interfaces/common";
 import { ICreateTransactionUseCase } from "./interfaces/ICreateTransactionUseCase";
 import { TransactionEntity } from "../../..//domain/entities/TransactionEntity";
 import { ErrorMessage } from "../../../application/ports/common";
+import { IServiceRepsository } from "src/application/ports/repositories/IServiceRepository";
 
 export class CreateTransactionUseCase implements ICreateTransactionUseCase {
     constructor(private readonly _transaction_repository: ITransactionRepository) { }

@@ -1,5 +1,6 @@
 import Customer from '../models/customerModel';
 import { PaginationOption } from '../common/types';
+import { recentTransactionService } from './shared/recentTransactionService';
 
 export const getAllCustomers = async (option: PaginationOption) => {
   try {
@@ -33,7 +34,7 @@ export const getAllCustomers = async (option: PaginationOption) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }
@@ -44,35 +45,26 @@ export const getCustomerById = async (customer_id: string) => {
     const document = await Customer.findById(customer_id).exec();
 
     if (document) {
-      const car_wash_service_count = document.car_wash_service_count.map((item) => {
-        const itemObj = item.toObject();
-        const { _id, ...itemWithoutId } = itemObj;
-
-        return {
-          ...itemWithoutId,
-        };
-      });
-
-      const moto_wash_service_count = document.moto_wash_service_count.map((item) => {
-        const itemObj = item.toObject();
-        const { _id, ...itemWithoutId } = itemObj;
-
-        return {
-          ...itemWithoutId,
-        };
-      });
-
       const { _id, password, ...customer } = document.toObject();
 
-      return {
-        success: true,
-        customer: {
-          ...customer,
-          id: _id.toString(),
-          car_wash_service_count,
-          moto_wash_service_count,
-        },
-      };
+      const res = await recentTransactionService('customer', _id);
+
+      if (res.success) {
+        return {
+          success: true,
+          customer: {
+            ...customer,
+            id: _id.toString(),
+            recent_transactions: res.transactions,
+          },
+        };
+      } else {
+        return {
+          success: res.status,
+          status: res.status,
+          error: res.error,
+        };
+      }
     }
 
     return {
@@ -89,7 +81,7 @@ export const getCustomerById = async (customer_id: string) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }
@@ -144,7 +136,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }

@@ -1,21 +1,21 @@
 import mongoose from 'mongoose';
 
-const priceListSchema = new mongoose.Schema({
-  size: {
-    type: String,
-    required: true,
+const priceListSchema = new mongoose.Schema(
+  {
+    size: { type: String, enum: ['sm', 'md', 'lg', 'xl', 'xxl'], required: true },
+    count: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
   },
-  count: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-});
+  { _id: false },
+);
 
 const serviceSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  type: { type: String, required: true },
+  type: { type: String, enum: ['car', 'motorcycle'], required: true },
   price_list: [priceListSchema],
   image: { type: String, required: true },
   ratings: { type: String, required: true },

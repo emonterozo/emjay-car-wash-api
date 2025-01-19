@@ -1,5 +1,6 @@
 import Employee from '../models/employeeModel';
 import { PaginationOption } from '../common/types';
+import { recentTransactionService } from './shared/recentTransactionService';
 
 export const getAllEmployees = async (option: PaginationOption) => {
   try {
@@ -33,7 +34,7 @@ export const getAllEmployees = async (option: PaginationOption) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }
@@ -46,13 +47,24 @@ export const getEmployeeById = async (employee_id: string) => {
     if (document) {
       const { _id, ...employee } = document.toObject();
 
-      return {
-        success: true,
-        employee: {
-          ...employee,
-          id: _id.toString(),
-        },
-      };
+      const res = await recentTransactionService('employee', _id);
+
+      if (res.success) {
+        return {
+          success: true,
+          employee: {
+            ...employee,
+            id: _id.toString(),
+            recent_transactions: res.transactions,
+          },
+        };
+      } else {
+        return {
+          success: res.status,
+          status: res.status,
+          error: res.error,
+        };
+      }
     }
 
     return {
@@ -69,7 +81,7 @@ export const getEmployeeById = async (employee_id: string) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }

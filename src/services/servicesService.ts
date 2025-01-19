@@ -15,22 +15,13 @@ export const getAllServices = async (option: PaginationOption) => {
     const totalCount = await Service.countDocuments();
 
     const services = data.map((item) => {
-      const price_list = item.price_list.map((item) => {
-        const itemObj = item.toObject();
-        const { _id, ...itemWithoutId } = itemObj;
-
-        return {
-          ...itemWithoutId,
-        };
-      });
-
       return {
         id: item._id.toString(),
         title: item.title,
         description: item.description,
         image: item.image,
         type: item.type,
-        price_list,
+        price_list: item.price_list,
         ratings: item.ratings,
         reviews_count: item.reviews_count,
         last_review: item.last_review,
@@ -48,7 +39,7 @@ export const getAllServices = async (option: PaginationOption) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }

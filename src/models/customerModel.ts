@@ -1,16 +1,19 @@
 import mongoose from 'mongoose';
 
-const washServiceCountSchema = new mongoose.Schema({
-  size: {
-    type: String,
-    required: true,
+const washServiceCountSchema = new mongoose.Schema(
+  {
+    size: {
+      type: String,
+      required: true,
+    },
+    count: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
   },
-  count: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-});
+  { _id: false },
+);
 
 const customerSchema = new mongoose.Schema({
   first_name: { type: String, required: true },

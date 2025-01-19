@@ -47,7 +47,7 @@ export const authenticateUser = async (username: string, password: string) => {
       status: 500,
       error: {
         field: 'general',
-        message: 'An unexpected error occurred during authentication',
+        message: 'An unexpected error occurred',
       },
     };
   }

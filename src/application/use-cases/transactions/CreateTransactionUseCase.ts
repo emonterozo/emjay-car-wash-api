@@ -7,7 +7,10 @@ import { ErrorMessage } from "../../../application/ports/common";
 import { IServiceRepsository } from "src/application/ports/repositories/IServiceRepository";
 
 export class CreateTransactionUseCase implements ICreateTransactionUseCase {
-    constructor(private readonly _transaction_repository: ITransactionRepository) { }
+    constructor(
+        private readonly _transaction_repository: ITransactionRepository,
+        private readonly _service_repository: IServiceRepsository
+    ) { }
 
     public async execute(input: CreateTransactionInput): Promise<UseCaseResult<{ success: boolean; }>> {
         const new_transaction = TransactionEntity.create({

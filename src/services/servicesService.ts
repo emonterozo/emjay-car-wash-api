@@ -12,6 +12,7 @@ export const getAllServices = async (option: PaginationOption) => {
     query.sort({ [field]: direction });
 
     const data = await query;
+    const totalCount = await Service.countDocuments();
 
     const services = data.map((item) => {
       const price_list = item.price_list.map((item) => {
@@ -39,12 +40,13 @@ export const getAllServices = async (option: PaginationOption) => {
     return {
       success: true,
       services,
+      totalCount,
     };
   } catch (error: any) {
     return {
       success: false,
       status: 500,
-      message: {
+      error: {
         field: 'general',
         message: 'An unexpected error occurred during authentication',
       },

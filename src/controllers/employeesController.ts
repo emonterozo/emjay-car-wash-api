@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
 import { parseOrderBy } from '../utils/parsedOrderBy';
-import * as customersService from '../services/customersService';
+import * as employeesService from '../services/employeesService';
 
-export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
+export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
 
-  const order_by: OrderBy | null = parseOrderBy(req, res);
+  const order_by: OrderBy | null = parseOrderBy(req, res, 'date_started');
   const offset_number = parseInt(offset as string, 10) || 0;
   const limit_number = parseInt(limit as string, 10) || 0;
 
   if (!order_by) return;
 
   try {
-    const result = await customersService.getAllCustomers({
+    const result = await employeesService.getAllEmployees({
       ...order_by,
       offset: offset_number,
       limit: limit_number,
@@ -22,7 +22,7 @@ export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res
     if (result.success) {
       return res.status(200).json({
         data: {
-          customers: result.customers,
+          employees: result.employees,
           totalCount: result.totalCount,
         },
         errors: [],
@@ -40,16 +40,16 @@ export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res
     });
   }
 };
-export const getCustomerById = async (req: Request<{ customer_id: string }>, res: Response) => {
-  const { customer_id } = req.params;
+export const getEmployeeById = async (req: Request<{ employee_id: string }>, res: Response) => {
+  const { employee_id } = req.params;
 
   try {
-    const result = await customersService.getCustomerById(customer_id);
+    const result = await employeesService.getEmployeeById(employee_id);
 
     if (result.success) {
       return res.status(200).json({
         data: {
-          customer: result.customer,
+          employee: result.employee,
         },
         errors: [],
       });

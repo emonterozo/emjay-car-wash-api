@@ -13,7 +13,7 @@ const priceListSchema = new mongoose.Schema({
 });
 
 const serviceSchema = new mongoose.Schema({
-  title: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
   description: { type: String, required: true },
   type: { type: String, required: true },
   price_list: [priceListSchema],

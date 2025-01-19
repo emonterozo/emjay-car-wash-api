@@ -23,6 +23,7 @@ export const getAllServices = async (req: Request<{}, {}, ListRequestBody>, res:
       return res.status(200).json({
         data: {
           services: result.services,
+          totalCount: result.totalCount,
         },
         errors: [],
       });

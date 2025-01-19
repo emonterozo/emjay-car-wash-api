@@ -7,7 +7,8 @@ import connectDB from './src/config/db';
 // application routes
 import AdminRouter from './src/routes/adminRoutes';
 import CustomersRouter from './src/routes/customersRoutes';
-import ServicesRouter from './src/routes/servicesRouter';
+import ServicesRouter from './src/routes/servicesRoutes';
+import EmployeesRouter from './src/routes/employeesRoutes';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use('/admin', AdminRouter);
 app.use('/admin/customers', CustomersRouter);
+app.use('/admin/employees', EmployeesRouter);
 app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {

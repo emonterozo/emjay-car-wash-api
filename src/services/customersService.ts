@@ -13,6 +13,8 @@ export const getAllCustomers = async (option: PaginationOption) => {
 
     const data = await query;
 
+    const totalCount = await Customer.countDocuments();
+
     const customers = data.map((item) => ({
       id: item._id.toString(),
       first_name: item.first_name,
@@ -23,12 +25,13 @@ export const getAllCustomers = async (option: PaginationOption) => {
     return {
       success: true,
       customers,
+      totalCount,
     };
   } catch (error: any) {
     return {
       success: false,
       status: 500,
-      message: {
+      error: {
         field: 'general',
         message: 'An unexpected error occurred during authentication',
       },

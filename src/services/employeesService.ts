@@ -36,7 +36,7 @@ export const getAllEmployees = async (option: PaginationOption) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };
@@ -83,7 +83,7 @@ export const getEmployeeById = async (employee_id: string) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };
@@ -116,7 +116,7 @@ export const postEmployee = async (employee: AddEmployeeProps) => {
     return {
       success: false,
       status: 500,
-      errors: [{ field: 'general', message: 'An unexpected error occurred' }],
+      errors: [{ field: 'unknown', message: 'An unexpected error occurred' }],
     };
   }
 };
@@ -163,7 +163,7 @@ export const putEmployee = async (employee: UpdateEmployeeProps, id: string) => 
     return {
       success: false,
       status: 500,
-      errors: [{ field: 'general', message: 'An unexpected error occurred' }],
+      errors: [{ field: 'unknown', message: 'An unexpected error occurred' }],
     };
   }
 };

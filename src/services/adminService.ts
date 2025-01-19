@@ -10,10 +10,10 @@ export const authenticateUser = async (username: string, password: string) => {
     if (!user) {
       return {
         success: false,
-        status: 404,
+        status: 401,
         error: {
-          field: 'username',
-          message: 'User not found',
+          field: 'username or password',
+          message: 'Invalid username or password',
         },
       };
     }
@@ -25,8 +25,8 @@ export const authenticateUser = async (username: string, password: string) => {
         success: false,
         status: 401,
         error: {
-          field: 'password',
-          message: 'Invalid password',
+          field: 'username or password',
+          message: 'Invalid username or password',
         },
       };
     }
@@ -46,7 +46,7 @@ export const authenticateUser = async (username: string, password: string) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };

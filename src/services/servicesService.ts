@@ -38,7 +38,7 @@ export const getAllServices = async (option: PaginationOption) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };

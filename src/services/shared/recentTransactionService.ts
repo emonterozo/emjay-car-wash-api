@@ -73,7 +73,7 @@ export const recentTransactionService = async (
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };

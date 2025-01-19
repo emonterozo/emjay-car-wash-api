@@ -33,7 +33,7 @@ export const getAllServices = async (req: Request<{}, {}, ListRequestBody>, res:
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],

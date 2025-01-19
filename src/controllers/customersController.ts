@@ -33,7 +33,7 @@ export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],
@@ -64,7 +64,7 @@ export const getCustomerById = async (req: Request<{ customer_id: string }>, res
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],
@@ -99,7 +99,7 @@ export const getCustomerWashCountById = async (
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],

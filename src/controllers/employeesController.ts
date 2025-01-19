@@ -34,7 +34,7 @@ export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],
@@ -65,7 +65,7 @@ export const getEmployeeById = async (req: Request<{ employee_id: string }>, res
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],

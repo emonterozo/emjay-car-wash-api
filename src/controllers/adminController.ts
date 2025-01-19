@@ -50,7 +50,7 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
       data: null,
       errors: [
         {
-          field: 'general',
+          field: 'unknown',
           message: 'Something went wrong, please try again later',
         },
       ],

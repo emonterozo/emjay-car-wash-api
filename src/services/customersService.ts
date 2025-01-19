@@ -33,7 +33,7 @@ export const getAllCustomers = async (option: PaginationOption) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };
@@ -80,7 +80,7 @@ export const getCustomerById = async (customer_id: string) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };
@@ -135,7 +135,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
       success: false,
       status: 500,
       error: {
-        field: 'general',
+        field: 'unknown',
         message: 'An unexpected error occurred',
       },
     };

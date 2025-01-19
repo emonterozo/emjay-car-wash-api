@@ -48,6 +48,29 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
         if (errors.length) return { errors, result: { success: false } };
 
         try {
+            const services = new_transaction
+                .getServicesId()
+
+            const included_services: TransactionServiceInput[] = []
+
+            for (const serv of services) {
+                const service = await this._service_repository.findOne({ id: serv.id });
+                if (service) {
+                    included_services.push({
+                        id: service.id,
+                        is_free: serv.is_free,
+                        deduction: 0,
+                        company_earnings: 0,
+                        employee_share: 0,
+                        assigned_employee_id: [],
+                        start_date: undefined,
+                        end_date: undefined,
+                        status: 'PENDING',
+                        price: service.price_list.find(price => price.size === serv.size)?.price ?? 0
+                    });
+                }
+            }
+
             const inserted_id = await this._transaction_repository.save({
                 customer_id: new_transaction.getCustomerId(),
                 vehicle_type: new_transaction.getVehicleType(),
@@ -56,19 +79,7 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
                 plate_number: new_transaction.getPlateNumber(),
                 contact_number: input.contact_number, // validate this
                 check_in: new Date(),
-                services: new_transaction
-                    .getServicesId()
-                    .map(service => ({
-                        id: service.id,
-                        is_free: service.is_free,
-                        deduction: 0,
-                        company_earnings: 0,
-                        employee_share: 0,
-                        assigned_employee_id: [],
-                        start_date: undefined,
-                        end_date: undefined,
-                        status: 'PENDING'
-                    })),
+                services: included_services
             });
 
             return {

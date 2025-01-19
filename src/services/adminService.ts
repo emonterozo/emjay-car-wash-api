@@ -11,7 +11,7 @@ export const authenticateUser = async (username: string, password: string) => {
       return {
         success: false,
         status: 404,
-        errors: {
+        error: {
           field: 'username',
           message: 'User not found',
         },
@@ -24,7 +24,7 @@ export const authenticateUser = async (username: string, password: string) => {
       return {
         success: false,
         status: 401,
-        errors: {
+        error: {
           field: 'password',
           message: 'Invalid password',
         },
@@ -45,7 +45,7 @@ export const authenticateUser = async (username: string, password: string) => {
     return {
       success: false,
       status: 500,
-      message: {
+      error: {
         field: 'general',
         message: 'An unexpected error occurred during authentication',
       },

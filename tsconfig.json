@@ -8,6 +8,10 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+      "./node_modules/@types", // Default types
+      "../src/common/types/express.d.ts"
+    ]
+  }
 }

@@ -42,7 +42,7 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
     } else {
       return res.status(result.status!).json({
         data: null,
-        errors: [result.errors],
+        errors: [result.error],
       });
     }
   } catch (error) {

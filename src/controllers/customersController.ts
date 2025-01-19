@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
 import { parseOrderBy } from '../utils/parsedOrderBy';
-import * as customerService from '../services/customersService';
+import * as customersService from '../services/customersService';
 
 export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
@@ -13,7 +13,7 @@ export const getAllCustomers = async (req: Request<{}, {}, ListRequestBody>, res
   if (!order_by) return;
 
   try {
-    const result = await customerService.getAllCustomer({
+    const result = await customersService.getAllCustomers({
       ...order_by,
       offset: offset_number,
       limit: limit_number,
@@ -43,7 +43,7 @@ export const getCustomerById = async (req: Request<{ customer_id: string }>, res
   const { customer_id } = req.params;
 
   try {
-    const result = await customerService.getCustomerById(customer_id);
+    const result = await customersService.getCustomerById(customer_id);
 
     if (result.success) {
       return res.status(200).json({

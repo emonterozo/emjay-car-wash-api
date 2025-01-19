@@ -1,7 +1,7 @@
 import Customer from '../models/customerModel';
 import { PaginationOption } from '../common/types';
 
-export const getAllCustomer = async (option: PaginationOption) => {
+export const getAllCustomers = async (option: PaginationOption) => {
   try {
     const { field, direction, limit, offset } = option;
     const query = Customer.find();
@@ -17,7 +17,7 @@ export const getAllCustomer = async (option: PaginationOption) => {
       id: item._id.toString(),
       first_name: item.first_name,
       last_name: item.last_name,
-      registered_on: new Date(item.registered_on),
+      registered_on: item.registered_on,
     }));
 
     return {
@@ -66,8 +66,6 @@ export const getCustomerById = async (customer_id: string) => {
         customer: {
           ...customer,
           id: _id.toString(),
-          birth_date: new Date(document?.birth_date!),
-          registered_on: new Date(document?.registered_on!),
           car_wash_service_count,
           moto_wash_service_count,
         },

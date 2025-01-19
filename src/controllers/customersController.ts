@@ -71,3 +71,38 @@ export const getCustomerById = async (req: Request<{ customer_id: string }>, res
     });
   }
 };
+
+export const getCustomerWashCountById = async (
+  req: Request<{ customer_id: string }>,
+  res: Response,
+) => {
+  const { customer_id } = req.params;
+
+  try {
+    const result = await customersService.getCustomerWashCountById(customer_id);
+
+    if (result.success) {
+      return res.status(200).json({
+        data: {
+          customer: result.customer,
+        },
+        errors: [],
+      });
+    } else {
+      return res.status(result.status!).json({
+        data: null,
+        errors: [result.error],
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      data: null,
+      errors: [
+        {
+          field: 'general',
+          message: 'Something went wrong, please try again later',
+        },
+      ],
+    });
+  }
+};

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
 import { parseOrderBy } from '../utils/parsedOrderBy';
 import * as employeesService from '../services/employeesService';
-import { Employee } from '../models/employee';
+import { AddEmployeeProps, UpdateEmployeeProps } from '../models/employee';
 
 export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
@@ -73,9 +73,29 @@ export const getEmployeeById = async (req: Request<{ employee_id: string }>, res
   }
 };
 
-export const postEmployee = async (req: Request<{}, {}, Employee>, res: Response) => {
+export const postEmployee = async (req: Request<{}, {}, AddEmployeeProps>, res: Response) => {
   const result = await employeesService.postEmployee(req.body);
 
+  if (result.success) {
+    return res.status(201).json({
+      data: {
+        employee: result.employee,
+      },
+      errors: [],
+    });
+  } else {
+    return res.status(result.status!).json({
+      data: null,
+      errors: result.errors,
+    });
+  }
+};
+
+export const putEmployee = async (
+  req: Request<{ employee_id: string }, {}, UpdateEmployeeProps>,
+  res: Response,
+) => {
+  const result = await employeesService.putEmployee(req.body, req.params.employee_id);
   if (result.success) {
     return res.status(201).json({
       data: {

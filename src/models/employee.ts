@@ -1,4 +1,4 @@
-export interface Employee {
+export interface AddEmployeeProps {
   first_name: string;
   last_name: string;
   birth_date: string;
@@ -8,5 +8,8 @@ export interface Employee {
   employee_status: 'ACTIVE' | 'TERMINATED';
   date_started: string;
 }
+
+export interface UpdateEmployeeProps
+  extends Pick<AddEmployeeProps, 'contact_number' | 'employee_title' | 'employee_status'> {}
 
 export const validEmployeeStatuses: ('ACTIVE' | 'TERMINATED')[] = ['ACTIVE', 'TERMINATED'];

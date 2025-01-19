@@ -1,8 +1,9 @@
+import mongoose from 'mongoose';
 import Employee from '../models/employeeModel';
 import { PaginationOption } from '../common/types';
 import { recentTransactionService } from './shared/recentTransactionService';
 import { validateEmployee } from './validations/employeeValidation';
-import { Employee as EmployeeInterface } from '../models/employee';
+import { AddEmployeeProps, UpdateEmployeeProps } from '../models/employee';
 
 export const getAllEmployees = async (option: PaginationOption) => {
   try {
@@ -89,8 +90,8 @@ export const getEmployeeById = async (employee_id: string) => {
   }
 };
 
-export const postEmployee = async (employee: EmployeeInterface) => {
-  const validationErrors = validateEmployee(employee);
+export const postEmployee = async (employee: AddEmployeeProps) => {
+  const validationErrors = validateEmployee(employee, false);
 
   if (validationErrors.length > 0) {
     return {
@@ -112,6 +113,53 @@ export const postEmployee = async (employee: EmployeeInterface) => {
       employee: { id: savedEmployee._id.toString() },
     };
   } catch (error) {
+    return {
+      success: false,
+      status: 500,
+      errors: [{ field: 'general', message: 'An unexpected error occurred' }],
+    };
+  }
+};
+
+export const putEmployee = async (employee: UpdateEmployeeProps, id: string) => {
+  const validationErrors = validateEmployee(employee, true);
+
+  if (validationErrors.length > 0) {
+    return {
+      success: false,
+      status: 400,
+      errors: validationErrors,
+    };
+  }
+
+  try {
+    const updatedEmployee = await Employee.findByIdAndUpdate(new mongoose.Types.ObjectId(id), {
+      contact_number: employee.contact_number,
+      employee_title: employee.employee_title,
+      employee_status: employee.employee_status,
+    });
+
+    if (updatedEmployee) {
+      return {
+        success: true,
+        employee: {
+          id: updatedEmployee?._id.toString(),
+        },
+      };
+    }
+
+    return {
+      success: false,
+      status: 404,
+      errors: [
+        {
+          field: 'employee_id',
+          message: 'Employee does not exist',
+        },
+      ],
+    };
+  } catch (error) {
+    console.log(error);
     return {
       success: false,
       status: 500,

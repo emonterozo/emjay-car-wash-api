@@ -20,6 +20,7 @@ export const getAllCustomers = async (option: PaginationOption) => {
       id: item._id.toString(),
       first_name: item.first_name,
       last_name: item.last_name,
+      gender: item.gender,
       contact_number: item.contact_number,
       registered_on: item.registered_on,
     }));

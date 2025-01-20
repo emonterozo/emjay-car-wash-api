@@ -17,6 +17,16 @@ export class CustomerServicesController implements ICustomerServicesController {
   ) { }
 
   public async handle(token: string, id: string): Promise<CustomerServCountResponse> {
+
+    if (!token) {
+      return {
+        data: null,
+        errors: [{ field: 'Authorization', message: 'Token is missing.' }],
+        status: 401,
+        success: false
+      };
+    }
+
     const is_valid_token = await this._token_service.verify(token);
 
     if (!is_valid_token)

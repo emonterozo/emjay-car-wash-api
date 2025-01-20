@@ -40,7 +40,9 @@ export class CustomerServicesController implements ICustomerServicesController {
     if (typeof id !== 'string' || id.length === 0)
       return {
         errors: [{ field: 'id', message: 'Invalid ID' }],
-        data: { customer_services: null },
+        data: null,
+        status: 403,
+        success: false
       };
 
     // Validates if customer exists

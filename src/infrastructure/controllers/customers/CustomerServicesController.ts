@@ -10,7 +10,6 @@ import { IGetOneServiceUseCase } from 'src/application/use-cases/services/interf
 
 export class CustomerServicesController implements ICustomerServicesController {
   constructor(
-    // private readonly _get_customer_services: IGetServicesCountUseCase,
     private readonly _get_customer: IGetOneCustomerUseCase,
     private readonly _get_all_transactions: IGetAllTransactionsUseCase,
     private readonly _get_service: IGetOneServiceUseCase,

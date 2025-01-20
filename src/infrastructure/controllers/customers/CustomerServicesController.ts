@@ -80,7 +80,7 @@ export class CustomerServicesController implements ICustomerServicesController {
         end: end,
       },
       order_by: {
-        field: 'services.end_date',
+        field: 'check_out',
         direction: 'desc'
       }
     });

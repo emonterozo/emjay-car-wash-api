@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 
 import Account from '../models/accountModel';
 import { jwtSign } from '../utils/jwtSign';
+import { logWithContext } from '../logs/logger';
 
 export const authenticateUser = async (username: string, password: string) => {
   try {
@@ -42,6 +43,13 @@ export const authenticateUser = async (username: string, password: string) => {
       refreshToken,
     };
   } catch (error: any) {
+    logWithContext({
+      level: 'error',
+      message: 'Admin login failure',
+      file: 'adminService.authenticateUser',
+      data: { username },
+      errors: error,
+    });
     return {
       success: false,
       status: 500,

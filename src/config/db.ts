@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import { logWithContext } from '../logs/logger';
 
 dotenv.config();
 
@@ -10,9 +11,21 @@ const connectDB = async () => {
     await mongoose.connect(mongoURI!, {
       dbName: process.env.MONGO_DATASOURCE,
     });
-    console.log('MongoDB connected successfully');
+    logWithContext({
+      level: 'info',
+      message: 'MongoDB connected successfully',
+      file: 'db.ts',
+      data: undefined,
+      errors: undefined,
+    });
   } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
+    logWithContext({
+      level: 'error',
+      message: 'Error connecting to MongoDB',
+      file: 'db.ts',
+      data: undefined,
+      errors: error,
+    });
     process.exit(1);
   }
 };

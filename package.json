@@ -28,6 +28,8 @@
     ]
   },
   "dependencies": {
+    "@logtail/node": "^0.5.2",
+    "@logtail/winston": "^0.5.2",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.1",
     "bcrypt": "^5.1.1",

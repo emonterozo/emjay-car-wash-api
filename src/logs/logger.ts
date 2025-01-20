@@ -1,5 +1,10 @@
 import winston from 'winston';
 import { Request } from 'express';
+import { Logtail } from '@logtail/node';
+import { LogtailTransport } from '@logtail/winston';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 type LogWithContextProps = {
   level: 'info' | 'error' | 'warn';
@@ -10,10 +15,12 @@ type LogWithContextProps = {
   errors: any;
 };
 
+const logtail = new Logtail(process.env.LOG_TAIL_SOURCE_TOKEN!);
+
 export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-  transports: [new winston.transports.Console()],
+  transports: [new LogtailTransport(logtail), new winston.transports.Console()],
 });
 
 export const logWithContext = ({
@@ -25,7 +32,7 @@ export const logWithContext = ({
   errors,
 }: LogWithContextProps) => {
   logger.log(level, message, {
-    method: req ? req.originalUrl : 'unknown',
+    method: req ? req.method : 'unknown',
     path: req ? req.originalUrl : 'unknown',
     file,
     userAgent: req ? req.get('User-Agent') : 'unknown',
@@ -33,3 +40,5 @@ export const logWithContext = ({
     errors: errors,
   });
 };
+
+logtail.flush();

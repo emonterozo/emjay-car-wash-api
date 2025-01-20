@@ -31,8 +31,10 @@ export class CustomerServicesController implements ICustomerServicesController {
 
     if (!is_valid_token)
       return {
-        data: { customer_services: null },
-        errors: [{ field: 'unknown', message: 'UNAUTHENTICATED_REQUEST' }],
+        data: null,
+        errors: [{ field: 'Authorization', message: 'Invalid or expired token.' }],
+        status: 403,
+        success: false
       };
 
     if (typeof id !== 'string' || id.length === 0)

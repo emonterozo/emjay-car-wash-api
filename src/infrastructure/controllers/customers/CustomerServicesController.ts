@@ -1,6 +1,5 @@
 import { IGetAllTransactionsUseCase } from 'src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase';
 import { ITokenService } from '../../../application/ports/services/ITokenService';
-import { IGetAllCustomersUseCase } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';
 import { IGetOneCustomerUseCase } from '../../../application/use-cases/customers/interfaces/IGetOneCustomerUseCase';
 import {
   CustomerServCountResponse,

@@ -23,7 +23,8 @@ export const getAllEmployees = async (option: PaginationOption) => {
       id: item._id.toString(),
       first_name: item.first_name,
       last_name: item.last_name,
-      date_started: item.date_started,
+      employee_title: item.employee_title,
+      employee_status: item.employee_status,
     }));
 
     return {

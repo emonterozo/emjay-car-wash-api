@@ -7,16 +7,18 @@ import { TransactionRepository } from "../../../infrastructure/repositories/mong
 import { GetAllTransactionsController } from "./GetAllTransactionsController";
 import { CreateTransactionController } from "./CreateTransactionController";
 import { TokenService } from "../../../infrastructure/services/TokenService";
+import { ServiceRepository } from "../../../infrastructure/repositories/mongodb/ServiceRepository";
 
 // Services
 const token_service = new TokenService();
 
 // Repository
 const transaction_repository = new TransactionRepository();
+const service_repository = new ServiceRepository()
 
 // Use Cases
 const getAllTransactions = new GetAllTransactionsUseCase(transaction_repository);
-const createTranasction = new CreateTransactionUseCase(transaction_repository);
+const createTranasction = new CreateTransactionUseCase(transaction_repository, service_repository);
 
 // Controllers
 export const getAllTransactionsController = new GetAllTransactionsController(getAllTransactions, token_service);

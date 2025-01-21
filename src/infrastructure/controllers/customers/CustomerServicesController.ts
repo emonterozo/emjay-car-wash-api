@@ -53,10 +53,10 @@ export class CustomerServicesController implements ICustomerServicesController {
     // If customer not exist return immediately
     if (!customer)
       return {
-        data: {
-          customer_services: null,
-        },
-        errors: is_exist_err,
+        data: null,
+        success: false,
+        status: 404,
+        errors: is_exist_err.map(err => ({ field: 'customer_id', message: err.message })),
       };
 
     // Set range/limit for recent transactions

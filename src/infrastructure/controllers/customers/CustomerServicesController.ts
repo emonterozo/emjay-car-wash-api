@@ -95,15 +95,11 @@ export class CustomerServicesController implements ICustomerServicesController {
           result: { service },
         } = await this._get_service.execute({ id: service_entry.id });
 
-        // Get price
-        // TODO: Price should be taken in services object under transactions
-        const price = service?.price_list.find((s) => s.size === transac.vehicle_size);
-
         // Adds entry to recent transactions array
         recent_transactions.push({
           date: transac.check_in.toString(),
           id: transac.id,
-          price: price?.price ?? 0,
+          price: service_entry.price,
           service_id: service?.id ?? '',
           service_name: service?.title ?? '',
         });
@@ -112,7 +108,7 @@ export class CustomerServicesController implements ICustomerServicesController {
 
     return {
       data: {
-        customer_services: {
+        customer: {
           id: customer.id,
           first_name: customer.first_name,
           last_name: customer.last_name,

@@ -126,6 +126,8 @@ export class CustomerServicesController implements ICustomerServicesController {
         },
       },
       errors: is_exist_err,
+      status: 200,
+      success: true
     };
   }
 }

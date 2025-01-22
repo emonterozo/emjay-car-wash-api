@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
-import { parseOrderBy } from '../utils/parsedOrderBy';
+import { parseOrderBy } from '../utils/parseOrderBy';
 import * as servicesService from '../services/servicesService';
 
 export const getAllServices = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {

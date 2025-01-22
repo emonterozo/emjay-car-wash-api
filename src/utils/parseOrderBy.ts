@@ -1,17 +1,6 @@
 import { Request, Response } from 'express';
 import { OrderBy } from '../common/types';
-
-const sendValidationError = (res: Response, field: string, message: string) => {
-  return res.status(400).json({
-    data: null,
-    errors: [
-      {
-        field,
-        message,
-      },
-    ],
-  });
-};
+import { sendValidationError } from './sendValidationError';
 
 export const parseOrderBy = (
   req: Request,

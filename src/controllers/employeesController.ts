@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
-import { parseOrderBy } from '../utils/parsedOrderBy';
+import { parseOrderBy } from '../utils/parseOrderBy';
 import * as employeesService from '../services/employeesService';
 import { AddEmployeeProps, UpdateEmployeeProps } from '../models/employee';
 
@@ -11,11 +11,9 @@ export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res
   const offset_number = parseInt(offset as string, 10) || 0;
   const limit_number = parseInt(limit as string, 10) || 0;
 
-  if (!order_by) return;
-
   try {
     const result = await employeesService.getAllEmployees({
-      ...order_by,
+      ...order_by!,
       offset: offset_number,
       limit: limit_number,
     });

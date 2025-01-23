@@ -44,7 +44,16 @@ export const parseDateRange = (req: Request, res: Response): DateRange | null =>
       return null;
     }
 
-    return date_range_object;
+    const start = new Date(date_range_object.start);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(date_range_object.end);
+    end.setHours(23, 59, 59, 999);
+
+    return {
+      start,
+      end,
+    };
   } catch (error) {
     sendValidationError(
       res,

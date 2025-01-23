@@ -94,22 +94,30 @@ export const getCustomerWashCountById = async (customer_id: string) => {
     const document = await Customer.findById(customer_id).exec();
 
     if (document) {
-      const car_wash_service_count = document.car_wash_service_count.map((item) => {
-        const itemObj = item.toObject();
-        const { _id, ...itemWithoutId } = itemObj;
+      const free_wash: {
+        size: string;
+        count: number;
+        vehicle_type: string;
+      }[] = [];
 
-        return {
-          ...itemWithoutId,
-        };
+      document.car_wash_service_count.forEach((item) => {
+        if (item.count === 10) {
+          free_wash.push({
+            size: item.size,
+            count: item.count,
+            vehicle_type: 'car',
+          });
+        }
       });
 
-      const moto_wash_service_count = document.moto_wash_service_count.map((item) => {
-        const itemObj = item.toObject();
-        const { _id, ...itemWithoutId } = itemObj;
-
-        return {
-          ...itemWithoutId,
-        };
+      document.moto_wash_service_count.forEach((item) => {
+        if (item.count === 10) {
+          free_wash.push({
+            size: item.size,
+            count: item.count,
+            vehicle_type: 'motorcycle',
+          });
+        }
       });
 
       return {
@@ -118,8 +126,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
           id: document._id.toString(),
           first_name: document.first_name,
           last_name: document.last_name,
-          car_wash_service_count,
-          moto_wash_service_count,
+          free_wash,
         },
       };
     }

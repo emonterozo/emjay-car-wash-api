@@ -32,7 +32,7 @@ export const getTransactions = async (
     if (result.success) {
       return res.status(200).json({
         data: {
-          transaction: result.transactions,
+          transactions: result.transactions,
           totalCount: result.totalCount,
         },
         errors: [],

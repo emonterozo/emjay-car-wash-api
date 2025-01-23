@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ListRequestBody, OrderBy } from '../common/types';
 import { parseOrderBy } from '../utils/parseOrderBy';
 import * as employeesService from '../services/employeesService';
-import { AddEmployeeProps, UpdateEmployeeProps } from '../models/employee';
+import { AddEmployeeProps, UpdateEmployeeProps } from '../common/types';
 
 export const getAllEmployees = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
@@ -95,7 +95,7 @@ export const putEmployee = async (
 ) => {
   const result = await employeesService.putEmployee(req.body, req.params.employee_id);
   if (result.success) {
-    return res.status(201).json({
+    return res.status(200).json({
       data: {
         employee: result.employee,
       },

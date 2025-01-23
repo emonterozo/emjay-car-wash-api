@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 import Transaction from '../models/transactionModel';
-import { PaginationOptionWithDateRange } from '../common/types';
+import {
+  PaginationOptionWithDateRange,
+  OngoingTransactionProps,
+  TransactionServiceProps,
+} from '../common/types';
+import { validateOngoingTransaction } from './validations/ongoingValidation';
+import Service from '../models/serviceModel';
 
 interface GetTransactionsProps extends PaginationOptionWithDateRange {
   status?: string;
@@ -220,218 +226,8 @@ export const getTransactionServiceById = async (
   }
 };
 
-export interface OngoingTransactionProps {
-  customer_id?: string;
-  vehicle_type: string;
-  vehicle_size: string;
-  model: string;
-  plate_number: string;
-  contact_number?: string;
-  service_id: string;
-  price: string;
-  service_charge: string;
-}
-
-export interface TransactionServiceProps {
-  service_id: string;
-  price: string;
-  service_charge: string;
-}
-
-const validVehicleType = ['car', 'motorcycle'];
-const validVehicle = {
-  car: ['sm', 'md', 'lg', 'xl', 'xxl'],
-  motorcycle: ['sm', 'md', 'lg'],
-};
-const validServiceCharge = ['free', 'not free'];
-
-export function validate(payload: OngoingTransactionProps) {
-  const validationErrors: { field: string; message: string }[] = [];
-  const contactNumberRegex = /^09\d{9}$/;
-
-  const fields = [
-    {
-      field: 'vehicle_type',
-      value: payload.vehicle_type,
-      message: 'Vehicle type is required',
-      maxLength: 10,
-    },
-    {
-      field: 'vehicle_size',
-      value: payload.vehicle_size,
-      message: 'Vehicle size is required',
-      maxLength: 3,
-    },
-    {
-      field: 'model',
-      value: payload.model,
-      message: 'Model is required',
-      maxLength: 64,
-    },
-    {
-      field: 'plate_number',
-      value: payload.plate_number,
-      message: 'Plate number is required',
-      maxLength: 15,
-    },
-    {
-      field: 'service_id',
-      value: payload.service_id,
-      message: 'Service id is required',
-      maxLength: 24,
-    },
-    {
-      field: 'price',
-      value: payload.price,
-      message: 'Price is required',
-      maxLength: 10,
-    },
-    {
-      field: 'service_charge',
-      value: payload.service_charge,
-      message: 'Service charge is required',
-      maxLength: 10,
-    },
-  ];
-
-  fields.forEach(({ field, value, message, maxLength }) => {
-    if (value) {
-      if (value.length > maxLength) {
-        validationErrors.push({
-          field,
-          message: `${field.replace('_', ' ').charAt(0).toUpperCase() + field.replace('_', ' ').slice(1)} cannot exceed ${maxLength} characters`,
-        });
-      }
-    } else {
-      validationErrors.push({ field, message });
-    }
-  });
-
-  if (payload.customer_id && !mongoose.Types.ObjectId.isValid(payload.customer_id)) {
-    validationErrors.push({
-      field: 'customer_id',
-      message: 'Customer id must be a 24-character hexadecimal string',
-    });
-  }
-
-  if (!validVehicleType.includes(payload.vehicle_type)) {
-    validationErrors.push({
-      field: 'vehicle_type',
-      message: `Vehicle type must be one of ${validVehicleType.join(', ')}`,
-    });
-  }
-
-  if (payload.vehicle_type === 'car' && !validVehicle.car.includes(payload.vehicle_size)) {
-    validationErrors.push({
-      field: 'vehicle_size',
-      message: `Vehicle size car must be one of ${validVehicle.car.join(', ')}`,
-    });
-  }
-
-  if (
-    payload.vehicle_type === 'motorcycle' &&
-    !validVehicle.motorcycle.includes(payload.vehicle_size)
-  ) {
-    validationErrors.push({
-      field: 'vehicle_size',
-      message: `Vehicle size for motorcycle must be one of ${validVehicle.motorcycle.join(', ')}`,
-    });
-  }
-
-  if (payload.contact_number && !contactNumberRegex.test(payload.contact_number)) {
-    validationErrors.push({
-      field: 'contact_number',
-      message: 'Contact number must be in the format 09123456789',
-    });
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(payload.service_id)) {
-    validationErrors.push({
-      field: 'service_id',
-      message: 'Service id must be a 24-character hexadecimal string',
-    });
-  }
-
-  if (isNaN(parseInt(payload.price, 10))) {
-    validationErrors.push({
-      field: 'price',
-      message: 'Price must be a valid number',
-    });
-  }
-
-  if (!validServiceCharge.includes(payload.service_charge)) {
-    validationErrors.push({
-      field: 'service_charge',
-      message: `Service charge must be one of ${validServiceCharge.join(', ')}`,
-    });
-  }
-
-  return validationErrors;
-}
-
-export function validateTwo(payload: TransactionServiceProps) {
-  const validationErrors: { field: string; message: string }[] = [];
-
-  const fields = [
-    {
-      field: 'service_id',
-      value: payload.service_id,
-      message: 'Service id is required',
-      maxLength: 24,
-    },
-    {
-      field: 'price',
-      value: payload.price,
-      message: 'Price is required',
-      maxLength: 10,
-    },
-    {
-      field: 'service_charge',
-      value: payload.service_charge,
-      message: 'Service charge is required',
-      maxLength: 10,
-    },
-  ];
-
-  fields.forEach(({ field, value, message, maxLength }) => {
-    if (value) {
-      if (value.length > maxLength) {
-        validationErrors.push({
-          field,
-          message: `${field.replace('_', ' ').charAt(0).toUpperCase() + field.replace('_', ' ').slice(1)} cannot exceed ${maxLength} characters`,
-        });
-      }
-    } else {
-      validationErrors.push({ field, message });
-    }
-  });
-
-  if (!mongoose.Types.ObjectId.isValid(payload.service_id)) {
-    validationErrors.push({
-      field: 'service_id',
-      message: 'Service id must be a 24-character hexadecimal string',
-    });
-  }
-
-  if (isNaN(parseInt(payload.price, 10))) {
-    validationErrors.push({
-      field: 'price',
-      message: 'Price must be a valid number',
-    });
-  }
-
-  if (!validServiceCharge.includes(payload.service_charge)) {
-    validationErrors.push({
-      field: 'service_charge',
-      message: `Service charge must be one of ${validServiceCharge.join(', ')}`,
-    });
-  }
-
-  return validationErrors;
-}
-
 export const createOngoingTransaction = async (payload: OngoingTransactionProps) => {
-  const validationErrors = validate(payload);
+  const validationErrors = validateOngoingTransaction({ type: 'Transaction', payload });
   if (validationErrors.length > 0) {
     return {
       success: false,
@@ -445,36 +241,46 @@ export const createOngoingTransaction = async (payload: OngoingTransactionProps)
     const price = parseInt(payload.price, 10);
     const employee_share = price * 0.4;
 
-    const savedTransaction = await Transaction.create({
-      customer_id: payload.customer_id ? new mongoose.Types.ObjectId(payload.customer_id) : null,
-      vehicle_type,
-      vehicle_size,
-      model,
-      plate_number,
-      contact_number: payload.contact_number ?? null,
-      status: 'ONGOING',
-      check_in: new Date(),
-      check_out: null,
-      services: [
-        {
-          service_id: new mongoose.Types.ObjectId(service_id),
-          price,
-          deduction: 0,
-          company_earnings: service_charge === 'free' ? 0 : price - employee_share,
-          employee_share,
-          assigned_employee_id: [],
-          start_date: null,
-          end_date: null,
-          status: 'PENDING',
-          is_free: service_charge === 'free',
-          is_paid: service_charge === 'free',
-          is_claimed: false,
-        },
-      ],
-    });
+    const service = await Service.findById(service_id).exec();
+
+    if (service) {
+      const savedTransaction = await Transaction.create({
+        customer_id: payload.customer_id ? new mongoose.Types.ObjectId(payload.customer_id) : null,
+        vehicle_type,
+        vehicle_size,
+        model,
+        plate_number,
+        contact_number: payload.contact_number ?? null,
+        status: 'ONGOING',
+        check_in: new Date(),
+        check_out: null,
+        services: [
+          {
+            service_id: new mongoose.Types.ObjectId(service_id),
+            price,
+            deduction: 0,
+            company_earnings: service_charge === 'free' ? 0 : price - employee_share,
+            employee_share,
+            assigned_employee_id: [],
+            start_date: null,
+            end_date: null,
+            status: 'PENDING',
+            is_free: service_charge === 'free',
+            is_paid: service_charge === 'free',
+            is_claimed: false,
+          },
+        ],
+      });
+      return {
+        success: true,
+        ongoing: { id: savedTransaction._id.toString() },
+      };
+    }
+
     return {
-      success: true,
-      ongoing: { id: savedTransaction._id.toString() },
+      success: false,
+      status: 404,
+      errors: [{ field: 'service_id', message: 'Service does not exist' }],
     };
   } catch (error) {
     return {
@@ -486,7 +292,7 @@ export const createOngoingTransaction = async (payload: OngoingTransactionProps)
 };
 
 export const addTransactionService = async (payload: TransactionServiceProps, id: string) => {
-  const validationErrors = validateTwo(payload);
+  const validationErrors = validateOngoingTransaction({ type: 'Transaction Service', payload });
   if (validationErrors.length > 0) {
     return {
       success: false,

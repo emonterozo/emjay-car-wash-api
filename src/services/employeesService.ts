@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
 import Employee from '../models/employeeModel';
-import { PaginationOption } from '../common/types';
+import { PaginationOption, AddEmployeeProps, UpdateEmployeeProps } from '../common/types';
 import { recentTransactionService } from './shared/recentTransactionService';
 import { validateEmployee } from './validations/employeeValidation';
-import { AddEmployeeProps, UpdateEmployeeProps } from '../models/employee';
 
 export const getAllEmployees = async (option: PaginationOption) => {
   try {
@@ -93,7 +92,7 @@ export const getEmployeeById = async (employee_id: string) => {
 };
 
 export const postEmployee = async (employee: AddEmployeeProps) => {
-  const validationErrors = validateEmployee(employee, false);
+  const validationErrors = validateEmployee({ type: 'Add', payload: employee });
 
   if (validationErrors.length > 0) {
     return {
@@ -124,7 +123,7 @@ export const postEmployee = async (employee: AddEmployeeProps) => {
 };
 
 export const putEmployee = async (employee: UpdateEmployeeProps, id: string) => {
-  const validationErrors = validateEmployee(employee, true);
+  const validationErrors = validateEmployee({ type: 'Update', payload: employee });
 
   if (validationErrors.length > 0) {
     return {

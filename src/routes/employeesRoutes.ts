@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken as any, getAllEmployees as any);
 router.get('/:employee_id', authenticateToken as any, getEmployeeById as any);
-router.post('/add', authenticateToken as any, postEmployee as any);
-router.put('/update/:employee_id', authenticateToken as any, putEmployee as any);
+router.post('/', authenticateToken as any, postEmployee as any);
+router.put('/:employee_id', authenticateToken as any, putEmployee as any);
 
 export default router;

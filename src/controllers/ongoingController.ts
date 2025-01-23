@@ -3,18 +3,7 @@ import * as ongoingService from '../services/ongoingService';
 import { DateRange, ListRequestBody, OrderBy } from '../common/types/listRequestBody';
 import { parseOrderBy } from '../utils/parseOrderBy';
 import { parseDateRange } from '../utils/parseDateRange';
-
-export interface OngoingTransactionProps {
-  customer_id: string;
-  vehicle_type: string;
-  vehicle_size: string;
-  model: string;
-  plate_number: string;
-  contact_number: string;
-  service_id: string;
-  price: string;
-  service_charge: string;
-}
+import { OngoingTransactionProps, TransactionServiceProps } from '../common/types';
 
 interface GetTransactionsProps extends ListRequestBody {
   status?: string;
@@ -156,19 +145,13 @@ export const createOngoingTransaction = async (
   }
 };
 
-export interface TransactionServiceProps {
-  service_id: string;
-  price: string;
-  service_charge: string;
-}
-
 export const addTransactionService = async (
   req: Request<{ transaction_id: string }, {}, TransactionServiceProps>,
   res: Response,
 ) => {
   const result = await ongoingService.addTransactionService(req.body, req.params.transaction_id);
   if (result.success) {
-    return res.status(201).json({
+    return res.status(200).json({
       data: {
         transaction_service: result.transaction_service,
       },

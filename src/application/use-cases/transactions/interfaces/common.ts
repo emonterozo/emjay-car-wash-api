@@ -24,7 +24,7 @@ export interface TransactionDetails {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
-  check_out?: Date;
+  check_out: Date | null;
   status: TransactionStatus; // TODO: This should be computed depending on the services status
   services: TransactionService[]
 }

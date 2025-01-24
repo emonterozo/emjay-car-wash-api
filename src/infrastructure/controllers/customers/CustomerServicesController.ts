@@ -97,7 +97,7 @@ export class CustomerServicesController implements ICustomerServicesController {
 
         // Adds entry to recent transactions array
         recent_transactions.push({
-          date: transac.check_in.toString(),
+          date: transac?.check_out?.toISOString() ?? '',
           id: transac.id,
           price: service_entry.price,
           service_id: service?.id ?? '',

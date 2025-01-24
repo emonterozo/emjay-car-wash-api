@@ -79,6 +79,7 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
                 plate_number: new_transaction.getPlateNumber(),
                 contact_number: input.contact_number, // validate this
                 check_in: new Date(),
+                check_out: null,
                 services: included_services
             });
 

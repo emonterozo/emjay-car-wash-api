@@ -73,7 +73,7 @@ export class GetAllTransactionsUseCase implements IGetAllTransactionsUseCase {
       and_conditions: and,
       or_conditions: or,
       not: not,
-      order_by: params?.order_by ?? { field: 'check_in', direction: 'asc' },
+      order_by: params?.order_by ?? { field: 'check_out', direction: 'desc' },
       range: {
         field: params?.range?.field ?? 'check_in',
         start: range_start,

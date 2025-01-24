@@ -28,6 +28,7 @@ interface ITransactionCollection {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
+  check_out: Date | null;
   status: string;
   services: TransactionService[]
 }
@@ -92,6 +93,7 @@ export class TransactionRepository implements ITransactionRepository {
       vehicle_type: transac.vehicle_type,
       contact_number: transac.contact_number,
       customer_id: transac.customer_id?.toString(),
+      check_out: transac.check_out,
       status: transac.status as TransactionStatus,
       services: transac.services.map(service => ({
         assigned_employee_id: service.assigned_employee_id.map(employee_id => employee_id.toString()),
@@ -122,6 +124,7 @@ export class TransactionRepository implements ITransactionRepository {
       contact_number: params.contact_number,
       status: "PENDING", // This should be on the business layer
       customer_id: new ObjectId(params.customer_id),
+      check_out: params.check_out,
       services: params.services.map(service => ({
         service_id: new ObjectId(service.id),
         deduction: service.deduction,

@@ -1,4 +1,4 @@
-import { TransactionObject } from "src/application/use-cases/transactions/interfaces/common";
+import { TransactionObject, TransactionStatus } from "src/application/use-cases/transactions/interfaces/common";
 import { IGetAllTransactionsParams } from "src/application/use-cases/transactions/interfaces/IGetAllTransactionUseCase";
 import { InsertedId } from "./common";
 import { ServiceId } from "src/application/use-cases/services/interfaces/common";
@@ -18,7 +18,7 @@ export interface TransactionServiceInput {
 }
 
 export interface ITransactionInput {
-  customer_id?: CustomerId;
+  customer_id: CustomerId | null;
   vehicle_type: string;
   vehicle_size: string;
   model: string;
@@ -27,6 +27,7 @@ export interface ITransactionInput {
   check_in: Date;
   check_out: Date | null;
   services: TransactionServiceInput[];
+  status: TransactionStatus;
 }
 
 export interface ITransactionRepository {

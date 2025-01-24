@@ -25,6 +25,7 @@ export interface ITransactionInput {
   plate_number: string;
   contact_number?: string;
   check_in: Date;
+  check_out: Date | null;
   services: TransactionServiceInput[];
 }
 

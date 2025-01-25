@@ -1,8 +1,11 @@
 import { CustomerId } from "../../customers/interfaces/common";
 import { Pricing, ServiceId } from "../../services/interfaces/common";
 
-export interface TransactionService {
-  id: ServiceId;
+export type AvailedServiceID = string;
+
+export interface AvailedService {
+  id: AvailedServiceID;
+  service_id: ServiceId;
   deduction: number;
   company_earnings: number;
   employee_share: number;
@@ -17,7 +20,7 @@ export interface TransactionService {
 export type TransactionStatus = 'PENDING' | 'ONGOING' | 'DONE' | 'CANCELLED'
 
 export interface TransactionDetails {
-  customer_id?: string;
+  customer_id: CustomerId | null;
   vehicle_type: string;
   vehicle_size: string;
   model: string;
@@ -26,23 +29,25 @@ export interface TransactionDetails {
   check_in: Date;
   check_out: Date | null;
   status: TransactionStatus; // TODO: This should be computed depending on the services status
-  services: TransactionService[]
+  services: AvailedService[]
 }
 
 export interface TransactionObject extends TransactionDetails {
   id: string;
 }
 
+export interface AvailedServiceInput {
+  id: string;
+  is_free: boolean;
+  size: Pricing['size']
+}
+
 export interface CreateTransactionInput {
-  customer_id?: CustomerId;
+  customer_id: CustomerId | null;
   vehicle_type: string;
   vehicle_size: string;
   model: string;
   plate_number: string;
   contact_number?: string;
-  services: {
-    id: ServiceId;
-    is_free: boolean;
-    size: Pricing['size']
-  }[];
+  services: AvailedServiceInput[];
 }

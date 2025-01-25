@@ -9,7 +9,7 @@ interface TransactionService {
 interface EntityParams {
     id?: string;
     services: TransactionService[];
-    customer_id?: string;
+    customer_id: string | null;
     vehicle_type: string;
     vehicle_size: string;
     model: string;
@@ -19,7 +19,7 @@ interface EntityParams {
 export class TransactionEntity {
     private id?: string;
     private services: TransactionService[];
-    private customer_id?: string;
+    private customer_id: string | null;
     private vehicle_type: string;
     private vehicle_size: string;
     private model: string;
@@ -37,6 +37,15 @@ export class TransactionEntity {
 
     public static create(params: EntityParams) {
         return new TransactionEntity(params);
+    }
+
+    public validateCustomerId() {
+        if (this.customer_id !== undefined) {
+            if (typeof this.customer_id !== 'string' || this.customer_id.length === 0)
+                return 'Customer ID is invalid';
+
+            return ''
+        }
     }
 
     public validateVehicleType() {

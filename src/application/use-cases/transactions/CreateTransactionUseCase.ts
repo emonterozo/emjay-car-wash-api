@@ -84,7 +84,8 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
                 contact_number: input.contact_number, // validate this
                 check_in: new Date(),
                 check_out: null,
-                services: included_services
+                services: included_services,
+                status: 'PENDING'
             });
 
             return {

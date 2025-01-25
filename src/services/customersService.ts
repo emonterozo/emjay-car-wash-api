@@ -126,6 +126,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
           id: document._id.toString(),
           first_name: document.first_name,
           last_name: document.last_name,
+          contact_number: document.contact_number,
           free_wash,
         },
       };

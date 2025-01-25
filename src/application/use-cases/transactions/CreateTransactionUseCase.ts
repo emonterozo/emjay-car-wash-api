@@ -25,6 +25,10 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
         // Initial errors messages
         const errors: ErrorMessage[] = [];
 
+        // Validates customer id
+        const customer_err_msg = new_transaction.validateCustomerId();
+        customer_err_msg && errors.push({ field: 'customer_id', message: customer_err_msg })
+        
         // Validates model
         const model_err_msg = new_transaction.validateModel();
         model_err_msg && errors.push({ field: 'model', message: model_err_msg })

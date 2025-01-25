@@ -96,11 +96,11 @@ export const getTransactionServicesById = async (transaction_id: string) => {
   try {
     const document = await Transaction.findById(transaction_id)
       .populate({
-        path: 'services.service_id',
+        path: 'availed_services.service_id',
         select: 'title image',
       })
       .exec();
-    const services = document?.availed_services
+    const availed_services = document?.availed_services
       .filter((service) => service.service_id !== null)
       .map((service) => ({
         transaction_service_id: service._id.toString(),
@@ -119,8 +119,10 @@ export const getTransactionServicesById = async (transaction_id: string) => {
         success: true,
         transaction: {
           id: document._id,
-          customer_id: document.customer_id ?? null,
-          services,
+          contact_number: document.contact_number,
+          vehicle_type: document.vehicle_type,
+          vehicle_size: document.vehicle_size,
+          availed_services,
         },
       };
     }
@@ -134,6 +136,7 @@ export const getTransactionServicesById = async (transaction_id: string) => {
       },
     };
   } catch (error: any) {
+    console.log(error);
     return {
       success: false,
       status: 500,

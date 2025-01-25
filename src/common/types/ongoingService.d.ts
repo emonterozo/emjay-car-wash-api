@@ -12,3 +12,15 @@ export interface OngoingTransactionProps extends TransactionServiceProps {
   plate_number: string;
   contact_number?: string;
 }
+
+export interface UpdateTransactionServiceProps {
+  deduction: string;
+  assigned_employee: string;
+  status: string;
+  is_free: string;
+  is_paid: string;
+}
+
+export interface UpdateTransactionStatusProps {
+  status: string;
+}

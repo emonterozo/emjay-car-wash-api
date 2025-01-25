@@ -4,6 +4,8 @@ import {
   PaginationOptionWithDateRange,
   OngoingTransactionProps,
   TransactionServiceProps,
+  UpdateTransactionServiceProps,
+  UpdateTransactionStatusProps,
 } from '../common/types';
 import { validateOngoingTransaction } from './validations/ongoingValidation';
 import Service from '../models/serviceModel';
@@ -98,7 +100,7 @@ export const getTransactionServicesById = async (transaction_id: string) => {
         select: 'title image',
       })
       .exec();
-    const services = document?.services
+    const services = document?.availed_services
       .filter((service) => service.service_id !== null)
       .map((service) => ({
         transaction_service_id: service._id.toString(),
@@ -158,7 +160,7 @@ export const getTransactionServiceById = async (
         select: 'first_name last_name gender',
       })
       .exec();
-    const service = document?.services.find(
+    const service = document?.availed_services.find(
       (service) => service._id.toString() === transaction_service_id,
     );
 
@@ -254,7 +256,7 @@ export const createOngoingTransaction = async (payload: OngoingTransactionProps)
         status: 'ONGOING',
         check_in: new Date(),
         check_out: null,
-        services: [
+        availed_services: [
           {
             service_id: new mongoose.Types.ObjectId(service_id),
             price,
@@ -306,8 +308,8 @@ export const addTransactionService = async (payload: TransactionServiceProps, id
     const employee_share = price * 0.4;
 
     const transaction = await Transaction.findById(id);
-    const services = [...transaction?.services.toObject()];
-    services.push({
+    const availed_services = [...transaction?.availed_services.toObject()];
+    availed_services.push({
       service_id: new mongoose.Types.ObjectId(service_id),
       price,
       deduction: 0,
@@ -325,7 +327,7 @@ export const addTransactionService = async (payload: TransactionServiceProps, id
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       new mongoose.Types.ObjectId(id),
       {
-        services,
+        availed_services,
       },
     );
 
@@ -333,6 +335,152 @@ export const addTransactionService = async (payload: TransactionServiceProps, id
       return {
         success: true,
         transaction_service: { id: updatedTransaction?._id.toString() },
+      };
+    }
+
+    return {
+      success: false,
+      status: 404,
+      errors: [
+        {
+          field: 'transaction_id',
+          message: 'Transaction does not exist',
+        },
+      ],
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: 500,
+      errors: [{ field: 'unknown', message: 'An unexpected error occurred' }],
+    };
+  }
+};
+
+export const updateTransactionService = async (
+  payload: UpdateTransactionServiceProps,
+  transaction_id: string,
+  transaction_service_id: string,
+) => {
+  // TODO: add handling if payload is not is follow the expected format
+  const { status } = payload;
+  const assigned_employee: string[] = JSON.parse(payload.assigned_employee.replace(/'/g, '"'));
+  const assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
+  const deduction = Number(payload.deduction);
+  const is_free = payload.is_free === 'true';
+  let is_paid = payload.is_paid === 'true';
+  is_paid = is_free ? true : is_paid;
+
+  try {
+    const transaction = await Transaction.findById(transaction_id);
+    // TODO: add handling if transaction_id is not valid object_id format, or transaction_id is not exist
+
+    const availed_services = transaction?.availed_services.map((item) => {
+      // TODO: add handling if transaction_service_id is not valid object_id format, or transaction_service_id is not exist
+      if (item._id.toString() === transaction_service_id) {
+        switch (status) {
+          case 'CANCELLED':
+            return {
+              ...item.toObject(),
+              deduction: 0,
+              company_earnings: 0,
+              employee_share: 0,
+              assigned_employee_id: [],
+              end_date: new Date(),
+              status,
+              is_free: false,
+              is_paid: false,
+              is_claimed: true,
+            };
+          default:
+            const profit = (item.price as number) - deduction;
+            const employee_share = profit * 0.4;
+
+            return {
+              ...item.toObject(),
+              deduction,
+              company_earnings: is_free ? 0 : profit - employee_share,
+              employee_share,
+              assigned_employee_id,
+              status,
+              start_date: status === 'ONGOING' ? new Date() : item.start_date,
+              end_date: status === 'DONE' ? new Date() : item.end_date,
+              is_free,
+              is_paid,
+            };
+        }
+      }
+
+      return item;
+    });
+
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(transaction_id),
+      {
+        availed_services,
+      },
+    );
+
+    if (updatedTransaction) {
+      return {
+        success: true,
+        transaction_service: { id: transaction_service_id },
+      };
+    }
+
+    return {
+      success: false,
+      status: 404,
+      errors: [
+        {
+          field: 'transaction_id',
+          message: 'Transaction does not exist',
+        },
+      ],
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: 500,
+      errors: [{ field: 'unknown', message: 'An unexpected error occurred' }],
+    };
+  }
+};
+
+export const updateTransactionStatus = async (
+  payload: UpdateTransactionStatusProps,
+  transaction_id: string,
+) => {
+  const { status } = payload;
+  try {
+    const transaction = await Transaction.findById(transaction_id);
+
+    const availed_services = transaction?.availed_services.map((item) => ({
+      ...item.toObject(),
+      deduction: 0,
+      company_earnings: 0,
+      employee_share: 0,
+      assigned_employee_id: [],
+      end_date: new Date(),
+      status,
+      is_free: false,
+      is_paid: false,
+      is_claimed: true,
+    }));
+
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(transaction_id),
+      {
+        status,
+        check_out: new Date(),
+        availed_services: status === 'CANCELLED' ? availed_services : transaction?.availed_services,
+      },
+    );
+
+    if (updatedTransaction) {
+      return {
+        success: true,
+        transaction: { id: updatedTransaction?._id.toString() },
       };
     }
 

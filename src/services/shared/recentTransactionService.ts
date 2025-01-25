@@ -51,7 +51,7 @@ export const recentTransactionService = async (
     const formattedTransaction: RecentTransaction[] = [];
 
     transactions.forEach((transaction) => {
-      transaction.services.forEach((service) => {
+      transaction.availed_services.forEach((service) => {
         // @ts-ignore
         const { title } = service.service_id;
 

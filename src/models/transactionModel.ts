@@ -25,7 +25,7 @@ const transactionSchema = new mongoose.Schema({
   check_in: { type: Date, required: true },
   status: { type: String, enum: ['ONGOING', 'COMPLETED', 'CANCELLED'], required: true },
   check_out: { type: Date },
-  services: [serviceSchema],
+  availed_services: [serviceSchema],
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

@@ -3,7 +3,12 @@ import * as ongoingService from '../services/ongoingService';
 import { DateRange, ListRequestBody, OrderBy } from '../common/types/listRequestBody';
 import { parseOrderBy } from '../utils/parseOrderBy';
 import { parseDateRange } from '../utils/parseDateRange';
-import { OngoingTransactionProps, TransactionServiceProps } from '../common/types';
+import {
+  OngoingTransactionProps,
+  TransactionServiceProps,
+  UpdateTransactionServiceProps,
+  UpdateTransactionStatusProps,
+} from '../common/types';
 
 interface GetTransactionsProps extends ListRequestBody {
   status?: string;
@@ -154,6 +159,56 @@ export const addTransactionService = async (
     return res.status(200).json({
       data: {
         transaction_service: result.transaction_service,
+      },
+      errors: [],
+    });
+  } else {
+    return res.status(result.status!).json({
+      data: null,
+      errors: result.errors,
+    });
+  }
+};
+
+export const updateTransactionService = async (
+  req: Request<
+    { transaction_id: string; transaction_service_id: string },
+    {},
+    UpdateTransactionServiceProps
+  >,
+  res: Response,
+) => {
+  const { transaction_id, transaction_service_id } = req.params;
+  const result = await ongoingService.updateTransactionService(
+    req.body,
+    transaction_id,
+    transaction_service_id,
+  );
+  if (result.success) {
+    return res.status(200).json({
+      data: {
+        transaction_service: result.transaction_service,
+      },
+      errors: [],
+    });
+  } else {
+    return res.status(result.status!).json({
+      data: null,
+      errors: result.errors,
+    });
+  }
+};
+
+export const updateTransactionStatus = async (
+  req: Request<{ transaction_id: string }, {}, UpdateTransactionStatusProps>,
+  res: Response,
+) => {
+  const { transaction_id } = req.params;
+  const result = await ongoingService.updateTransactionStatus(req.body, transaction_id);
+  if (result.success) {
+    return res.status(200).json({
+      data: {
+        transaction: result.transaction,
       },
       errors: [],
     });

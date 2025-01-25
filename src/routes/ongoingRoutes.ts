@@ -5,6 +5,8 @@ import {
   getTransactions,
   getTransactionServicesById,
   getTransactionServiceById,
+  updateTransactionService,
+  updateTransactionStatus,
 } from '../controllers/ongoingController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -26,6 +28,16 @@ router.put(
   '/transactions/:transaction_id/services',
   authenticateToken as any,
   addTransactionService as any,
+);
+router.put(
+  '/transactions/:transaction_id/services/:transaction_service_id',
+  authenticateToken as any,
+  updateTransactionService as any,
+);
+router.put(
+  '/transactions/:transaction_id/',
+  authenticateToken as any,
+  updateTransactionStatus as any,
 );
 
 export default router;

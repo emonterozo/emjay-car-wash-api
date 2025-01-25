@@ -1,7 +1,7 @@
 import { ControllerResponse } from "../common";
 
 export interface CreateTransactionControllerInput {
-    customer_id?: string;
+    customer_id: string | null;
     vehicle_type?: string;
     vehicle_size?: string;
     model?: string;

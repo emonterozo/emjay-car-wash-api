@@ -110,6 +110,7 @@ export const getTransactionServicesById = async (transaction_id: string) => {
         title: service.service_id?.title,
         // @ts-ignore
         image: service.service_id?.image,
+        price: service.price,
         status: service.status,
         is_free: service.is_free,
       }));

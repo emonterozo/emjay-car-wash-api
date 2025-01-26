@@ -31,7 +31,7 @@ interface ITransactionCollection {
   check_in: Date;
   check_out: Date | null;
   status: string;
-  services: AvailedService[]
+  availed_services: AvailedService[]
 }
 
 export class TransactionRepository implements ITransactionRepository {
@@ -96,7 +96,7 @@ export class TransactionRepository implements ITransactionRepository {
       customer_id: transac.customer_id?.toString() ?? null,
       check_out: transac.check_out,
       status: transac.status as TransactionStatus,
-      services: transac.services.map(service => ({
+      services: transac.availed_services.map(service => ({
         service_id: service.service_id.toString(),
         id: service._id.toString(),
         assigned_employee_id: service.assigned_employee_id.map(employee_id => employee_id.toString()),
@@ -127,7 +127,7 @@ export class TransactionRepository implements ITransactionRepository {
       status: params.status, // This should be on the business layer
       customer_id: params.customer_id ? new ObjectId(params.customer_id) : null,
       check_out: params.check_out,
-      services: params.services.map(service => ({
+      availed_services: params.services.map(service => ({
         service_id: new ObjectId(service.id),
         _id: new ObjectId(),
         deduction: service.deduction,

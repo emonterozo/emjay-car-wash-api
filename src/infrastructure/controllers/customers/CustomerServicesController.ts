@@ -93,7 +93,7 @@ export class CustomerServicesController implements ICustomerServicesController {
         // Gets service details
         const {
           result: { service },
-        } = await this._get_service.execute({ id: service_entry.id });
+        } = await this._get_service.execute({ id: service_entry.service_id });
 
         // Adds entry to recent transactions array
         recent_transactions.push({

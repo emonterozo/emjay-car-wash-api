@@ -47,7 +47,6 @@ export class CreateTransactionController implements ICreateTransactionController
                 for (const service of params.services) {
                     if (typeof service !== 'object' ||
                         !service?.id ||
-                        !service?.is_free ||
                         typeof service?.is_free !== 'boolean' ||
                         typeof service?.id !== 'string'
                     ) {

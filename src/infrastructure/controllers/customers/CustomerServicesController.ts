@@ -2,10 +2,10 @@ import { IGetAllTransactionsUseCase } from 'src/application/use-cases/transactio
 import { ITokenService } from '../../../application/ports/services/ITokenService';
 import { IGetOneCustomerUseCase } from '../../../application/use-cases/customers/interfaces/IGetOneCustomerUseCase';
 import {
+  CustomerRecentTransaction,
   CustomerServCountResponse,
   ICustomerServicesController,
 } from '../../../interfaces/controllers/customers/IGetCustomerServicesController';
-import { CustomerRecentTransaction } from 'src/application/use-cases/customers/interfaces/common';
 import { IGetOneServiceUseCase } from 'src/application/use-cases/services/interfaces/IGetOneServiceUseCase';
 
 export class CustomerServicesController implements ICustomerServicesController {

@@ -3,7 +3,6 @@ import { Pricing } from "src/application/use-cases/services/interfaces/common";
 interface TransactionService {
     id: string;
     is_free: boolean;
-    size: Pricing['size']
 }
 
 interface EntityParams {

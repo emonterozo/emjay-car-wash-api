@@ -28,7 +28,7 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
         // Validates customer id
         const customer_err_msg = new_transaction.validateCustomerId();
         customer_err_msg && errors.push({ field: 'customer_id', message: customer_err_msg })
-        
+
         // Validates model
         const model_err_msg = new_transaction.validateModel();
         model_err_msg && errors.push({ field: 'model', message: model_err_msg })
@@ -70,7 +70,9 @@ export class CreateTransactionUseCase implements ICreateTransactionUseCase {
                         start_date: undefined,
                         end_date: undefined,
                         status: 'PENDING',
-                        price: service.price_list.find(price => price.size === serv.size)?.price ?? 0
+                        price: service.price_list.find(
+                            price => price.size === new_transaction.getVehicleSize()
+                        )?.price ?? 0
                     });
                 }
             }

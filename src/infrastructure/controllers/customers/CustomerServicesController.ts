@@ -100,7 +100,7 @@ export class CustomerServicesController implements ICustomerServicesController {
           date: transac?.check_out?.toISOString() ?? '',
           id: transac.id,
           price: service_entry.price,
-          service_id: service?.id ?? '',
+          // service_id: service?.id ?? '',
           service_name: service?.title ?? '',
         });
       }

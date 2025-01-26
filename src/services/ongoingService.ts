@@ -158,11 +158,11 @@ export const getTransactionServiceById = async (
   try {
     const document = await Transaction.findById(transaction_id)
       .populate({
-        path: 'services.service_id',
+        path: 'availed_services.service_id',
         select: 'title image',
       })
       .populate({
-        path: 'services.assigned_employee_id',
+        path: 'availed_services.assigned_employee_id',
         select: 'first_name last_name gender',
       })
       .exec();

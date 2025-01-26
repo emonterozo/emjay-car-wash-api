@@ -122,6 +122,8 @@ export const getTransactionServicesById = async (transaction_id: string) => {
           contact_number: document.contact_number,
           vehicle_type: document.vehicle_type,
           vehicle_size: document.vehicle_size,
+          model: document.model,
+          plate_number: document.plate_number,
           availed_services,
         },
       };

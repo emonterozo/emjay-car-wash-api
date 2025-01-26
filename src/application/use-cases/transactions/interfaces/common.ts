@@ -39,7 +39,6 @@ export interface TransactionObject extends TransactionDetails {
 export interface AvailedServiceInput {
   id: string;
   is_free: boolean;
-  size: Pricing['size']
 }
 
 export interface CreateTransactionInput {

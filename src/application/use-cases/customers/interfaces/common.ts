@@ -51,11 +51,3 @@ export interface MotorServiceCount {
   size: 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
   count: number;
 }
-
-export interface CustomerRecentTransaction {
-  id: string;
-  service_id: string;
-  service_name: string;
-  price: number;
-  date: string;
-}

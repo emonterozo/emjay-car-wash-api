@@ -6,8 +6,9 @@ import { Collection, ObjectId } from "mongodb";
 import { InsertedId } from "src/application/ports/repositories/common";
 import { PartialField } from "src/application/utils/types";
 
-interface TransactionService {
-  service_id: ObjectId;
+interface AvailedService {
+  _id: ObjectId; // ID of service under transactions
+  service_id: ObjectId; // ID of actual service
   deduction: number;
   company_earnings: number;
   employee_share: number;
@@ -21,7 +22,7 @@ interface TransactionService {
 
 interface ITransactionCollection {
   _id: ObjectId;
-  customer_id?: ObjectId;
+  customer_id?: ObjectId | null;
   vehicle_type: string;
   vehicle_size: string;
   model: string;
@@ -30,7 +31,7 @@ interface ITransactionCollection {
   check_in: Date;
   check_out: Date | null;
   status: string;
-  services: TransactionService[]
+  services: AvailedService[]
 }
 
 export class TransactionRepository implements ITransactionRepository {
@@ -92,15 +93,16 @@ export class TransactionRepository implements ITransactionRepository {
       vehicle_size: transac.vehicle_size,
       vehicle_type: transac.vehicle_type,
       contact_number: transac.contact_number,
-      customer_id: transac.customer_id?.toString(),
+      customer_id: transac.customer_id?.toString() ?? null,
       check_out: transac.check_out,
       status: transac.status as TransactionStatus,
       services: transac.services.map(service => ({
+        service_id: service.service_id.toString(),
+        id: service._id.toString(),
         assigned_employee_id: service.assigned_employee_id.map(employee_id => employee_id.toString()),
         company_earnings: service.company_earnings,
         deduction: service.deduction,
         employee_share: service.employee_share,
-        id: service.service_id.toString(),
         is_free: service.is_free,
         status: service.status,
         end_date: service.end_date,
@@ -122,11 +124,12 @@ export class TransactionRepository implements ITransactionRepository {
       vehicle_size: params.vehicle_size,
       vehicle_type: params.vehicle_type,
       contact_number: params.contact_number,
-      status: "PENDING", // This should be on the business layer
-      customer_id: new ObjectId(params.customer_id),
+      status: params.status, // This should be on the business layer
+      customer_id: params.customer_id ? new ObjectId(params.customer_id) : null,
       check_out: params.check_out,
       services: params.services.map(service => ({
         service_id: new ObjectId(service.id),
+        _id: new ObjectId(),
         deduction: service.deduction,
         company_earnings: service.company_earnings,
         employee_share: service.employee_share,

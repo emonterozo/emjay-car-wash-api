@@ -1,9 +1,16 @@
 import {
   CarServiceCount,
-  CustomerRecentTransaction,
   MotorServiceCount,
 } from '../../../application/use-cases/customers/interfaces/common';
 import { ControllerResponse } from '../common';
+
+export interface CustomerRecentTransaction {
+  id: string;
+  // service_id: string;
+  service_name: string;
+  price: number;
+  date: string;
+}
 
 export interface CustomerControllerOutput {
   id: string;

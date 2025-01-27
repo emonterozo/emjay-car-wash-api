@@ -70,4 +70,14 @@ export class EmployeeRepository implements IEmployeeRepository {
         }))
 
     }
+
+    public async count(options?: FindAllOptions<EmployeeObject>): Promise<number> {
+        await this._mongo_client.connect();
+        const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
+        const collection: Collection<IEmployeeCollection> = database.collection(process.env.MONGO_EMPLOYEES_COLLECTION!);
+
+        const employee_count = await collection.countDocuments();
+
+        return employee_count;
+    }
 }

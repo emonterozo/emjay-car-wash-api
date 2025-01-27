@@ -23,7 +23,7 @@ export const recentTransactionService = async (
         $gte: sevenDaysAgo,
         $lte: currentDate,
       },
-      services: {
+      availed_services: {
         $elemMatch: {
           status: 'DONE',
         },
@@ -33,7 +33,7 @@ export const recentTransactionService = async (
     if (type === 'customer') {
       filter.customer_id = id;
     } else {
-      filter.services = {
+      filter.availed_services = {
         $elemMatch: {
           assigned_employee_id: id,
           status: 'DONE',
@@ -56,7 +56,7 @@ export const recentTransactionService = async (
         const { title } = service.service_id;
 
         formattedTransaction.push({
-          id: new mongoose.Types.ObjectId().toString(),
+          id: service._id.toString(),
           service_name: title,
           price: service.price,
           date: transaction.check_out,

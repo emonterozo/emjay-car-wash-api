@@ -43,7 +43,7 @@ export const recentTransactionService = async (
 
     const transactions = await Transaction.find(filter)
       .populate({
-        path: 'services.service_id',
+        path: 'availed_services.service_id',
         select: 'title',
       })
       .sort({ check_out: 'desc' });

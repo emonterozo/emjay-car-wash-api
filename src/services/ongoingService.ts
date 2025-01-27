@@ -370,8 +370,11 @@ export const updateTransactionService = async (
 ) => {
   // TODO: add handling if payload is not is follow the expected format
   const { status } = payload;
-  const assigned_employee: string[] = JSON.parse(payload.assigned_employee.replace(/'/g, '"'));
-  const assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
+  let assigned_employee_id: mongoose.Types.ObjectId[] = [];
+  if (payload.assigned_employee) {
+    const assigned_employee: string[] = JSON.parse(payload.assigned_employee.replace(/'/g, '"'));
+    assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
+  }
   const deduction = Number(payload.deduction);
   const is_free = payload.is_free === 'true';
   let is_paid = payload.is_paid === 'true';
@@ -386,17 +389,15 @@ export const updateTransactionService = async (
       if (item._id.toString() === transaction_service_id) {
         switch (status) {
           case 'CANCELLED':
+          case 'PENDING':
             return {
               ...item.toObject(),
-              deduction: 0,
-              company_earnings: 0,
-              employee_share: 0,
               assigned_employee_id: [],
-              end_date: new Date(),
+              start_date: status === 'PENDING' ? null : new Date(),
+              end_date: status === 'PENDING' ? null : new Date(),
               status,
               is_free: false,
               is_paid: false,
-              is_claimed: true,
             };
           default:
             const profit = (item.price as number) - deduction;

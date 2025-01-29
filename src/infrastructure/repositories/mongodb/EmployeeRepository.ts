@@ -1,5 +1,5 @@
 import { IEmployeeRepository } from "src/application/ports/repositories/IEmployeeRepository";
-import { EmployeeObject } from "src/application/use-cases/employees/common";
+import { EmployeeFilterInput, EmployeeObject } from "src/application/use-cases/employees/common";
 import { MongoDB } from "./MongoDB";
 import { FindAllOptions } from "src/application/ports/repositories/common";
 import { Collection, ObjectId } from "mongodb";
@@ -79,5 +79,31 @@ export class EmployeeRepository implements IEmployeeRepository {
         const employee_count = await collection.countDocuments();
 
         return employee_count;
+    }
+
+    public async findOne(filters?: EmployeeFilterInput): Promise<EmployeeObject | null> {
+        await this._mongo_client.connect();
+        const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
+        const collection: Collection<IEmployeeCollection> = database.collection(process.env.MONGO_EMPLOYEES_COLLECTION!);
+
+        const { id, ...conditions }: EmployeeFilterInput & { _id?: ObjectId } = filters ?? {}
+
+        if (id) conditions._id = new ObjectId(id)
+
+        const employee = await collection.findOne(conditions);
+
+        if (!employee) return null
+
+        return {
+            id: employee._id.toString(),
+            first_name: employee?.first_name,
+            birth_date: employee?.birth_date,
+            contact_number: employee?.contact_number,
+            date_started: employee?.date_started,
+            employee_status: employee?.employee_status,
+            employee_title: employee?.employee_title,
+            gender: employee?.gender,
+            last_name: employee?.last_name
+        }
     }
 }

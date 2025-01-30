@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 const serviceSchema = new Schema({
   service_id: { type: Types.ObjectId, ref: 'Service' },
   price: { type: Number, required: true },
+  discount: { type: Number, required: true },
   deduction: { type: Number, required: true },
   company_earnings: { type: Number, required: true },
   employee_share: { type: Number, required: true },
@@ -12,7 +13,6 @@ const serviceSchema = new Schema({
   status: { type: String, enum: ['PENDING', 'ONGOING', 'DONE', 'CANCELLED'], required: true },
   is_free: { type: Boolean, required: true },
   is_paid: { type: Boolean, required: true },
-  is_claimed: { type: Boolean, required: true },
 });
 
 const transactionSchema = new mongoose.Schema({
@@ -28,6 +28,6 @@ const transactionSchema = new mongoose.Schema({
   availed_services: [serviceSchema],
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema, 'transactions-play-ground');
 
 export default Transaction;

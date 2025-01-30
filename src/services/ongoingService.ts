@@ -202,6 +202,7 @@ export const getTransactionServiceById = async (
           title: service.service_id?.title,
           price: service.price,
           deduction: service.deduction,
+          discount: service.discount,
           company_earnings: service.company_earnings,
           employee_share: service.employee_share,
           status: service.status,
@@ -266,6 +267,7 @@ export const createOngoingTransaction = async (payload: OngoingTransactionProps)
           {
             service_id: new mongoose.Types.ObjectId(service_id),
             price,
+            discount: 0,
             deduction: 0,
             company_earnings: price - employee_share,
             employee_share,
@@ -275,7 +277,6 @@ export const createOngoingTransaction = async (payload: OngoingTransactionProps)
             status: 'PENDING',
             is_free: service_charge === 'free',
             is_paid: service_charge === 'free',
-            is_claimed: false,
           },
         ],
       });
@@ -327,7 +328,6 @@ export const addTransactionService = async (payload: TransactionServiceProps, id
       status: 'PENDING',
       is_free: service_charge === 'free',
       is_paid: service_charge === 'free',
-      is_claimed: false,
     });
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(
@@ -472,7 +472,6 @@ export const updateTransactionStatus = async (
       status,
       is_free: false,
       is_paid: false,
-      is_claimed: true,
     }));
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(

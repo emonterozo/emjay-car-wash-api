@@ -372,7 +372,7 @@ export const updateTransactionService = async (
   const { status } = payload;
   let assigned_employee_id: mongoose.Types.ObjectId[] = [];
   if (payload.assigned_employee) {
-    const assigned_employee: string[] = JSON.parse(payload.assigned_employee.replace(/'/g, '"'));
+    const assigned_employee: string[] = payload.assigned_employee.split(',');
     assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
   }
   const deduction = Number(payload.deduction);

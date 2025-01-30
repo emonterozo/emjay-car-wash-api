@@ -28,6 +28,6 @@ const transactionSchema = new mongoose.Schema({
   availed_services: [serviceSchema],
 });
 
-const Transaction = mongoose.model('Transaction', transactionSchema, 'transactions-play-ground');
+const Transaction = mongoose.model('Transaction', transactionSchema);
 
 export default Transaction;

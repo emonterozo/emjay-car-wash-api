@@ -197,6 +197,44 @@ export const getTransactionComputation = async ({
   const employee: string[] = JSON.parse(employee_id.replace(/'/g, '"'));
   assigned_employee_id = employee.map((item) => new mongoose.Types.ObjectId(item));
 
+  const transactions = await Transaction.find({
+    status: 'COMPLETED',
+    check_out: { $gte: start, $lte: end },
+    availed_services: {
+      $elemMatch: {
+        status: 'DONE',
+        assigned_employee_id: {
+          $all: assigned_employee_id,
+          $size: assigned_employee_id.length,
+        },
+      },
+    },
+  })
+    .populate({
+      path: 'availed_services.service_id',
+      select: 'title',
+    })
+    .sort({ check_out: 'asc' });
+
+  const formattedTransaction: UnclaimedTransactions[] = [];
+
+  transactions.forEach((transaction) => {
+    transaction.availed_services.forEach((service) => {
+      // @ts-ignore
+      const { title } = service.service_id;
+
+      formattedTransaction.push({
+        id: service._id.toString(),
+        transaction_id: transaction._id.toString(),
+        service_name: title,
+        // @ts-ignore
+        price: service.price as Number,
+        // @ts-ignore
+        date: service.end_date,
+      });
+    });
+  });
+
   const result = await Transaction.aggregate([
     { $match: { status: 'COMPLETED', check_out: { $gte: start, $lte: end } } },
     { $unwind: '$availed_services' },
@@ -238,6 +276,7 @@ export const getTransactionComputation = async ({
     return {
       success: true,
       summary,
+      transactions: formattedTransaction,
     };
   } catch (error: any) {
     return {

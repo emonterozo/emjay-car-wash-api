@@ -100,6 +100,7 @@ export const getTransactionComputation = async (
       return res.status(200).json({
         data: {
           summary: result.summary,
+          transactions: result.transactions,
         },
         errors: [],
       });

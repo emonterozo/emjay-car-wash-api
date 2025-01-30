@@ -376,6 +376,7 @@ export const updateTransactionService = async (
     assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
   }
   const deduction = Number(payload.deduction);
+  const discount = Number(payload.discount);
   const is_free = payload.is_free === 'true';
   let is_paid = payload.is_paid === 'true';
   is_paid = is_free ? true : is_paid;
@@ -387,31 +388,39 @@ export const updateTransactionService = async (
     const availed_services = transaction?.availed_services.map((item) => {
       // TODO: add handling if transaction_service_id is not valid object_id format, or transaction_service_id is not exist
       if (item._id.toString() === transaction_service_id) {
+        const profit = (item.price as number) - deduction;
+        const employee_share = profit * 0.4;
+        const company_earnings_computed_value = profit - employee_share - discount;
+        const company_earnings =
+          company_earnings_computed_value > 0 ? company_earnings_computed_value : 0;
         switch (status) {
           case 'CANCELLED':
           case 'PENDING':
             return {
               ...item.toObject(),
-              assigned_employee_id: [],
+              deduction: status === 'PENDING' ? deduction : 0,
+              discount: status === 'PENDING' ? discount : 0,
+              company_earnings: status === 'PENDING' ? company_earnings : 0,
+              employee_share: status === 'PENDING' ? employee_share : 0,
+              assigned_employee_id: status === 'PENDING' ? assigned_employee_id : [],
               start_date: status === 'PENDING' ? null : new Date(),
               end_date: status === 'PENDING' ? null : new Date(),
               status,
-              is_free: false,
-              is_paid: false,
+              is_free: status === 'PENDING' ? is_free : false,
+              is_paid: status === 'PENDING' ? is_paid : false,
             };
           default:
-            const profit = (item.price as number) - deduction;
-            const employee_share = profit * 0.4;
-
             return {
               ...item.toObject(),
               deduction,
-              company_earnings: profit - employee_share,
+              discount,
+              company_earnings,
               employee_share,
               assigned_employee_id,
               status,
               start_date: status === 'ONGOING' ? new Date() : item.start_date,
-              end_date: status === 'DONE' ? new Date() : item.end_date,
+              end_date:
+                status === 'DONE' ? new Date() : status === 'ONGOING' ? null : item.end_date,
               is_free,
               is_paid,
             };

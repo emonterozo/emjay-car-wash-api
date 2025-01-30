@@ -15,6 +15,7 @@ export interface OngoingTransactionProps extends TransactionServiceProps {
 
 export interface UpdateTransactionServiceProps {
   deduction: string;
+  discount: string;
   assigned_employee?: string;
   status: string;
   is_free: string;

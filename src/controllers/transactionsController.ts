@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import * as transactionsService from '../services/transactionsService';
 import { DateRange } from '../common/types/listRequestBody';
 import { parseDateRange } from '../utils/parseDateRange';
@@ -76,24 +77,20 @@ export const getTransactionDetailsById = async (
   }
 };
 
-export const getTransactionComputation = async (
-  req: Request<
-    {},
-    {},
-    DateRange & {
-      employee_id: string[];
-    }
-  >,
-  res: Response,
-) => {
+export const getTransactionComputation = async (req: Request<{}, {}, DateRange>, res: Response) => {
   try {
-    const { employee_id } = req.query;
     const date_range = parseDateRange(req, res);
+    const { employee_id } = req.query;
+
+    let assigned_employee_id: mongoose.Types.ObjectId[] = [];
+    //@ts-ignore
+    const employee: string[] = employee_id.split(',');
+    assigned_employee_id = employee.map((item) => new mongoose.Types.ObjectId(item));
 
     const result = await transactionsService.getTransactionComputation({
       start: date_range?.start!,
       end: date_range?.end!,
-      employee_id: employee_id as string,
+      employee_id: assigned_employee_id,
     });
 
     if (result.success) {

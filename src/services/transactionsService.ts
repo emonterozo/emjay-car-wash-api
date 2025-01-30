@@ -192,11 +192,7 @@ export const getTransactionComputation = async ({
   start,
   end,
   employee_id,
-}: DateRange & { employee_id: string }) => {
-  let assigned_employee_id: mongoose.Types.ObjectId[] = [];
-  const employee: string[] = JSON.parse(employee_id.replace(/'/g, '"'));
-  assigned_employee_id = employee.map((item) => new mongoose.Types.ObjectId(item));
-
+}: DateRange & { employee_id: mongoose.Types.ObjectId[] }) => {
   const transactions = await Transaction.find({
     status: 'COMPLETED',
     check_out: { $gte: start, $lte: end },
@@ -204,8 +200,8 @@ export const getTransactionComputation = async ({
       $elemMatch: {
         status: 'DONE',
         assigned_employee_id: {
-          $all: assigned_employee_id,
-          $size: assigned_employee_id.length,
+          $all: employee_id,
+          $size: employee_id.length,
         },
       },
     },
@@ -242,8 +238,8 @@ export const getTransactionComputation = async ({
     {
       $match: {
         'availed_services.assigned_employee_id': {
-          $all: assigned_employee_id,
-          $size: assigned_employee_id.length,
+          $all: employee_id,
+          $size: employee_id.length,
         },
       },
     },

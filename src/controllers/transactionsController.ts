@@ -75,3 +75,49 @@ export const getTransactionDetailsById = async (
     });
   }
 };
+
+export const getTransactionComputation = async (
+  req: Request<
+    {},
+    {},
+    DateRange & {
+      employee_id: string[];
+    }
+  >,
+  res: Response,
+) => {
+  try {
+    const { employee_id } = req.query;
+    const date_range = parseDateRange(req, res);
+
+    const result = await transactionsService.getTransactionComputation({
+      start: date_range?.start!,
+      end: date_range?.end!,
+      employee_id: employee_id as string,
+    });
+
+    if (result.success) {
+      return res.status(200).json({
+        data: {
+          summary: result.summary,
+        },
+        errors: [],
+      });
+    } else {
+      return res.status(result.status!).json({
+        data: null,
+        errors: [result.error],
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      data: null,
+      errors: [
+        {
+          field: 'unknown',
+          message: 'Something went wrong, please try again later',
+        },
+      ],
+    });
+  }
+};

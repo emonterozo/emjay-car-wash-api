@@ -11,13 +11,6 @@ type UnclaimedTransactions = {
 };
 
 export const getTransactions = async ({ start, end }: DateRange) => {
-  // console.log({})
-  // const start = new Date('2025-01-29');
-  // start.setHours(0, 0, 0, 0);
-
-  // const end = new Date('2025-01-29');
-  // end.setHours(23, 59, 59, 999);
-
   const transactions = await Transaction.find({
     status: 'COMPLETED',
     check_out: { $gte: start, $lte: end },
@@ -85,33 +78,6 @@ export const getTransactions = async ({ start, end }: DateRange) => {
       });
     });
   });
-
-  // for employee computation
-  // const empoyee = await Transaction.aggregate([
-  //   { $match: { status: 'COMPLETED' } },
-  //   { $unwind: '$availed_services' },
-  //   { $match: { 'availed_services.status': 'DONE' } },
-  //   {
-  //     $match: {
-  //       'availed_services.assigned_employee_id': {
-  //         $all: [
-  //           new mongoose.Types.ObjectId('6799a571cda5e97bdb5c875e'),
-  //           //new mongoose.Types.ObjectId('6799a5e0cda5e97bdb5c8767'),
-  //         ],
-  //         $size: 1,
-  //       },
-  //     },
-  //   },
-  //   {
-  //     $group: {
-  //       _id: null,
-  //       gross_income: { $sum: '$availed_services.price' },
-  //       company_earnings: { $sum: '$availed_services.company_earnings' },
-  //       employee_share: { $sum: '$availed_services.employee_share' },
-  //       deduction: { $sum: '$availed_services.deduction' },
-  //     },
-  //   },
-  // ]);
 
   try {
     return {
@@ -209,6 +175,69 @@ export const getTransactionDetailsById = async (
         field: 'transaction_id',
         message: 'Transaction does not exist',
       },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: 500,
+      error: {
+        field: 'unknown',
+        message: 'An unexpected error occurred',
+      },
+    };
+  }
+};
+
+export const getTransactionComputation = async ({
+  start,
+  end,
+  employee_id,
+}: DateRange & { employee_id: string }) => {
+  let assigned_employee_id: mongoose.Types.ObjectId[] = [];
+  const employee: string[] = JSON.parse(employee_id.replace(/'/g, '"'));
+  assigned_employee_id = employee.map((item) => new mongoose.Types.ObjectId(item));
+
+  const result = await Transaction.aggregate([
+    { $match: { status: 'COMPLETED', check_out: { $gte: start, $lte: end } } },
+    { $unwind: '$availed_services' },
+    { $match: { 'availed_services.status': 'DONE' } },
+    {
+      $match: {
+        'availed_services.assigned_employee_id': {
+          $all: assigned_employee_id,
+          $size: assigned_employee_id.length,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        gross_income: { $sum: '$availed_services.price' },
+        company_earnings: { $sum: '$availed_services.company_earnings' },
+        employee_share: { $sum: '$availed_services.employee_share' },
+        deduction: { $sum: '$availed_services.deduction' },
+        discount: { $sum: '$availed_services.discount' },
+      },
+    },
+  ]);
+
+  const summary =
+    result.length > 0
+      ? {
+          ...result[0],
+        }
+      : {
+          gross_income: 0,
+          company_earnings: 0,
+          employee_share: 0,
+          deduction: 0,
+          discount: 0,
+        };
+
+  try {
+    return {
+      success: true,
+      summary,
     };
   } catch (error: any) {
     return {

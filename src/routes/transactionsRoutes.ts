@@ -1,7 +1,11 @@
 import express from 'express';
 
 import { authenticateToken } from '../middleware/authMiddleware';
-import { getTransactions, getTransactionDetailsById } from '../controllers/transactionsController';
+import {
+  getTransactions,
+  getTransactionDetailsById,
+  getTransactionComputation,
+} from '../controllers/transactionsController';
 
 const router = express.Router();
 
@@ -11,5 +15,6 @@ router.get(
   authenticateToken as any,
   getTransactionDetailsById as any,
 );
+router.get('/computation', authenticateToken as any, getTransactionComputation as any);
 
 export default router;

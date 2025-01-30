@@ -15,14 +15,43 @@ export class GetOneEmployeeController implements IGetOneEmployeeController {
 
     public async handle(token: string, id: string): Promise<GetOneEmployeeControllerResponse> {
 
+        if (!token) {
+            return {
+                data: null,
+                errors: [{ field: 'Authorization', message: 'Token is missing.' }],
+                status: 401,
+                success: false
+            };
+        }
+
+        const is_valid_token = await this._token_service.verify(token);
+
+        if (!is_valid_token)
+            return {
+                data: null,
+                errors: [{ field: 'Authorization', message: 'Invalid or expired token.' }],
+                status: 403,
+                success: false
+            };
+
+        if (typeof id !== 'string' || id.length === 0)
+            return {
+                errors: [{ field: 'id', message: 'Invalid ID' }],
+                data: null,
+                status: 403,
+                success: false
+            };
+
         const { errors, result } = await this.getOneEmployeeUseCase.execute({ id });
 
-        if (!result) return {
-            data: null,
-            errors: errors,
-            status: 500,
-            success: false
-        }
+        // If customer not exist return immediately
+        if (!result)
+            return {
+                data: null,
+                success: false,
+                status: 404,
+                errors: errors,
+            };
 
         // Gets recent transactions
         const {

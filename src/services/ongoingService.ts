@@ -320,6 +320,7 @@ export const addTransactionService = async (payload: TransactionServiceProps, id
       service_id: new mongoose.Types.ObjectId(service_id),
       price,
       deduction: 0,
+      discount: 0,
       company_earnings: price - employee_share,
       employee_share,
       assigned_employee_id: [],

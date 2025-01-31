@@ -3,7 +3,7 @@ import { ICustomerRepository } from '../../../application/ports/repositories/ICu
 import {
   CustomerFilterInput,
   CustomerObject,
-  CustomerRecentTransaction,
+  // CustomerRecentTransaction,
 } from '../../../application/use-cases/customers/interfaces/common';
 import { MongoDB } from './MongoDB';
 import { IGetAllCustomerParams } from '../../../application/use-cases/customers/interfaces/IGetAllCustomers';

@@ -16,3 +16,8 @@ export interface EmployeeObject extends EmployeeDetails {
 }
 
 export interface EmployeeFilterInput extends Partial<EmployeeObject> {}
+
+export interface CreateEmployeeInput extends Omit<EmployeeDetails, 'birth_date' | 'date_started'> {
+    birth_date: string;
+    date_started: string;
+}

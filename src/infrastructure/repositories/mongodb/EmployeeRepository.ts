@@ -1,7 +1,7 @@
-import { IEmployeeRepository } from "src/application/ports/repositories/IEmployeeRepository";
+import { CreateEmployeeParams, IEmployeeRepository } from "src/application/ports/repositories/IEmployeeRepository";
 import { EmployeeFilterInput, EmployeeObject } from "src/application/use-cases/employees/common";
 import { MongoDB } from "./MongoDB";
-import { FindAllOptions } from "src/application/ports/repositories/common";
+import { FindAllOptions, InsertedId } from "src/application/ports/repositories/common";
 import { Collection, ObjectId } from "mongodb";
 
 interface IEmployeeCollection {
@@ -105,5 +105,15 @@ export class EmployeeRepository implements IEmployeeRepository {
             gender: employee?.gender,
             last_name: employee?.last_name
         }
+    }
+
+    public async create(params: CreateEmployeeParams): Promise<InsertedId | null> {
+        await this._mongo_client.connect();
+        const database = this._mongo_client.db(process.env.MONGO_DATASOURCE);
+        const collection: Collection<IEmployeeCollection> = database.collection(process.env.MONGO_EMPLOYEES_COLLECTION!);
+
+        const { insertedId } = await collection.insertOne(params);
+        
+        return insertedId.toString();
     }
 }

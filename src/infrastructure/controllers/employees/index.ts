@@ -9,6 +9,8 @@ import { TransactionRepository } from "../../../infrastructure/repositories/mong
 import { GetAllTransactionsUseCase } from "../../../application/use-cases/transactions/GetAllTransactionsUseCase";
 import { ServiceRepository } from "../../../infrastructure/repositories/mongodb/ServiceRepository";
 import { GetOneServiceUseCase } from "../../../application/use-cases/services/GetOneServiceUseCase";
+import { CreateEmployeeController } from "./CreateEmployeeController";
+import { CreateEmployeeUseCase } from "../../../application/use-cases/employees/CreateEmployeeUseCase";
 
 // Repositories
 const employee_repository = new EmployeeRepository();
@@ -19,6 +21,7 @@ const service_repository = new ServiceRepository();
 const token_service = new TokenService();
 
 // Use Cases
+const createEmployee = new CreateEmployeeUseCase(employee_repository);
 const getAllEmployees = new GetAllEmployeeesUseCase(employee_repository);
 const countEmployees = new CountEmployeesUseCase(employee_repository);
 const getOneEmployee = new GetOneEmployeeUseCase(employee_repository);
@@ -38,3 +41,8 @@ export const get_employee_controller = new GetOneEmployeeController(
     getService,
     token_service
 );
+
+export const create_employee_controller = new CreateEmployeeController(
+    createEmployee,
+    getOneEmployee
+)

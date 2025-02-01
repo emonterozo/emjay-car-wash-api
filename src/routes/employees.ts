@@ -1,5 +1,5 @@
 import express from 'express';
-import { get_all_employees_controller, get_employee_controller } from '../infrastructure/controllers/employees';
+import { create_employee_controller, get_all_employees_controller, get_employee_controller } from '../infrastructure/controllers/employees';
 
 const router = express.Router();
 
@@ -27,6 +27,14 @@ router.get('/:employee_id', async (req, res) => {
     res
         .status(response.status!)
         .send(response);
+});
+
+router.post('/', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1] ?? ''
+    const { first_name, last_name, gender, employee_title, employee_status, contact_number, birth_date, date_started } = req.body;
+    const response = await create_employee_controller.handle(token, { first_name, last_name, gender, employee_title, employee_status, contact_number, birth_date, date_started });
+
+    res.status(response.status!).send(response);
 })
 
 

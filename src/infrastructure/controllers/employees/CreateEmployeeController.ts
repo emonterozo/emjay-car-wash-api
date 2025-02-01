@@ -1,15 +1,36 @@
-import { ICreateEmployeeUseCase } from "src/application/use-cases/employees/interfaces/ICreateEmployeeUseCase";
-import { IGetOneEmployeeUseCase } from "src/application/use-cases/employees/interfaces/IGetOneEmployeeUseCase";
-import { CreateEmployeeControllerInput, CreateEmployeeControllerResponse, ICreateEmployeeController } from "src/interfaces/controllers/employees/ICreateEmployeeController";
+import { ITokenService } from "../../../application/ports/services/ITokenService";
+import { ICreateEmployeeUseCase } from "../../../application/use-cases/employees/interfaces/ICreateEmployeeUseCase";
+import { IGetOneEmployeeUseCase } from "../../../application/use-cases/employees/interfaces/IGetOneEmployeeUseCase";
+import { CreateEmployeeControllerInput, CreateEmployeeControllerResponse, ICreateEmployeeController } from "../../../interfaces/controllers/employees/ICreateEmployeeController";
 
 export class CreateEmployeeController implements ICreateEmployeeController {
 
     constructor(
         private readonly createEmployeeUseCase: ICreateEmployeeUseCase,
-        private readonly getEmployeeUseCase: IGetOneEmployeeUseCase
+        private readonly getEmployeeUseCase: IGetOneEmployeeUseCase,
+        private readonly _token_service: ITokenService
     ) { }
 
     public async handle(token: string, params: CreateEmployeeControllerInput): Promise<CreateEmployeeControllerResponse> {
+
+        if (!token) {
+            return {
+                data: null,
+                errors: [{ field: 'Authorization', message: 'Token is missing.' }],
+                status: 401,
+                success: false
+            };
+        }
+
+        const is_valid_token = await this._token_service.verify(token);
+
+        if (!is_valid_token)
+            return {
+                data: null,
+                errors: [{ field: 'Authorization', message: 'Invalid or expired token.' }],
+                status: 403,
+                success: false
+            };
 
         const { errors, result } = await this.createEmployeeUseCase.execute(params);
 

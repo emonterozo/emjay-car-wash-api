@@ -44,5 +44,6 @@ export const get_employee_controller = new GetOneEmployeeController(
 
 export const create_employee_controller = new CreateEmployeeController(
     createEmployee,
-    getOneEmployee
+    getOneEmployee,
+    token_service
 )

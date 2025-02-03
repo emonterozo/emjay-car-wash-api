@@ -373,13 +373,14 @@ export const updateTransactionService = async (
   const { status } = payload;
   let assigned_employee_id: mongoose.Types.ObjectId[] = [];
   if (payload.assigned_employee) {
-    const assigned_employee: string[] = payload.assigned_employee.split(',');
-    assigned_employee_id = assigned_employee.map((item) => new mongoose.Types.ObjectId(item));
+    assigned_employee_id = payload.assigned_employee.map(
+      (item) => new mongoose.Types.ObjectId(item),
+    );
   }
   const deduction = Number(payload.deduction);
   const discount = Number(payload.discount);
-  const is_free = payload.is_free === 'true';
-  let is_paid = payload.is_paid === 'true';
+  const is_free = payload.is_free;
+  let is_paid = payload.is_paid;
   is_paid = is_free ? true : is_paid;
 
   try {

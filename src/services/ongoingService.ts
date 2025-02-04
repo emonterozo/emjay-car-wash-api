@@ -487,12 +487,17 @@ export const updateTransactionStatus = async (
       is_paid: false,
     }));
 
+    const completed_services = transaction?.availed_services.map((item) => ({
+      ...item.toObject(),
+      is_paid: true,
+    }));
+
     const updatedTransaction = await Transaction.findByIdAndUpdate(
       new mongoose.Types.ObjectId(transaction_id),
       {
         status,
         check_out: new Date(),
-        availed_services: status === 'CANCELLED' ? availed_services : transaction?.availed_services,
+        availed_services: status === 'CANCELLED' ? availed_services : completed_services,
       },
     );
 

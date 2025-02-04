@@ -113,6 +113,8 @@ export const getTransactionServicesById = async (transaction_id: string) => {
         price: service.price,
         status: service.status,
         is_free: service.is_free,
+        is_paid: service.is_paid,
+        discount: service.discount,
       }));
 
     if (document) {

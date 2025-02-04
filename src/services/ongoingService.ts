@@ -22,9 +22,9 @@ export const getTransactions = async (option: GetTransactionsProps) => {
     if (date_range) {
       const { start, end } = date_range;
       // @ts-ignore
-      query.where('check_in').gte(start);
+      query.where('check_out').gte(start);
       // @ts-ignore
-      query.where('check_in').lte(end);
+      query.where('check_out').lte(end);
     }
 
     if (status) {
@@ -48,9 +48,9 @@ export const getTransactions = async (option: GetTransactionsProps) => {
       const { start, end } = date_range;
 
       // @ts-ignore
-      totalCountQuery.where('check_in').gte(start);
+      totalCountQuery.where('check_out').gte(start);
       // @ts-ignore
-      totalCountQuery.where('check_in').lte(end);
+      totalCountQuery.where('check_out').lte(end);
     }
 
     if (status) {

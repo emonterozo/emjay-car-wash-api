@@ -489,7 +489,7 @@ export const updateTransactionStatus = async (
 
     const completed_services = transaction?.availed_services.map((item) => ({
       ...item.toObject(),
-      is_paid: true,
+      is_paid: item.status === 'CANCELLED' ? item.is_paid : true,
     }));
 
     const updatedTransaction = await Transaction.findByIdAndUpdate(

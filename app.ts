@@ -11,6 +11,7 @@ import ServicesRouter from './src/routes/servicesRoutes';
 import EmployeesRouter from './src/routes/employeesRoutes';
 import OngoingRouter from './src/routes/ongoingRoutes';
 import TransactionsRouter from './src/routes/transactionsRoutes';
+import ConsumablesRouter from './src/routes/consumablesRoute';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/admin/customers', CustomersRouter);
 app.use('/admin/employees', EmployeesRouter);
 app.use('/admin/ongoing', OngoingRouter);
 app.use('/admin/transactions', TransactionsRouter);
+app.use('/admin/consumables', ConsumablesRouter);
 app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {

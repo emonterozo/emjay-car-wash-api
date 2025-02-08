@@ -12,6 +12,7 @@ import EmployeesRouter from './src/routes/employeesRoutes';
 import OngoingRouter from './src/routes/ongoingRoutes';
 import TransactionsRouter from './src/routes/transactionsRoutes';
 import ConsumablesRouter from './src/routes/consumablesRoute';
+import ExpensesRouter from './src/routes/expensesRoute';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/admin/employees', EmployeesRouter);
 app.use('/admin/ongoing', OngoingRouter);
 app.use('/admin/transactions', TransactionsRouter);
 app.use('/admin/consumables', ConsumablesRouter);
+app.use('/admin/expenses', ExpensesRouter);
 app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {

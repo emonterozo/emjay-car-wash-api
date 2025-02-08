@@ -1,7 +1,6 @@
 import Consumable from '../models/consumableModel';
 import Expense from '../models/expenseModel';
-import { PaginationOption } from '../common/types';
-import { AddConsumableProps } from 'src/common/types/consumableService';
+import { PaginationOption, AddConsumableProps } from '../common/types';
 
 export const getAllConsumables = async (option: PaginationOption) => {
   try {

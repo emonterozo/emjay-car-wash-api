@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
-import { ListRequestBody, OrderBy } from '../common/types';
+import { ListRequestBody, OrderBy, AddConsumableProps } from '../common/types';
 import { parseOrderBy } from '../utils/parseOrderBy';
 import * as consumablesService from '../services/consumablesService';
-import { AddConsumableProps } from 'src/common/types/consumableService';
 
 export const getAllConsumables = async (req: Request<{}, {}, ListRequestBody>, res: Response) => {
   const { offset, limit } = req.query;
 
-  const order_by: OrderBy | null = parseOrderBy(req, res, 'ratings');
+  const order_by: OrderBy | null = parseOrderBy(req, res, 'quantity');
   const offset_number = parseInt(offset as string, 10) || 0;
   const limit_number = parseInt(limit as string, 10) || 0;
 

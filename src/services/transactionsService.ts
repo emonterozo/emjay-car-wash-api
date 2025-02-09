@@ -1,14 +1,6 @@
 import mongoose from 'mongoose';
 import Transaction from '../models/transactionModel';
-import { DateRange } from '../common/types/listRequestBody';
-
-type UnclaimedTransactions = {
-  transaction_id: string;
-  transaction_service_id: string;
-  service_name: string;
-  price: number;
-  date: Date;
-};
+import { DateRange, Transactions } from '../common/types';
 
 export const getTransactions = async ({ start, end }: DateRange) => {
   const transactions = await Transaction.find({
@@ -60,7 +52,7 @@ export const getTransactions = async ({ start, end }: DateRange) => {
           discount: 0,
         };
 
-  const formattedTransaction: UnclaimedTransactions[] = [];
+  const formattedTransaction: Transactions[] = [];
 
   transactions.forEach((transaction) => {
     transaction.availed_services.forEach((service) => {
@@ -212,7 +204,7 @@ export const getTransactionComputation = async ({
     })
     .sort({ check_out: 'asc' });
 
-  const formattedTransaction: UnclaimedTransactions[] = [];
+  const formattedTransaction: Transactions[] = [];
 
   transactions.forEach((transaction) => {
     transaction.availed_services.forEach((service) => {

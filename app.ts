@@ -11,8 +11,9 @@ import ServicesRouter from './src/routes/servicesRoutes';
 import EmployeesRouter from './src/routes/employeesRoutes';
 import OngoingRouter from './src/routes/ongoingRoutes';
 import TransactionsRouter from './src/routes/transactionsRoutes';
-import ConsumablesRouter from './src/routes/consumablesRoute';
-import ExpensesRouter from './src/routes/expensesRoute';
+import ConsumablesRouter from './src/routes/consumablesRoutes';
+import ExpensesRouter from './src/routes/expensesRoutes';
+import StatisticsRouter from './src/routes/statisticsRoutes';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/admin/ongoing', OngoingRouter);
 app.use('/admin/transactions', TransactionsRouter);
 app.use('/admin/consumables', ConsumablesRouter);
 app.use('/admin/expenses', ExpensesRouter);
+app.use('/admin/statistics', StatisticsRouter);
 app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {

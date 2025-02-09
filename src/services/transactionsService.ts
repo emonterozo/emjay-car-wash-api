@@ -30,6 +30,7 @@ export const getTransactions = async ({ start, end }: DateRange) => {
         company_earnings: { $sum: '$availed_services.company_earnings' },
         employee_share: { $sum: '$availed_services.employee_share' },
         deduction: { $sum: '$availed_services.deduction' },
+        discount: { $sum: '$availed_services.discount' },
       },
     },
   ]);
@@ -38,11 +39,12 @@ export const getTransactions = async ({ start, end }: DateRange) => {
     result.length > 0
       ? {
           ...result[0],
-          discount:
-            result[0].gross_income -
-            result[0].deduction -
-            result[0].company_earnings -
-            result[0].employee_share,
+          // why i do this? to be investigate
+          // discount:
+          //   result[0].gross_income -
+          //   result[0].deduction -
+          //   result[0].company_earnings -
+          //   result[0].employee_share,
         }
       : {
           gross_income: 0,

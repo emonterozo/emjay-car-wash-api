@@ -29,6 +29,7 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
         company_earnings: { $sum: '$availed_services.company_earnings' },
         employee_share: { $sum: '$availed_services.employee_share' },
         deduction: { $sum: '$availed_services.deduction' },
+        discount: { $sum: '$availed_services.discount' },
       },
     },
     {
@@ -46,6 +47,7 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
       company_earnings: data ? data.company_earnings : 0,
       employee_share: data ? data.employee_share : 0,
       deduction: data ? data.deduction : 0,
+      discount: data ? data.discount : 0,
     };
   });
 

@@ -235,7 +235,7 @@ export const getSalesStatistics = async (
       path: 'availed_services.service_id',
       select: 'title',
     })
-    .sort({ check_out: 'desc' });
+    .sort({ check_out: 'asc' });
 
   const formattedTransaction: Transactions[] = [];
 

@@ -16,7 +16,7 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
       path: 'availed_services.service_id',
       select: 'title',
     })
-    .sort({ check_out: 'desc' });
+    .sort({ check_out: 'asc' });
 
   const result = await Transaction.aggregate([
     { $match: { status: 'COMPLETED', check_out: { $gte: start, $lte: end } } },

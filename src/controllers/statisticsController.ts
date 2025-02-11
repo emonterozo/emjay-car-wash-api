@@ -58,7 +58,8 @@ export const getSalesStatistics = async (
     if (result.success) {
       return res.status(200).json({
         data: {
-          results: result.results,
+          income: result.income,
+          expenses: result.expenses,
           transactions: result.transactions,
         },
         errors: [],
@@ -70,7 +71,6 @@ export const getSalesStatistics = async (
       });
     }
   } catch (error) {
-    console.log(error, 'Sds');
     return res.status(500).json({
       data: null,
       errors: [

@@ -1,4 +1,5 @@
 import Transaction from '../models/transactionModel';
+import Expense from '../models/expenseModel';
 import { DateRange, Transactions } from '../common/types';
 import { getDateRange } from '../utils/getDateRange';
 
@@ -174,7 +175,7 @@ export const getSalesStatistics = async (
   const expectedPeriods = generatePeriods(start, end, filterType);
 
   // Aggregation Query
-  const aggregationResult = await Transaction.aggregate([
+  const transactionsAggregation = await Transaction.aggregate([
     {
       $match: {
         status: 'COMPLETED',
@@ -198,21 +199,55 @@ export const getSalesStatistics = async (
     { $sort: { '_id.period': 1 } },
   ]);
 
+  const expensesAggregation = await Expense.aggregate([
+    {
+      $match: {
+        date: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          period: { $dateToString: { format: formatMap[filterType], date: '$date' } },
+        },
+        amount: { $sum: '$amount' },
+      },
+    },
+    { $sort: { '_id.period': 1 } },
+  ]);
+
   // Convert aggregation result into a map without _id
-  const resultMap = new Map(
-    aggregationResult.map(({ _id, ...item }) => [_id.period, { ...item, period: _id.period }]),
+  const transactionMap = new Map(
+    transactionsAggregation.map(({ _id, ...item }) => [
+      _id.period,
+      { ...item, period: _id.period },
+    ]),
   );
 
   // Ensure all expected periods exist in the result
-  const finalResult = expectedPeriods.map(
+  const finalTransactionResult = expectedPeriods.map(
     (period) =>
-      resultMap.get(period) || {
+      transactionMap.get(period) || {
         period,
         gross_income: 0,
         company_earnings: 0,
         employee_share: 0,
         deduction: 0,
         discount: 0,
+      },
+  );
+
+  // Convert aggregation result into a map without _id
+  const expensesMap = new Map(
+    expensesAggregation.map(({ _id, ...item }) => [_id.period, { ...item, period: _id.period }]),
+  );
+
+  // Ensure all expected periods exist in the result
+  const finalExpensesResult = expectedPeriods.map(
+    (period) =>
+      expensesMap.get(period) || {
+        period,
+        amount: 0,
       },
   );
 
@@ -259,7 +294,8 @@ export const getSalesStatistics = async (
   try {
     return {
       success: true,
-      results: finalResult,
+      income: finalTransactionResult,
+      expenses: finalExpensesResult,
       transactions: formattedTransaction,
     };
   } catch (error: any) {

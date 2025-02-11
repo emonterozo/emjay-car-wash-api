@@ -5,7 +5,7 @@ import { getCurrentWeekSales, getSalesStatistics } from '../controllers/statisti
 
 const router = express.Router();
 
-router.get('/sales', authenticateToken as any, getSalesStatistics as any);
+router.get('/', authenticateToken as any, getSalesStatistics as any);
 router.get('/weekly/sales', authenticateToken as any, getCurrentWeekSales as any);
 
 export default router;

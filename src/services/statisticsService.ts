@@ -126,7 +126,7 @@ export const getSalesStatistics = async (
       break;
     case 'yearly':
       start = new Date(end);
-      start.setFullYear(end.getFullYear() - 3); // Last 3 years
+      start.setFullYear(end.getFullYear() - 4); // Last 4 years
       break;
     default:
       start = new Date(end);

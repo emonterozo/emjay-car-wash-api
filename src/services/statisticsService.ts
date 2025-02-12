@@ -89,21 +89,13 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
   }
 };
 
-// Function to get Sunday-based week number (MongoDB's `%U` equivalent)
-const getSundayBasedWeekNumber = (date: Date): number => {
-  const firstDayOfYear = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-  const daysSinceYearStart = Math.floor(
-    (date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000),
-  );
-  return Math.floor(daysSinceYearStart / 7); // 0-based week number
-};
-
 // Function to format the week identifier
 const formatWeek = (date: Date) => {
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Ensure 2-digit month
-  const week = String(getSundayBasedWeekNumber(date)).padStart(2, '0'); // Ensure 2-digit week
-  return `${year}-${month}-${week}`;
+  const temp = new Date(date);
+  const dayOfWeek = temp.getUTCDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+  const diffToSunday = dayOfWeek === 0 ? 0 : -dayOfWeek; // Move back to Sunday
+  temp.setUTCDate(temp.getUTCDate() + diffToSunday);
+  return temp.toISOString().split('T')[0]; // YYYY-MM-DD format
 };
 
 export const getSalesStatistics = async (
@@ -119,7 +111,9 @@ export const getSalesStatistics = async (
       break;
     case 'weekly':
       start = new Date(end);
-      start.setDate(end.getDate() - 28); // Last 4 weeks
+      const dayOfWeek = start.getUTCDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust to Monday
+      start.setUTCDate(start.getUTCDate() + diffToMonday - 28);
       break;
     case 'monthly':
       start = new Date(end);
@@ -140,7 +134,7 @@ export const getSalesStatistics = async (
   // MongoDB Date Formats
   const formatMap = {
     daily: '%Y-%m-%d',
-    weekly: '%Y-%m-%U',
+    weekly: '%Y-%m-%d',
     monthly: '%Y-%m',
     yearly: '%Y',
   };
@@ -156,7 +150,7 @@ export const getSalesStatistics = async (
         formattedPeriod = tempDate.toISOString().split('T')[0]; // YYYY-MM-DD
         tempDate.setDate(tempDate.getDate() + 1);
       } else if (type === 'weekly') {
-        formattedPeriod = formatWeek(tempDate); // Custom function
+        formattedPeriod = formatWeek(tempDate);
         tempDate.setDate(tempDate.getDate() + 7);
       } else if (type === 'monthly') {
         formattedPeriod = `${tempDate.getUTCFullYear()}-${String(tempDate.getUTCMonth() + 1).padStart(2, '0')}`;
@@ -187,7 +181,23 @@ export const getSalesStatistics = async (
     {
       $group: {
         _id: {
-          period: { $dateToString: { format: formatMap[filterType], date: '$check_out' } },
+          period:
+            filterType === 'weekly'
+              ? {
+                  $dateToString: {
+                    format: formatMap[filterType],
+                    date: {
+                      $dateTrunc: {
+                        date: {
+                          $dateSubtract: { startDate: '$check_out', unit: 'day', amount: 1 },
+                        },
+                        unit: 'week',
+                        timezone: 'UTC',
+                      },
+                    },
+                  },
+                }
+              : { $dateToString: { format: formatMap[filterType], date: '$check_out' } },
         },
         gross_income: { $sum: '$availed_services.price' },
         company_earnings: { $sum: '$availed_services.company_earnings' },
@@ -208,7 +218,23 @@ export const getSalesStatistics = async (
     {
       $group: {
         _id: {
-          period: { $dateToString: { format: formatMap[filterType], date: '$date' } },
+          period:
+            filterType === 'weekly'
+              ? {
+                  $dateToString: {
+                    format: formatMap[filterType],
+                    date: {
+                      $dateTrunc: {
+                        date: {
+                          $dateSubtract: { startDate: '$date', unit: 'day', amount: 1 },
+                        },
+                        unit: 'week',
+                        timezone: 'UTC',
+                      },
+                    },
+                  },
+                }
+              : { $dateToString: { format: formatMap[filterType], date: '$date' } },
         },
         amount: { $sum: '$amount' },
       },
@@ -251,6 +277,7 @@ export const getSalesStatistics = async (
       },
   );
 
+  // Get previous 14 days transaction base on current date
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(endDate.getDate() - 14);
@@ -299,6 +326,7 @@ export const getSalesStatistics = async (
       transactions: formattedTransaction,
     };
   } catch (error: any) {
+    console.log(error);
     return {
       success: false,
       status: 500,

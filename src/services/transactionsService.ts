@@ -187,19 +187,35 @@ export const getTransactionComputation = async ({
   end,
   employee_id,
 }: DateRange & { employee_id: mongoose.Types.ObjectId[] }) => {
-  const transactions = await Transaction.find({
-    status: 'COMPLETED',
-    check_out: { $gte: start, $lte: end },
-    availed_services: {
-      $elemMatch: {
-        status: 'DONE',
-        assigned_employee_id: {
-          $all: employee_id,
-          $size: employee_id.length,
+  const transactions = await Transaction.find(
+    {
+      status: 'COMPLETED',
+      check_out: { $gte: start, $lte: end },
+      'availed_services.assigned_employee_id': {
+        $all: employee_id, // Ensures all provided IDs exist in assigned_employee_id
+        $size: employee_id.length, // Ensures the length is exactly the same
+      },
+    },
+    {
+      availed_services: {
+        $filter: {
+          input: '$availed_services',
+          as: 'service',
+          cond: {
+            $and: [
+              { $eq: ['$$service.status', 'DONE'] },
+              {
+                $eq: [{ $size: '$$service.assigned_employee_id' }, employee_id.length], // Ensures assigned_employee_id length is the same
+              },
+              {
+                $setEquals: ['$$service.assigned_employee_id', employee_id],
+              }, // Ensures assigned_employee_id matches exactly, regardless of order
+            ],
+          },
         },
       },
     },
-  })
+  )
     .populate({
       path: 'availed_services.service_id',
       select: 'title',

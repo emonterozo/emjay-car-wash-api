@@ -30,6 +30,7 @@ export enum VEHICLE_SIZE_MOTORCYCLE {
   SM = 'sm',
   MD = 'md',
   LG = 'lg',
+  XL = 'xl',
 }
 
 export const VALID_SERVICE_CHARGES: SERVICE_CHARGE[] = [
@@ -53,6 +54,7 @@ export const VALID_VEHICLE_SIZES = {
     VEHICLE_SIZE_MOTORCYCLE.SM,
     VEHICLE_SIZE_MOTORCYCLE.MD,
     VEHICLE_SIZE_MOTORCYCLE.LG,
+    VEHICLE_SIZE_MOTORCYCLE.XL,
   ],
 };
 

@@ -51,17 +51,20 @@ export const recentTransactionService = async (
     const formattedTransaction: RecentTransaction[] = [];
 
     transactions.forEach((transaction) => {
-      transaction.availed_services.forEach((service) => {
+      transaction.availed_services
         // @ts-ignore
-        const { title } = service.service_id;
+        .filter((service) => type !== 'employee' || service.assigned_employee_id.includes(id))
+        .forEach((service) => {
+          // @ts-ignore
+          const { title } = service.service_id;
 
-        formattedTransaction.push({
-          id: service._id.toString(),
-          service_name: title,
-          price: service.price,
-          date: transaction.check_out,
-        } as RecentTransaction);
-      });
+          formattedTransaction.push({
+            id: service._id.toString(),
+            service_name: title,
+            price: service.price,
+            date: transaction.check_out,
+          } as RecentTransaction);
+        });
     });
 
     return {

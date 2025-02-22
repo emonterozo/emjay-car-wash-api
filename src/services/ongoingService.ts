@@ -65,6 +65,7 @@ export const getTransactions = async (option: GetTransactionsProps) => {
         model: item.model,
         plate_number: item.plate_number,
         check_in: item.check_in,
+        check_out: item.check_out,
         // @ts-ignore
         customer_id: item.customer_id?._id ?? null,
         // @ts-ignore

@@ -39,12 +39,6 @@ export const getTransactions = async ({ start, end }: DateRange) => {
     result.length > 0
       ? {
           ...result[0],
-          // why i do this? to be investigate
-          // discount:
-          //   result[0].gross_income -
-          //   result[0].deduction -
-          //   result[0].company_earnings -
-          //   result[0].employee_share,
         }
       : {
           gross_income: 0,

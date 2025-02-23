@@ -21,8 +21,8 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
 
   const result = await Transaction.aggregate([
     { $match: { status: 'COMPLETED', check_out: { $gte: start, $lte: end } } },
-    { $match: { 'availed_services.status': 'DONE' } },
     { $unwind: '$availed_services' },
+    { $match: { 'availed_services.status': 'DONE' } },
     {
       $group: {
         _id: { date: { $dateToString: { format: '%Y-%m-%d', date: '$check_out' } } },
@@ -55,20 +55,22 @@ export const getCurrentWeekSales = async ({ start, end }: DateRange) => {
   const formattedTransaction: Transactions[] = [];
 
   transactions.forEach((transaction) => {
-    transaction.availed_services.forEach((service) => {
-      // @ts-ignore
-      const { title } = service.service_id;
+    transaction.availed_services
+      .filter((service) => service.status === 'DONE')
+      .forEach((service) => {
+        // @ts-ignore
+        const { title } = service.service_id;
 
-      formattedTransaction.push({
-        id: service._id.toString(),
-        transaction_id: transaction._id.toString(),
-        service_name: title,
-        // @ts-ignore
-        price: service.price as Number,
-        // @ts-ignore
-        date: transaction.check_out,
+        formattedTransaction.push({
+          id: service._id.toString(),
+          transaction_id: transaction._id.toString(),
+          service_name: title,
+          // @ts-ignore
+          price: service.price as Number,
+          // @ts-ignore
+          date: service.end_date,
+        });
       });
-    });
   });
 
   try {

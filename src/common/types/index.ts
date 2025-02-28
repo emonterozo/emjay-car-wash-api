@@ -5,3 +5,4 @@ export * from './ongoingService';
 export * from './consumableService';
 export * from './expenseService';
 export * from './transactionsService';
+export * from './customersAccountService';

@@ -14,6 +14,7 @@ import TransactionsRouter from './src/routes/transactionsRoutes';
 import ConsumablesRouter from './src/routes/consumablesRoutes';
 import ExpensesRouter from './src/routes/expensesRoutes';
 import StatisticsRouter from './src/routes/statisticsRoutes';
+import CustomersAccountRouter from './src/routes/customersAccountRoutes';
 
 const app = express();
 
@@ -32,6 +33,9 @@ app.use('/admin/transactions', TransactionsRouter);
 app.use('/admin/consumables', ConsumablesRouter);
 app.use('/admin/expenses', ExpensesRouter);
 app.use('/admin/statistics', StatisticsRouter);
+
+app.use('/customers', CustomersAccountRouter);
+
 app.use('/services', ServicesRouter);
 
 app.get('/', (req, res) => {

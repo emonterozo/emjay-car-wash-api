@@ -266,3 +266,39 @@ export const forgotPassword = async (username: string, password: string) => {
     };
   }
 };
+
+export const getCustomerWashPointsById = async (customer_id: string) => {
+  try {
+    const document = await Customer.findById(customer_id).exec();
+
+    if (document) {
+      return {
+        success: true,
+        customer: {
+          id: document._id.toString(),
+          points: document.points,
+          car_wash_service_count: document.car_wash_service_count,
+          moto_wash_service_count: document.moto_wash_service_count,
+        },
+      };
+    }
+
+    return {
+      success: false,
+      status: 404,
+      error: {
+        field: 'customer_id',
+        message: 'Customer does not exist',
+      },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: 500,
+      error: {
+        field: 'unknown',
+        message: 'An unexpected error occurred',
+      },
+    };
+  }
+};

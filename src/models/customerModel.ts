@@ -27,7 +27,7 @@ const customerSchema = new mongoose.Schema({
   address: { type: String },
   registered_on: { type: Date, required: true },
   is_verified: { type: Boolean, required: true },
-  points: { type: Number, required: true },
+  points: { type: Number, required: true, min: 0 },
   car_wash_service_count: [washServiceCountSchema],
   moto_wash_service_count: [washServiceCountSchema],
 });

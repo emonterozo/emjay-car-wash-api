@@ -101,7 +101,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
       }[] = [];
 
       document.car_wash_service_count.forEach((item) => {
-        if (item.count > 10) {
+        if (item.count >= 10) {
           free_wash.push({
             size: item.size,
             count: item.count,
@@ -111,7 +111,7 @@ export const getCustomerWashCountById = async (customer_id: string) => {
       });
 
       document.moto_wash_service_count.forEach((item) => {
-        if (item.count > 10) {
+        if (item.count >= 10) {
           free_wash.push({
             size: item.size,
             count: item.count,

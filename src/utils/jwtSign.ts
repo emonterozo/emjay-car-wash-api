@@ -9,7 +9,7 @@ type User = {
   type: string;
 };
 
-export const jwtSign = (user: User) => {
+export const jwtSign = (user: any) => {
   const accessToken = jwt.sign({ user }, process.env.TOKEN_SECRET!, {
     expiresIn: '1h',
   });

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import Transaction from '../models/transactionModel';
+import Service from '../models/serviceModel';
+import Customer from '../models/customerModel';
 import {
   PaginationOptionWithDateRange,
   OngoingTransactionProps,
@@ -8,7 +10,6 @@ import {
   UpdateTransactionStatusProps,
 } from '../common/types';
 import { validateOngoingTransaction } from './validations/ongoingValidation';
-import Service from '../models/serviceModel';
 
 interface GetTransactionsProps extends PaginationOptionWithDateRange {
   status?: string;
@@ -475,6 +476,81 @@ export const updateTransactionStatus = async (
   const { status } = payload;
   try {
     const transaction = await Transaction.findById(transaction_id);
+
+    if (transaction?.customer_id && status === 'COMPLETED') {
+      const customer = await Customer.findById(transaction.customer_id);
+      const done_services = transaction?.availed_services.filter((s) => s.status === 'DONE');
+
+      const services = await Promise.all(
+        done_services.map(async (availedService) => {
+          const service = await Service.findById(availedService.service_id);
+          const price = service?.price_list.find((item) => item.size === transaction.vehicle_size);
+
+          return service
+            ? {
+                id: service._id,
+                service: service.title,
+                points: price?.points || 0,
+                earning_points: price?.earning_points || 0,
+                is_free: availedService.is_free,
+              }
+            : null;
+        }),
+      );
+
+      const sorted_services = services
+        .filter((service): service is NonNullable<typeof service> => service !== null)
+        .sort((a, b) => (a.is_free ? 1 : 0) - (b.is_free ? 1 : 0));
+
+      let customer_points = customer?.points || 0;
+      let customerWashCount =
+        transaction.vehicle_type === 'car'
+          ? customer?.car_wash_service_count.find((item) => item.size === transaction.vehicle_size)
+              ?.count || 0
+          : customer?.moto_wash_service_count.find((item) => item.size === transaction.vehicle_size)
+              ?.count || 0;
+
+      // Update customer points
+      sorted_services.forEach((service) => {
+        customer_points = Math.max(
+          0,
+          customer_points + (service.is_free ? -service.points : service.earning_points),
+        );
+      });
+
+      // Update wash count logic (Prevent negative wash count)
+      sorted_services.forEach((service) => {
+        const isCar = transaction.vehicle_type === 'car';
+        if (isCar && service.service === 'Car Wash') {
+          customerWashCount = Math.max(0, customerWashCount + (service.is_free ? -10 : 1));
+        } else if (!isCar && ['Moto Wash', 'Hand Wax', 'Buff Wax'].includes(service.service)) {
+          customerWashCount = Math.max(
+            0,
+            customerWashCount + (service.is_free && service.service === 'Moto Wash' ? -10 : 1),
+          );
+        }
+      });
+
+      // Update customer wash count object
+      const updateWashCount = (wash_count: { size: string; count: number }[]) =>
+        wash_count.map((item) =>
+          item.size === transaction.vehicle_size
+            ? { size: item.size, count: customerWashCount }
+            : item,
+        );
+
+      await Customer.findByIdAndUpdate(transaction.customer_id, {
+        points: customer_points,
+        car_wash_service_count:
+          transaction.vehicle_type === 'car'
+            ? updateWashCount(customer?.car_wash_service_count!)
+            : customer?.car_wash_service_count,
+        moto_wash_service_count:
+          transaction.vehicle_type !== 'car'
+            ? updateWashCount(customer?.moto_wash_service_count!)
+            : customer?.moto_wash_service_count,
+      });
+    }
 
     const availed_services = transaction?.availed_services.map((item) => ({
       ...item.toObject(),

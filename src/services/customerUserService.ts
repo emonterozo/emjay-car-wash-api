@@ -1,5 +1,4 @@
 import Transaction from '../models/transactionModel';
-import { Transactions } from '../common/types';
 
 type SizeKey = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 const SIZE_DESCRIPTION: Record<SizeKey, string> = {
@@ -22,7 +21,7 @@ export const getTransactions = async () => {
 
   //console.log(transactions, start, end);
 
-  const formattedTransaction: Transactions[] = [];
+  const formattedTransaction: any[] = [];
 
   transactions.forEach((transaction) => {
     //@ts-ignore
@@ -37,8 +36,7 @@ export const getTransactions = async () => {
           id: service._id.toString(),
           service_name: title,
           status: service.status,
-          // @ts-ignore
-          date: service.end_date,
+          date: transaction.check_in,
           description: `${transaction.vehicle_type.charAt(0).toUpperCase()}${transaction.vehicle_type.slice(1)} ${SIZE_DESCRIPTION[transaction.vehicle_size]}`,
         });
       });

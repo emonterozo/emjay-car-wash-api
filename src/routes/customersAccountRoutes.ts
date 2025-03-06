@@ -14,6 +14,10 @@ router.post('/register', register as any);
 router.post('/login', login as any);
 router.post('/otp', sendOtp as any);
 router.post('/otp/verify', verifyOtp as any);
-router.get('/:customer_id/wash-points', authenticateToken as any, getCustomerWashPointsById as any);
+router.get(
+  '/:customer_id/wash-points-promos',
+  authenticateToken as any,
+  getCustomerWashPointsById as any,
+);
 
 export default router;

@@ -182,6 +182,7 @@ export const getCustomerWashPointsById = async (
       return res.status(200).json({
         data: {
           customer: result.customer,
+          promos: result.promos,
         },
         errors: [],
       });

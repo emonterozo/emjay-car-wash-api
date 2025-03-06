@@ -6,6 +6,7 @@ import { jwtSign } from '../utils/jwtSign';
 import { AddCustomerProps } from '../common/types';
 import Customer from '../models/customerModel';
 import Otp from '../models/otpModel';
+import Promo from '../models/promoModel';
 
 const sizes = [
   {
@@ -270,6 +271,14 @@ export const forgotPassword = async (username: string, password: string) => {
 export const getCustomerWashPointsById = async (customer_id: string) => {
   try {
     const document = await Customer.findById(customer_id).exec();
+    const promos = await Promo.find({ is_active: true });
+    const formattedPromos = promos.map((item) => ({
+      id: item._id.toString(),
+      percent: item.percent,
+      title: item.title,
+      description: item.description,
+      is_free: item.is_free,
+    }));
 
     if (document) {
       return {
@@ -280,6 +289,7 @@ export const getCustomerWashPointsById = async (customer_id: string) => {
           car_wash_service_count: document.car_wash_service_count,
           moto_wash_service_count: document.moto_wash_service_count,
         },
+        promos: formattedPromos,
       };
     }
 

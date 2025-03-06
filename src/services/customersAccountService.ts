@@ -3,10 +3,18 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import { jwtSign } from '../utils/jwtSign';
-import { AddCustomerProps } from '../common/types';
+import { AddCustomerProps, DateRange } from '../common/types';
 import Customer from '../models/customerModel';
 import Otp from '../models/otpModel';
 import Promo from '../models/promoModel';
+import Transaction from '../models/transactionModel';
+
+type RecentTransaction = {
+  id: string;
+  service_name: string;
+  price: number;
+  date: Date;
+};
 
 const sizes = [
   {
@@ -362,6 +370,63 @@ export const forgotPasswordVerifyOtp = async (user: string, otp: number, passwor
       refreshToken,
     };
   } catch (error: any) {
+    return {
+      success: false,
+      status: 500,
+      error: {
+        field: 'unknown',
+        message: 'An unexpected error occurred',
+      },
+    };
+  }
+};
+
+export const getTransactionsHistory = async (customer_id: string, date_range: DateRange) => {
+  const transactions = await Transaction.find({
+    status: 'COMPLETED',
+    customer_id: new mongoose.Types.ObjectId(customer_id),
+    check_out: {
+      $gte: date_range.start,
+      $lte: date_range.end,
+    },
+    availed_services: {
+      $elemMatch: {
+        status: 'DONE',
+      },
+    },
+  })
+    .populate({
+      path: 'availed_services.service_id',
+      select: 'title',
+    })
+    .sort({ check_out: 'desc' });
+
+  const formattedTransaction: RecentTransaction[] = [];
+
+  transactions.forEach((transaction) => {
+    transaction.availed_services
+      // @ts-ignore
+
+      .forEach((service) => {
+        // @ts-ignore
+        const { title } = service.service_id;
+
+        formattedTransaction.push({
+          id: service._id.toString(),
+          service_name: title,
+          price: service.price,
+          date: transaction.check_out,
+        } as RecentTransaction);
+      });
+  });
+
+  try {
+    return {
+      success: true,
+      transactions: formattedTransaction,
+    };
+  } catch (error: any) {
+    console.log(error);
     return {
       success: false,
       status: 500,

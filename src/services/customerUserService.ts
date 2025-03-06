@@ -19,8 +19,6 @@ export const getTransactions = async () => {
     })
     .sort({ check_out: 'asc' });
 
-  //console.log(transactions, start, end);
-
   const formattedTransaction: any[] = [];
 
   transactions.forEach((transaction) => {

@@ -7,6 +7,7 @@ import {
   getCustomerWashPointsById,
   forgotPassword,
   forgotPasswordVerifyOtp,
+  getTransactionsHistory,
 } from '../controllers/customersAccountController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -24,5 +25,6 @@ router.get(
 
 router.post('/forgot/password', forgotPassword as any);
 router.put('/forgot/password/verify', forgotPasswordVerifyOtp as any);
+router.get('/:customer_id/transactions', getTransactionsHistory as any);
 
 export default router;

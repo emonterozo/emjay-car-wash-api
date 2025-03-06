@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { AddCustomerProps } from '../common/types';
+import { AddCustomerProps, DateRange } from '../common/types';
 import * as customersAccountService from '../services/customersAccountService';
+import { parseDateRange } from '../utils/parseDateRange';
 
 export const register = async (req: Request<{}, {}, AddCustomerProps>, res: Response) => {
   const result = await customersAccountService.register(req.body);
@@ -207,6 +208,42 @@ export const forgotPasswordVerifyOtp = async (
           user: result.user,
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
+        },
+        errors: [],
+      });
+    } else {
+      return res.status(result.status!).json({
+        data: null,
+        errors: [result.error],
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      data: null,
+      errors: [
+        {
+          field: 'unknown',
+          message: 'Something went wrong, please try again later',
+        },
+      ],
+    });
+  }
+};
+
+export const getTransactionsHistory = async (
+  req: Request<{ customer_id: string }, {}, DateRange>,
+  res: Response,
+) => {
+  const { customer_id } = req.params;
+  const date_range = parseDateRange(req, res);
+
+  try {
+    const result = await customersAccountService.getTransactionsHistory(customer_id, date_range!);
+
+    if (result.success) {
+      return res.status(200).json({
+        data: {
+          transactions: result.transactions,
         },
         errors: [],
       });

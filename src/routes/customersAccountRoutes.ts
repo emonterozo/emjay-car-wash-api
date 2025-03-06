@@ -25,6 +25,6 @@ router.get(
 
 router.post('/forgot/password', forgotPassword as any);
 router.put('/forgot/password/verify', forgotPasswordVerifyOtp as any);
-router.get('/:customer_id/transactions', getTransactionsHistory as any);
+router.get('/:customer_id/transactions', authenticateToken as any, getTransactionsHistory as any);
 
 export default router;

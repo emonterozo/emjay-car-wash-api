@@ -5,6 +5,8 @@ import {
   verifyOtp,
   sendOtp,
   getCustomerWashPointsById,
+  forgotPassword,
+  forgotPasswordVerifyOtp,
 } from '../controllers/customersAccountController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -19,5 +21,8 @@ router.get(
   authenticateToken as any,
   getCustomerWashPointsById as any,
 );
+
+router.post('/forgot/password', forgotPassword as any);
+router.put('/forgot/password/verify', forgotPasswordVerifyOtp as any);
 
 export default router;

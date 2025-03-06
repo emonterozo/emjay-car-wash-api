@@ -230,44 +230,6 @@ export const sendOtp = async (user: string) => {
   }
 };
 
-export const forgotPassword = async (username: string, password: string) => {
-  try {
-    const otp = Math.floor(100000 + Math.random() * 900000);
-
-    const user = await Customer.findOne({ contact_number: username });
-
-    if (!user) {
-      return {
-        success: false,
-        status: 404,
-        error: {
-          field: 'username',
-          message: 'User does not exist',
-        },
-      };
-    }
-
-    await Otp.create({
-      customer_id: user.id,
-      otp: otp,
-    });
-
-    return {
-      success: true,
-      user: { id: user._id.toString() },
-    };
-  } catch (error: any) {
-    return {
-      success: false,
-      status: 500,
-      error: {
-        field: 'unknown',
-        message: 'An unexpected error occurred',
-      },
-    };
-  }
-};
-
 export const getCustomerWashPointsById = async (customer_id: string) => {
   try {
     const document = await Customer.findById(customer_id).exec();
@@ -300,6 +262,104 @@ export const getCustomerWashPointsById = async (customer_id: string) => {
         field: 'customer_id',
         message: 'Customer does not exist',
       },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: 500,
+      error: {
+        field: 'unknown',
+        message: 'An unexpected error occurred',
+      },
+    };
+  }
+};
+
+export const forgotPassword = async (username: string) => {
+  try {
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    const user = await Customer.findOne({ contact_number: username });
+
+    if (!user) {
+      return {
+        success: false,
+        status: 404,
+        errors: [
+          {
+            field: 'username',
+            message: 'User does not exist',
+          },
+        ],
+      };
+    }
+
+    await Otp.create({
+      customer_id: user.id,
+      otp: otp,
+    });
+
+    return {
+      success: true,
+      user: { id: user._id.toString() },
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      status: 500,
+      error: {
+        field: 'unknown',
+        message: 'An unexpected error occurred',
+      },
+    };
+  }
+};
+
+export const forgotPasswordVerifyOtp = async (user: string, otp: number, password: string) => {
+  try {
+    const otpData = await Otp.findOne({ customer_id: new mongoose.Types.ObjectId(user) });
+
+    if (!otpData) {
+      return {
+        success: false,
+        status: 410,
+        error: { field: 'otp', message: 'Expired OTP' },
+      };
+    }
+
+    if (otp !== otpData.otp) {
+      return {
+        success: false,
+        status: 401,
+        error: { field: 'otp', message: 'Incorrect OTP' },
+      };
+    }
+
+    const saltRounds = parseInt(process.env.SALT_ROUND!, 10) || 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // OTP is correct, delete it and return success response
+    await Otp.deleteOne({ customer_id: otpData.customer_id });
+    const updatedUser = await Customer.findByIdAndUpdate(user, {
+      password: hashedPassword,
+      is_verified: true,
+    });
+
+    const userData = {
+      id: updatedUser?._id.toString(),
+      username: updatedUser?.contact_number,
+      first_name: updatedUser?.first_name,
+      last_name: updatedUser?.last_name,
+      gender: updatedUser?.gender,
+    };
+
+    const { accessToken, refreshToken } = jwtSign(userData);
+
+    return {
+      success: true,
+      user: userData,
+      accessToken,
+      refreshToken,
     };
   } catch (error: any) {
     return {

@@ -102,41 +102,6 @@ export const verifyOtp = async (
   }
 };
 
-export const forgotPassword = async (
-  req: Request<{}, {}, { username: string; password: string }>,
-  res: Response,
-) => {
-  const { username, password } = req.body;
-
-  try {
-    const result = await customersAccountService.forgotPassword(username, password);
-
-    if (result.success) {
-      return res.status(200).json({
-        data: {
-          user: result.user,
-        },
-        errors: [],
-      });
-    } else {
-      return res.status(result.status!).json({
-        data: null,
-        errors: [result.error],
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({
-      data: null,
-      errors: [
-        {
-          field: 'unknown',
-          message: 'Something went wrong, please try again later',
-        },
-      ],
-    });
-  }
-};
-
 export const sendOtp = async (req: Request<{}, {}, { user: string }>, res: Response) => {
   const { user } = req.body;
 
@@ -183,6 +148,65 @@ export const getCustomerWashPointsById = async (
         data: {
           customer: result.customer,
           promos: result.promos,
+        },
+        errors: [],
+      });
+    } else {
+      return res.status(result.status!).json({
+        data: null,
+        errors: [result.error],
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      data: null,
+      errors: [
+        {
+          field: 'unknown',
+          message: 'Something went wrong, please try again later',
+        },
+      ],
+    });
+  }
+};
+
+export const forgotPassword = async (req: Request<{}, {}, { username: string }>, res: Response) => {
+  const { username } = req.body;
+  const result = await customersAccountService.forgotPassword(username);
+  if (result.success) {
+    return res.status(201).json({
+      data: {
+        user: result.user,
+      },
+      errors: [],
+    });
+  } else {
+    return res.status(result.status!).json({
+      data: null,
+      errors: result.errors,
+    });
+  }
+};
+
+export const forgotPasswordVerifyOtp = async (
+  req: Request<{}, {}, { user: string; otp: string; password: string }>,
+  res: Response,
+) => {
+  const { user, otp, password } = req.body;
+
+  try {
+    const result = await customersAccountService.forgotPasswordVerifyOtp(
+      user,
+      parseInt(otp, 10),
+      password,
+    );
+
+    if (result.success) {
+      return res.status(200).json({
+        data: {
+          user: result.user,
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
         },
         errors: [],
       });

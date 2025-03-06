@@ -301,7 +301,7 @@ export const forgotPassword = async (username: string) => {
 
     return {
       success: true,
-      user: { id: user._id.toString() },
+      user: { id: user._id.toString(), username: user.contact_number },
     };
   } catch (error: any) {
     return {

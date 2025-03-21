@@ -65,3 +65,8 @@ export const VALID_EMPLOYEE_STATUSES: EMPLOYEE_STATUS[] = [
 
 export const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 export const CONTACT_NUMBER_REGEX = /^09\d{9}$/;
+
+export enum SMS_TYPE {
+  VERIFICATION = 'VERIFICATION',
+  FORGOT = 'FORGOT',
+}

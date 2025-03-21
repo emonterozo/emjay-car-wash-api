@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AddCustomerProps, DateRange } from '../common/types';
 import * as customersAccountService from '../services/customersAccountService';
 import { parseDateRange } from '../utils/parseDateRange';
+import { SMS_TYPE } from '../common/constant';
 
 export const register = async (req: Request<{}, {}, AddCustomerProps>, res: Response) => {
   const result = await customersAccountService.register(req.body);
@@ -103,11 +104,14 @@ export const verifyOtp = async (
   }
 };
 
-export const sendOtp = async (req: Request<{}, {}, { user: string }>, res: Response) => {
-  const { user } = req.body;
+export const sendOtp = async (
+  req: Request<{}, {}, { user: string; type: SMS_TYPE }>,
+  res: Response,
+) => {
+  const { user, type } = req.body;
 
   try {
-    const result = await customersAccountService.sendOtp(user);
+    const result = await customersAccountService.sendOtp(user, type);
 
     if (result.success) {
       return res.status(201).json({

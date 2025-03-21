@@ -1,6 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 import { SMS_TYPE } from '../common/constant';
+import { logWithContext } from '../logs/logger';
 
 dotenv.config();
 export const sendSMS = async (contact_number: string, type: SMS_TYPE, otp: number) => {
@@ -29,10 +30,23 @@ export const sendSMS = async (contact_number: string, type: SMS_TYPE, otp: numbe
       },
     });
 
-    console.log('response', response.data);
+    logWithContext({
+      level: 'info',
+      message: 'Admin login failure',
+      file: 'adminService.authenticateUser',
+      data: response.data,
+      errors: null,
+    });
+
     return { success: true };
   } catch (error) {
-    console.log('error', error);
+    logWithContext({
+      level: 'info',
+      message: 'Admin login failure',
+      file: 'adminService.authenticateUser',
+      data: { contact_number, type, otp },
+      errors: error,
+    });
     return { success: false };
   }
 };

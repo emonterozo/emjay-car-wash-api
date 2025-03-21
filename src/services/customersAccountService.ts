@@ -8,6 +8,8 @@ import Customer from '../models/customerModel';
 import Otp from '../models/otpModel';
 import Promo from '../models/promoModel';
 import Transaction from '../models/transactionModel';
+import { sendSMS } from '../utils/sendSMS';
+import { SMS_TYPE } from '../common/constant';
 
 type RecentTransaction = {
   id: string;
@@ -58,29 +60,39 @@ export const register = async (customer: AddCustomerProps) => {
     } else {
       const saltRounds = parseInt(process.env.SALT_ROUND!, 10) || 10;
       const hashedPassword = await bcrypt.hash(customer.password, saltRounds);
-      const savedCustomer = await Customer.create({
-        ...customer,
-        birth_date: new Date(customer.birth_date),
-        password: hashedPassword,
-        province: null,
-        barangay: null,
-        address: null,
-        registered_on: new Date(),
-        is_verified: false,
-        points: 0,
-        car_wash_service_count: sizes,
-        moto_wash_service_count: sizes.slice(0, -1),
-      });
 
-      await Otp.create({
-        customer_id: savedCustomer._id,
-        otp: otp,
-      });
+      const response = await sendSMS(customer.contact_number, SMS_TYPE.VERIFICATION, otp);
+      if (response.success) {
+        const savedCustomer = await Customer.create({
+          ...customer,
+          birth_date: new Date(customer.birth_date),
+          password: hashedPassword,
+          province: null,
+          barangay: null,
+          address: null,
+          registered_on: new Date(),
+          is_verified: false,
+          points: 0,
+          car_wash_service_count: sizes,
+          moto_wash_service_count: sizes.slice(0, -1),
+        });
 
-      return {
-        success: true,
-        user: { id: savedCustomer._id.toString(), username: customer.contact_number },
-      };
+        await Otp.create({
+          customer_id: savedCustomer._id,
+          otp: otp,
+        });
+
+        return {
+          success: true,
+          user: { id: savedCustomer._id.toString(), username: customer.contact_number },
+        };
+      } else {
+        return {
+          success: false,
+          status: 500,
+          errors: [{ field: 'unknown', message: 'An unexpected error occurred' }],
+        };
+      }
     }
   } catch (error) {
     return {
@@ -126,14 +138,31 @@ export const login = async (username: string, password: string) => {
     }
 
     // If not verified, check for existing OTP
-    if (!(await Otp.findOne({ customer_id: user._id }))) {
-      await Otp.create({
-        customer_id: user._id,
-        otp: Math.floor(100000 + Math.random() * 900000),
-      });
-    }
+    const currentOTP = await Otp.findOne({ customer_id: user._id });
+    if (currentOTP) {
+      return { success: true, user: { id: user._id.toString(), username: user.contact_number } };
+    } else {
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const response = await sendSMS(user.contact_number, SMS_TYPE.VERIFICATION, otp);
 
-    return { success: true, user: { id: user._id.toString(), username: user.contact_number } };
+      if (response.success) {
+        await Otp.create({
+          customer_id: user._id,
+          otp: otp,
+        });
+
+        return { success: true, user: { id: user._id.toString(), username: user.contact_number } };
+      } else {
+        return {
+          success: false,
+          status: 500,
+          error: {
+            field: 'unknown',
+            message: 'An unexpected error occurred',
+          },
+        };
+      }
+    }
   } catch (error: any) {
     return {
       success: false,
@@ -198,13 +227,14 @@ export const verifyOtp = async (user: string, otp: number) => {
   }
 };
 
-export const sendOtp = async (user: string) => {
+export const sendOtp = async (user: string, type: SMS_TYPE) => {
   try {
     const userId = new mongoose.Types.ObjectId(user);
+    const userData = await Customer.findById(userId);
 
-    const userData = await Otp.findOne({ customer_id: userId });
+    const currentOTP = await Otp.findOne({ customer_id: userId });
 
-    if (userData) {
+    if (currentOTP) {
       return {
         success: false,
         status: 400,
@@ -217,15 +247,28 @@ export const sendOtp = async (user: string) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000);
 
-    await Otp.create({
-      customer_id: userId,
-      otp: otp,
-    });
+    const response = await sendSMS(userData?.contact_number!, type, otp);
 
-    return {
-      success: true,
-      user: { id: user },
-    };
+    if (response.success) {
+      await Otp.create({
+        customer_id: userId,
+        otp: otp,
+      });
+
+      return {
+        success: true,
+        user: { id: user },
+      };
+    } else {
+      return {
+        success: false,
+        status: 500,
+        error: {
+          field: 'unknown',
+          message: 'An unexpected error occurred',
+        },
+      };
+    }
   } catch (error: any) {
     return {
       success: false,
@@ -302,15 +345,27 @@ export const forgotPassword = async (username: string) => {
       };
     }
 
-    await Otp.create({
-      customer_id: user.id,
-      otp: otp,
-    });
+    const response = await sendSMS(user.contact_number, SMS_TYPE.FORGOT, otp);
+    if (response.success) {
+      await Otp.create({
+        customer_id: user.id,
+        otp: otp,
+      });
 
-    return {
-      success: true,
-      user: { id: user._id.toString(), username: user.contact_number },
-    };
+      return {
+        success: true,
+        user: { id: user._id.toString(), username: user.contact_number },
+      };
+    } else {
+      return {
+        success: false,
+        status: 500,
+        error: {
+          field: 'unknown',
+          message: 'An unexpected error occurred',
+        },
+      };
+    }
   } catch (error: any) {
     return {
       success: false,

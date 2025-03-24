@@ -1314,6 +1314,11 @@ ajv@^8.11.0:
     json-schema-traverse "^1.0.0"
     require-from-string "^2.0.2"
 
+android-sms-gateway@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/android-sms-gateway/-/android-sms-gateway-2.0.0.tgz#03a60190c7cd64c1cced6908b3a81925a316aa29"
+  integrity sha512-U7oS8CZmr4gBKhnLose17zPSbE4EZyNJ+OUs7tMxHT5Msi8yHLb8QLGiLhpwGiRJ2O41v4dFtEv1f5nyeSeOPA==
+
 ansi-escapes@^4.2.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.2.tgz#6b2291d1db7d98b6521d5f1efa42d0f3a9feb65e"

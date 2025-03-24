@@ -5,35 +5,33 @@ import { logWithContext } from '../logs/logger';
 
 dotenv.config();
 export const sendSMS = async (contact_number: string, type: SMS_TYPE, otp: number) => {
-  const apiToken = process.env.INFO_BIP_API_TOKEN;
   const message =
     type === SMS_TYPE.VERIFICATION
       ? 'Thank you for registering! Your EmJay AutoSpa & Detailing verification code is:'
-      : 'Your password reset verification code is:';
-
-  const raw = JSON.stringify({
-    messages: [
-      {
-        destinations: [{ to: `63${contact_number.substring(1)}` }],
-        from: '447491163443',
-        text: `${message} ${otp}`,
-      },
-    ],
-  });
+      : 'Your EmJay AutoSpa & Detailing password reset verification code is:';
 
   try {
-    const response = await axios.post('https://8ky6rd.api.infobip.com/sms/2/text/advanced', raw, {
-      headers: {
-        Authorization: `App ${apiToken}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+    const response = await axios.post(
+      process.env.SMS_GATEWAY_URL!,
+      {
+        message: `${message} ${otp}`,
+        phoneNumbers: [`+63${contact_number.substring(1)}`],
       },
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        auth: {
+          username: process.env.SMS_GATEWAY_USERNAME!,
+          password: process.env.SMS_GATEWAY_PASSWORD!,
+        },
+      },
+    );
 
     logWithContext({
       level: 'info',
-      message: 'Admin login failure',
-      file: 'adminService.authenticateUser',
+      message: 'Send SMS success',
+      file: 'sendSMS',
       data: response.data,
       errors: null,
     });
@@ -42,8 +40,8 @@ export const sendSMS = async (contact_number: string, type: SMS_TYPE, otp: numbe
   } catch (error) {
     logWithContext({
       level: 'info',
-      message: 'Admin login failure',
-      file: 'adminService.authenticateUser',
+      message: 'Send SMS failure',
+      file: 'sendSMS',
       data: { contact_number, type, otp },
       errors: error,
     });
